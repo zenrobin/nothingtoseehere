@@ -8,6 +8,7 @@ import { JuniSheet } from "@/components/JuniSheet";
 import { GenerationToast } from "@/components/GenerationToast";
 import { ResultDetail } from "@/components/ResultDetail";
 import { Gallery } from "@/components/Gallery";
+import { SetupScreen } from "@/components/SetupScreen";
 import { useAppStore } from "@/lib/store";
 import type { CreativeBrief, GenerationJob, ExistingArt } from "@/types";
 import { startGenerationJob } from "@/lib/mockGeneration";
@@ -18,6 +19,8 @@ export default function Page() {
   useEffect(() => setHydrated(true), []);
 
   const settings = useAppStore((s) => s.settings);
+  const hasOnboarded = useAppStore((s) => s.hasOnboarded);
+  const setOnboarded = useAppStore((s) => s.setOnboarded);
   const juniOpen = useAppStore((s) => s.juniOpen);
   const openJuni = useAppStore((s) => s.openJuni);
   const closeJuni = useAppStore((s) => s.closeJuni);
@@ -188,6 +191,10 @@ export default function Page() {
             subtitle={toast.subtitle}
             onDismiss={() => setToast(null)}
           />
+        )}
+
+        {!hasOnboarded && (
+          <SetupScreen onDone={() => setOnboarded(true)} />
         )}
       </DeviceFrame>
     </div>

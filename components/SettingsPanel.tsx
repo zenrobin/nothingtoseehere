@@ -10,6 +10,7 @@ export function SettingsPanel() {
   const settings = useAppStore((s) => s.settings);
   const setSettings = useAppStore((s) => s.setSettings);
   const resetSettings = useAppStore((s) => s.resetSettings);
+  const setOnboarded = useAppStore((s) => s.setOnboarded);
 
   const update = (patch: Partial<AppSettings>) =>
     setSettings((s) => ({ ...s, ...patch }));
@@ -336,6 +337,13 @@ export function SettingsPanel() {
             <DebugLine label="Last response" value={settings.debug.lastResponse} />
             <DebugLine label="Last brief" value={settings.debug.lastBrief} />
           </Section>
+
+          <button
+            onClick={() => setOnboarded(false)}
+            className="w-full rounded-2xl bg-white shadow-card px-4 py-3 text-[13px] font-semibold text-ink-900 active:scale-[0.99]"
+          >
+            Re-open setup screen
+          </button>
 
           <div className="text-center text-[10px] text-ink-300 py-4">
             LLM mode: <span className="font-semibold">{settings.llm.provider}</span>

@@ -14,6 +14,8 @@ import { ArtFormCarousel } from "./ArtFormCarousel";
 import { CreativeBriefCard } from "./CreativeBrief";
 import { buildMockBrief } from "@/lib/juniClient";
 import { MoviePathPanel } from "./MoviePath";
+import { TypewriterText } from "./TypewriterText";
+import { ThinkingDots } from "./ThinkingDots";
 
 interface Props {
   onConfirmBrief: (brief: CreativeBriefT) => void;
@@ -343,39 +345,116 @@ function JuniBody(props: {
   } = props;
 
   if (state === "recommendations_loading") {
-    return <Loading />;
+    return <ThinkingBubble label="Juni is reading your memory…" />;
   }
 
   if (error) {
     return (
-      <div className="rounded-2xl bg-white p-4 text-[13px] text-ink-700 shadow-card">
-        Hmm — I couldn't reach my brain. Try again or switch to mock mode in
-        Settings.
+      <JuniBubble>
+        <p className="text-[14px] text-ink-900">
+          Hmm — I couldn't reach my brain. Try again or switch to mock mode in
+          Settings.
+        </p>
         <div className="mt-1 text-[11px] text-ink-500">{error}</div>
-      </div>
+      </JuniBubble>
     );
   }
 
   if (!recs) return null;
 
   return (
-    <div className="space-y-5 animate-fade-in">
-      {/* Opening message */}
-      <div className="rounded-2xl bg-white p-4 shadow-card">
+    <div className="space-y-5">
+      <RecommendationsView
+        key={`opening-${recs.openingMessage}`}
+        recs={recs}
+        state={state}
+        selectedRec={selectedRec}
+        settings={settings}
+        onPickRec={onPickRec}
+        onMoreIdeas={onMoreIdeas}
+      />
+
+      {selectedRec &&
+        (state === "concept_selected" || state === "followup_answered") &&
+        selectedRec.artform === "genArt" && (
+          <FollowupBlock
+            selectedRec={selectedRec}
+            followupAnswer={followupAnswer}
+            onAnswer={onAnswerFollowup}
+            onBuildBrief={onBuildBrief}
+            artFormName={
+              settings.artForms.find(
+                (t) => t.id === selectedRec.suggestedTemplateId
+              )?.name
+            }
+          />
+        )}
+
+      {selectedRec &&
+        (state === "concept_selected" || state === "followup_answered") &&
+        selectedRec.artform === "movie" && (
+          <MoviePathPanel
+            memory={settings.memory!}
+            hasPeople={false}
+            onConfirm={(controls) => {
+              setMovieControls(controls);
+              onAnswerFollowup(`movie:${controls.theme}:${controls.length}`);
+              setTimeout(() => onBuildBrief(), 50);
+            }}
+            onCancel={onChangeDirection}
+          />
+        )}
+
+      {state === "brief_ready" && useAppStore.getState().brief && (
+        <CreativeBriefCard
+          brief={useAppStore.getState().brief!}
+          onConfirm={onConfirmCreate}
+          onChangeDirection={onChangeDirection}
+        />
+      )}
+    </div>
+  );
+}
+
+function RecommendationsView({
+  recs,
+  state,
+  selectedRec,
+  settings,
+  onPickRec,
+  onMoreIdeas,
+}: {
+  recs: NonNullable<ReturnType<typeof useAppStore.getState>["recommendations"]>;
+  state: ReturnType<typeof useAppStore.getState>["juniState"];
+  selectedRec: JuniRecommendation | undefined;
+  settings: ReturnType<typeof useAppStore.getState>["settings"];
+  onPickRec: (id: string) => void;
+  onMoreIdeas: () => void;
+}) {
+  const [openingTyped, setOpeningTyped] = useState(false);
+
+  // When user picks a concept, the followup is handled by FollowupBlock; we still
+  // want the opening cards to stay visible. Brief replaces the cards.
+  return (
+    <div className="space-y-5">
+      <JuniBubble>
         <p className="text-[14px] leading-relaxed text-ink-900">
-          {recs.openingMessage}
+          <TypewriterText
+            text={recs.openingMessage}
+            speedMs={12}
+            onDone={() => setOpeningTyped(true)}
+          />
         </p>
-        {recs.memoryRead.alreadyCovered.length > 0 && (
-          <div className="mt-3 text-[11px] text-ink-500">
+        {openingTyped && recs.memoryRead.alreadyCovered.length > 0 && (
+          <div className="mt-3 text-[11px] text-ink-500 animate-fade-in">
             <span className="font-semibold text-ink-700">Already covered:</span>{" "}
             {recs.memoryRead.alreadyCovered.join(", ")}
           </div>
         )}
-      </div>
+      </JuniBubble>
 
-      {/* Recommendation carousel */}
-      {state !== "brief_ready" && (
-        <div>
+      {openingTyped && state !== "brief_ready" && (
+        <div className="animate-slide-up">
           <div className="flex items-baseline justify-between mb-2">
             <h3 className="text-[12px] uppercase tracking-widest text-ink-500 font-semibold">
               Directions
@@ -396,87 +475,41 @@ function JuniBody(props: {
         </div>
       )}
 
-      {/* ArtForm rail */}
-      {state === "recommendations_ready" && settings.capabilities.artForms && (
-        <ArtFormCarousel
-          templates={settings.artForms}
-          highlightedId={selectedRec?.suggestedTemplateId ?? null}
-        />
-      )}
-
-      {/* Followup */}
-      {selectedRec &&
-        (state === "concept_selected" || state === "followup_answered") &&
-        selectedRec.artform === "genArt" && (
-          <FollowupBlock
-            selectedRec={selectedRec}
-            followupAnswer={followupAnswer}
-            onAnswer={onAnswerFollowup}
-            onBuildBrief={onBuildBrief}
-            artFormName={
-              settings.artForms.find((t) => t.id === selectedRec.suggestedTemplateId)?.name
-            }
-          />
+      {openingTyped &&
+        state === "recommendations_ready" &&
+        settings.capabilities.artForms && (
+          <div className="animate-fade-in">
+            <ArtFormCarousel
+              templates={settings.artForms}
+              highlightedId={selectedRec?.suggestedTemplateId ?? null}
+            />
+          </div>
         )}
-
-      {/* Movie path */}
-      {selectedRec &&
-        (state === "concept_selected" || state === "followup_answered") &&
-        selectedRec.artform === "movie" && (
-          <MoviePathPanel
-            memory={settings.memory!}
-            hasPeople={false}
-            onConfirm={(controls) => {
-              setMovieControls(controls);
-              onAnswerFollowup(`movie:${controls.theme}:${controls.length}`);
-              setTimeout(() => onBuildBrief(), 50);
-            }}
-            onCancel={onChangeDirection}
-          />
-        )}
-
-      {/* Brief */}
-      {state === "brief_ready" && useAppStore.getState().brief && (
-        <CreativeBriefCard
-          brief={useAppStore.getState().brief!}
-          onConfirm={onConfirmCreate}
-          onChangeDirection={onChangeDirection}
-        />
-      )}
     </div>
   );
 }
 
-function Loading() {
+function JuniBubble({ children }: { children: React.ReactNode }) {
   return (
-    <div className="space-y-4 animate-fade-in">
-      <div className="rounded-2xl bg-white p-4 shadow-card">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-full bg-juni/90 grid place-items-center text-white text-[10px] font-bold animate-pulse-soft">
-            J
-          </div>
-          <div className="text-[12px] text-ink-500">Juni is reading your memory…</div>
-        </div>
-        <div className="mt-3 space-y-2">
-          <div className="h-3 rounded shimmer" />
-          <div className="h-3 w-3/4 rounded shimmer" />
-          <div className="h-3 w-1/2 rounded shimmer" />
-        </div>
+    <div className="flex gap-2.5 items-start animate-fade-in">
+      <div className="w-7 h-7 shrink-0 rounded-full bg-juni text-white grid place-items-center text-[12px] font-bold shadow-card">
+        J
       </div>
-      <div className="flex gap-3 overflow-hidden">
-        {[0, 1, 2].map((i) => (
-          <div
-            key={i}
-            className="shrink-0 w-[260px] h-48 rounded-2xl bg-white shadow-card overflow-hidden"
-          >
-            <div className="h-28 shimmer" />
-            <div className="p-3 space-y-2">
-              <div className="h-3 w-2/3 shimmer rounded" />
-              <div className="h-3 w-full shimmer rounded" />
-              <div className="h-3 w-1/2 shimmer rounded" />
-            </div>
-          </div>
-        ))}
+      <div className="flex-1 rounded-2xl rounded-tl-md bg-white shadow-card p-4">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function ThinkingBubble({ label }: { label: string }) {
+  return (
+    <div className="flex gap-2.5 items-start animate-fade-in">
+      <div className="w-7 h-7 shrink-0 rounded-full bg-juni text-white grid place-items-center text-[12px] font-bold shadow-card animate-pulse-soft">
+        J
+      </div>
+      <div className="flex-1 rounded-2xl rounded-tl-md bg-white shadow-card px-4 py-3.5">
+        <ThinkingDots label={label} />
       </div>
     </div>
   );
@@ -491,35 +524,58 @@ function FollowupBlock(props: {
 }) {
   const { selectedRec, followupAnswer, onAnswer, onBuildBrief, artFormName } =
     props;
+  const [thinking, setThinking] = useState(true);
+  const [typed, setTyped] = useState(false);
+
+  useEffect(() => {
+    setThinking(true);
+    setTyped(false);
+    const t = setTimeout(() => setThinking(false), 700);
+    return () => clearTimeout(t);
+  }, [selectedRec.id]);
+
   return (
     <div className="space-y-3 animate-slide-up">
-      <div className="rounded-2xl bg-juni-soft p-4">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-6 h-6 rounded-full bg-juni text-white grid place-items-center text-[10px] font-bold">
-            J
-          </div>
-          <div className="text-[11px] uppercase tracking-widest text-juni-ink font-semibold">
+      <div className="flex gap-2.5 items-start">
+        <div className="w-7 h-7 shrink-0 rounded-full bg-juni text-white grid place-items-center text-[12px] font-bold shadow-card">
+          J
+        </div>
+        <div className="flex-1 rounded-2xl rounded-tl-md bg-juni-soft p-4">
+          <div className="text-[11px] uppercase tracking-widest text-juni-ink font-semibold mb-1.5">
             One quick question
           </div>
+          {thinking ? (
+            <ThinkingDots />
+          ) : (
+            <p className="text-[14px] leading-relaxed text-juni-ink">
+              <TypewriterText
+                text={selectedRec.followupQuestion.question}
+                speedMs={14}
+                onDone={() => setTyped(true)}
+              />
+            </p>
+          )}
+          {typed && artFormName && (
+            <div className="mt-2 text-[11px] text-juni-ink/70 animate-fade-in">
+              Building on the{" "}
+              <span className="font-semibold">{artFormName}</span> template.
+            </div>
+          )}
         </div>
-        <p className="text-[14px] leading-relaxed text-juni-ink">
-          {selectedRec.followupQuestion.question}
-        </p>
-        {artFormName && (
-          <div className="mt-2 text-[11px] text-juni-ink/70">
-            Building on the <span className="font-semibold">{artFormName}</span> template.
-          </div>
-        )}
       </div>
-      <Chips
-        chips={selectedRec.followupQuestion.chips}
-        selected={followupAnswer}
-        onSelect={onAnswer}
-      />
+      {typed && (
+        <div className="animate-fade-in">
+          <Chips
+            chips={selectedRec.followupQuestion.chips}
+            selected={followupAnswer}
+            onSelect={onAnswer}
+          />
+        </div>
+      )}
       {followupAnswer && (
         <button
           onClick={onBuildBrief}
-          className="w-full rounded-full py-3 text-[13px] font-semibold text-white bg-juni active:scale-[0.99]"
+          className="w-full rounded-full py-3 text-[13px] font-semibold text-white bg-juni active:scale-[0.99] animate-fade-in"
         >
           Continue
         </button>

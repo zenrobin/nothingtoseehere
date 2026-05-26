@@ -65,6 +65,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
 
 interface AppState {
   settings: AppSettings;
+  hasOnboarded: boolean;
   juniState: JuniState;
   juniOpen: boolean;
   recommendations: JuniRecommendationsResponse | null;
@@ -96,12 +97,14 @@ interface AppState {
   setToast: (t: { title: string; subtitle?: string } | null) => void;
   setDebug: (patch: Partial<AppSettings["debug"]>) => void;
   decrementCreations: () => void;
+  setOnboarded: (v: boolean) => void;
 }
 
 export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
       settings: DEFAULT_SETTINGS,
+      hasOnboarded: false,
       juniState: "memory_loaded",
       juniOpen: false,
       recommendations: null,
@@ -167,6 +170,7 @@ export const useAppStore = create<AppState>()(
             debug: { ...state.settings.debug, ...patch },
           },
         })),
+      setOnboarded: (v) => set({ hasOnboarded: v }),
       decrementCreations: () =>
         set((state) => ({
           settings: {
@@ -186,6 +190,7 @@ export const useAppStore = create<AppState>()(
       partialize: (state) => ({
         settings: state.settings,
         jobs: state.jobs,
+        hasOnboarded: state.hasOnboarded,
       }),
     }
   )

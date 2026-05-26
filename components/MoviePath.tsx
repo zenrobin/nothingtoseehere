@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { Memory, MovieControls } from "@/types";
 import { Chips } from "./Chips";
+import { TypewriterText } from "./TypewriterText";
+import { ThinkingDots } from "./ThinkingDots";
 
 interface Props {
   memory: Memory;
@@ -20,25 +22,40 @@ export function MoviePathPanel({ memory, hasPeople, onConfirm, onCancel }: Props
     ? ["Whole memory", "A specific person", "Details and place"]
     : ["Feature the place", "Feature everyday details", "Let Juni choose"];
   const [feature, setFeature] = useState<string>(featureOptions[2]);
+  const [thinking, setThinking] = useState(true);
+  const [typed, setTyped] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setThinking(false), 500);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <div className="space-y-5 animate-slide-up">
-      <div>
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-full bg-juni text-white grid place-items-center text-[12px] font-bold">
-            J
-          </div>
-          <div className="text-[11px] uppercase tracking-widest text-ink-500 font-semibold">
+      <div className="flex gap-2.5 items-start">
+        <div className="w-7 h-7 shrink-0 rounded-full bg-juni text-white grid place-items-center text-[12px] font-bold shadow-card">
+          J
+        </div>
+        <div className="flex-1 rounded-2xl rounded-tl-md bg-white shadow-card p-4">
+          <div className="text-[11px] uppercase tracking-widest text-ink-500 font-semibold mb-1.5">
             Movie
           </div>
+          {thinking ? (
+            <ThinkingDots />
+          ) : (
+            <p className="text-[14px] leading-relaxed text-ink-900">
+              <TypewriterText
+                text="I can make a quiet, elegant movie around the porch and the feeling of arriving home, or a shorter, warmer version that focuses on the everyday details."
+                speedMs={10}
+                onDone={() => setTyped(true)}
+              />
+            </p>
+          )}
         </div>
-        <p className="mt-2 text-[14px] leading-relaxed text-ink-900">
-          I can make a quiet, elegant movie around the porch and the feeling of
-          arriving home, or a shorter, warmer version that focuses on the
-          everyday details.
-        </p>
       </div>
 
+      {typed && (
+        <div className="space-y-5 animate-fade-in">
       <Group label="Theme">
         <Chips
           chips={["Elegant", "Joyful"]}
@@ -102,6 +119,8 @@ export function MoviePathPanel({ memory, hasPeople, onConfirm, onCancel }: Props
           Make this movie
         </button>
       </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import React from "react";
 import type { GenerationJob } from "@/types";
+import { TypewriterText } from "./TypewriterText";
 
 interface Props {
   job: GenerationJob;
@@ -66,7 +67,7 @@ export function ResultDetail({
             </div>
           </div>
           <p className="mt-2 text-[13px] leading-relaxed text-ink-700">
-            {result.explanation}
+            <TypewriterText text={result.explanation} speedMs={10} startDelayMs={300} />
           </p>
         </div>
 

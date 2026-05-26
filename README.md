@@ -16,12 +16,18 @@ Open <http://localhost:3000>. The viewport is sized for an iPhone-shaped frame.
 
 ## Deploy to Vercel
 
-Push and connect the repo to Vercel. No environment variables required —
-the prototype ships with `mock` LLM mode by default.
+Push and connect the repo to Vercel. Add this env var in Vercel's project
+settings to get the live Anthropic-backed Juni experience:
 
-To use a live LLM, open `/settings`, switch the LLM provider to `openai` or
-`anthropic`, paste an API key (stored locally in the browser only), and pick
-a model. Recommendation prompts go through `/api/juni` server-side.
+- `ANTHROPIC_API_KEY` — your Anthropic API key
+- `OPENAI_API_KEY` — (optional) for the OpenAI provider
+
+The frontend hits `/api/config` on load; if the server has an Anthropic key,
+the LLM provider auto-defaults to `anthropic`. If not, it falls back to
+`mock` mode and the prototype still works end-to-end without any keys.
+
+In `/settings` you can override the provider, model, or paste a per-browser
+API key (which takes precedence over the env var).
 
 ## Sample memory
 

@@ -45,7 +45,7 @@ export function MoviePathPanel({ memory, hasPeople, onConfirm, onCancel }: Props
           ) : (
             <p className="text-[14px] leading-relaxed text-ink-900">
               <TypewriterText
-                text="I can make a quiet, elegant movie around the porch and the feeling of arriving home, or a shorter, warmer version that focuses on the everyday details."
+                text="I'd make a 30-second movie — three details, three title cards, solo piano. Or a longer, more elegant version that pulls in the whole façade. Pick how it should feel."
                 speedMs={10}
                 onDone={() => setTyped(true)}
               />

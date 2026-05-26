@@ -2,6 +2,7 @@
 
 import React from "react";
 import type { ExistingArt, GenerationJob } from "@/types";
+import { useDragScroll } from "@/lib/useDragScroll";
 
 interface Props {
   art: ExistingArt[];
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export function MemoryArtRail({ art, pendingJob, completedJob, onResultTap }: Props) {
+  const ref = useDragScroll<HTMLDivElement>();
   return (
     <div className="px-5">
       <div className="flex items-baseline justify-between">
@@ -21,7 +23,10 @@ export function MemoryArtRail({ art, pendingJob, completedJob, onResultTap }: Pr
           {art.length + (pendingJob ? 1 : 0) + (completedJob ? 1 : 0)} pieces
         </span>
       </div>
-      <div className="mt-3 flex gap-3 overflow-x-auto no-scrollbar pb-1">
+      <div
+        ref={ref}
+        className="mt-3 flex gap-3 overflow-x-auto no-scrollbar pb-1 select-none"
+      >
         {pendingJob && pendingJob.status === "pending" && (
           <PendingCard brief={pendingJob.brief.summary} />
         )}

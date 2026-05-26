@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAppStore, DEFAULT_SETTINGS } from "@/lib/store";
 import type { AppSettings, LLMProvider } from "@/types";
@@ -11,6 +11,17 @@ export function SettingsPanel() {
   const setSettings = useAppStore((s) => s.setSettings);
   const resetSettings = useAppStore((s) => s.resetSettings);
   const setOnboarded = useAppStore((s) => s.setOnboarded);
+  const [serverKeys, setServerKeys] = useState<{
+    hasAnthropicKey: boolean;
+    hasOpenAIKey: boolean;
+  } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/config")
+      .then((r) => r.json())
+      .then(setServerKeys)
+      .catch(() => {});
+  }, []);
 
   const update = (patch: Partial<AppSettings>) =>
     setSettings((s) => ({ ...s, ...patch }));
@@ -71,7 +82,17 @@ export function SettingsPanel() {
             </Field>
             <Field
               label="API Key"
-              hint="Not committed; stored locally in this browser."
+              hint={
+                settings.llm.provider === "anthropic" && serverKeys?.hasAnthropicKey
+                  ? "Server has ANTHROPIC_API_KEY set — leave blank to use it. Anything you paste here overrides it locally."
+                  : settings.llm.provider === "openai" && serverKeys?.hasOpenAIKey
+                  ? "Server has OPENAI_API_KEY set — leave blank to use it."
+                  : settings.llm.provider === "anthropic"
+                  ? "Set ANTHROPIC_API_KEY in Vercel env, or paste a key here (stored locally only)."
+                  : settings.llm.provider === "openai"
+                  ? "Set OPENAI_API_KEY in env, or paste a key here (stored locally only)."
+                  : "Not used in mock mode."
+              }
             >
               <input
                 type="password"
@@ -82,7 +103,14 @@ export function SettingsPanel() {
                     llm: { ...s.llm, apiKey: e.target.value },
                   }))
                 }
-                placeholder="sk-..."
+                placeholder={
+                  serverKeys &&
+                  ((settings.llm.provider === "anthropic" &&
+                    serverKeys.hasAnthropicKey) ||
+                    (settings.llm.provider === "openai" && serverKeys.hasOpenAIKey))
+                    ? "Using server env var"
+                    : "sk-..."
+                }
                 className="w-full bg-white border border-ink-100 rounded-lg px-3 py-2 text-[13px]"
               />
             </Field>

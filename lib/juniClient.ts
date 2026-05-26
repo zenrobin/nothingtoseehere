@@ -74,16 +74,16 @@ export function generateMockRecommendations(
       id: "rec-quiet-house-portrait",
       artform: "genArt",
       title: "Quiet House Portrait",
-      description: `A polished art print that makes ${memory.snappy_title} feel iconic and personal.`,
-      why: `Honors the architectural mood of ${memory.medium_title} without making it look generic.`,
+      description: `An 8×10 editorial print of the front entrance — centered on the door, evergreens framing it, overcast light kept soft.`,
+      why: `Your existing 'Threshold' is warm and small. A clean architectural portrait is the thing that's missing — the one you'd hang in the entryway.`,
       suggestedTemplateId: pickTemplate(artForms, "house-portrait"),
       followupQuestion: {
         question:
-          "Should this feel more like a polished house portrait or a personal homecoming keepsake?",
+          "Crop tight on the door, or pull back to include the steps and shrubs?",
         chips: [
-          "Polished house portrait",
-          "Personal homecoming",
-          "A little nostalgic",
+          "Tight on the door",
+          "Pulled back, full façade",
+          "Symmetrical, head-on",
           "Surprise me",
         ],
       },
@@ -93,17 +93,17 @@ export function generateMockRecommendations(
       id: "rec-everyday-homecoming",
       artform: "genArt",
       title: "Everyday Homecoming",
-      description: `A warm illustrated keepsake built around the porch${
-        hasBike ? ", bike" : ""
-      }${hasPackage ? ", and the waiting package" : ""}.`,
-      why: "Leans into the small ordinary details — these are what'll feel like home in 10 years.",
+      description: `A warm 5×7 watercolor — porch${
+        hasBike ? ", the bike leaning on the railing" : ""
+      }${hasPackage ? ", the little brown box waiting" : ""}. Soft edges, visible brush.`,
+      why: "The bike and box are the most ordinary, most specific details — and the ones most likely to be gone in two years. Watercolor freezes them without making them precious.",
       suggestedTemplateId: pickTemplate(artForms, "warm-watercolor"),
       followupQuestion: {
-        question: "How illustrated should this feel?",
+        question: "How loose should the painting feel?",
         chips: [
-          "Soft watercolor",
-          "Crisp illustration",
-          "Painterly and loose",
+          "Crisp, almost illustrated",
+          "Loose & painterly",
+          "Wet-on-wet, dreamy",
           "Surprise me",
         ],
       },
@@ -113,16 +113,16 @@ export function generateMockRecommendations(
       recs.push({
         id: "rec-vintage-address-card",
         artform: "genArt",
-        title: "Vintage Address Card",
-        description: `A nostalgic design built around the ${memory.snappy_title} house number.`,
-        why: "The number is the strongest character in the photo — gives it real keepsake weight.",
+        title: "TWENTY 4",
+        description: `A 5×7 letterpress card — 'TWENTY 4' set in heavy serifs across cream stock, the porch architecture as a faint underlayer.`,
+        why: `The silver numbers are the strongest character in this photo. Building the piece around them turns "the house" into "this house" — yours, specifically.`,
         suggestedTemplateId: pickTemplate(artForms, "address-keepsake"),
         followupQuestion: {
-          question: "Which era should it evoke?",
+          question: "Which typographic mood?",
           chips: [
+            "Heavy serif, classic",
             "Mid-century postcard",
-            "1970s travel",
-            "Modern minimalist",
+            "Modern sans, minimal",
             "Surprise me",
           ],
         },
@@ -132,18 +132,18 @@ export function generateMockRecommendations(
     recs.push({
       id: "rec-editorial-threshold",
       artform: "genArt",
-      title: "Editorial Threshold",
-      description: `A moody magazine-style artwork about the feeling of arriving home${
-        hasOvercast ? " under an overcast sky" : ""
-      }.`,
-      why: "Builds on your existing 'Threshold' keepsake but goes more cinematic, less domestic.",
+      title: "Late Afternoon, Wellesley",
+      description: `A moody magazine-style 11×14 print${
+        hasOvercast ? " — overcast sky, low-contrast light, leaves on the path" : ""
+      }. Reads like a feature opener.`,
+      why: "Your 'Threshold' keepsake honors the feeling. This honors the place — same memory, different register, sits well next to it on a wall.",
       suggestedTemplateId: pickTemplate(artForms, "everyday-editorial"),
       followupQuestion: {
-        question: "How cinematic do you want this?",
+        question: "Where should the eye land?",
         chips: [
-          "Quiet and editorial",
-          "Moody and dramatic",
-          "Warm and soft",
+          "On the door",
+          "On the bike",
+          "On the path & leaves",
           "Surprise me",
         ],
       },
@@ -154,17 +154,17 @@ export function generateMockRecommendations(
     recs.push({
       id: "rec-quiet-homecoming-movie",
       artform: "movie",
-      title: "Quiet Homecoming Movie",
+      title: "Coming Home, Slow",
       description:
-        "A slow, elegant memory movie around the porch and the feeling of arriving home.",
-      why: "You don't have a movie that lingers on the everyday details yet.",
+        "A 30-second movie — three details, three title cards: the steps, the bike, the package. Solo piano under it.",
+      why: "Your 'Front Steps' movie is the wide shot. This is the close-up — same memory, but it slows the moment down instead of summarizing it.",
       suggestedTemplateId: pickTemplate(artForms, "quiet-movie"),
       followupQuestion: {
-        question: "Should the movie be shorter and warmer, or longer and elegant?",
+        question: "Tighter and warmer, or longer and more elegant?",
         chips: [
-          "Shorter & warmer",
-          "Longer & elegant",
-          "Elegant with less text",
+          "30s, warm & close",
+          "60s, elegant & wide",
+          "Less text, more music",
           "Surprise me",
         ],
       },
@@ -199,12 +199,21 @@ function buildOpeningMessage(memory: Memory, art: ExistingArt[]): string {
   const has = art.length > 0;
   const lead =
     memory.snappy_title === "Home 24"
-      ? `"${memory.snappy_title}" is such a quiet, specific memory — the steps, the bike, that little box on the porch.`
-      : `"${memory.snappy_title}" — there's something specific in this memory I want to honor.`;
+      ? `"${memory.snappy_title}" — that overcast afternoon at the porch, with the bike and the little box waiting.`
+      : `"${memory.snappy_title}" — I want to honor what's specific here, not just decorate the photo.`;
   if (has) {
-    return `${lead} You already made a soft keepsake and an elegant movie, so I want to recommend something that goes somewhere different.`;
+    const kinds = art.map((a) => a.kind);
+    const hasGen = kinds.includes("genArt");
+    const hasMovie = kinds.includes("movie");
+    const summary =
+      hasGen && hasMovie
+        ? "You already made a soft keepsake and a quiet movie, so let me push somewhere those don't go."
+        : hasGen
+        ? "You already made a soft keepsake — let me try something different in register."
+        : "You already made a movie — let me push toward something printable and lasting.";
+    return `${lead} ${summary}`;
   }
-  return `${lead} Here are a few directions I think would feel meaningful.`;
+  return `${lead} Here are four directions I'd actually pick for this memory.`;
 }
 
 // === Creative brief mock ===
@@ -226,18 +235,23 @@ export function buildMockBrief(args: {
     rec.artform === "movie"
       ? "Slower, more atmospheric than your existing movie — leans into the everyday."
       : "Goes beyond the literal photo — treats the everyday as something worth honoring.";
+  const format =
+    template?.style?.split("·")[1]?.trim() ||
+    template?.style?.split("·")[2]?.trim() ||
+    (rec.artform === "movie" ? "30 second movie" : "8×10 print");
+  const styleHint = template?.style || "";
   const summary =
     rec.artform === "movie"
-      ? `I'll make a ${tone} movie around ${memory.snappy_title}, focused on ${keyDetails
-          .slice(0, 2)
-          .join(", ")}. ${
+      ? `A ${movieControls?.length === "longer" ? "60-second" : "30-second"} ${tone} movie around "${memory.snappy_title}". ${
+          keyDetails.slice(0, 2).join(", ")
+        }, then a quiet hold on the door. ${
           movieControls
-            ? `Theme: ${movieControls.theme}, length: ${movieControls.length}, text: ${movieControls.textDensity}, featuring ${movieControls.feature}.`
+            ? `${capFirst(movieControls.theme)} theme, ${movieControls.textDensity === "less" ? "minimal text" : "more text"}, featuring ${movieControls.feature.toLowerCase()}.`
             : ""
-        }`
-      : `I'll create a ${tone} ${template?.name.toLowerCase() ?? "art piece"} of ${
-          memory.snappy_title
-        }, using ${keyDetails.slice(0, 3).join(", ")}. It should feel ${tone}, personal, and a little nostalgic — more like a keepsake than a literal photo.`;
+        }`.trim()
+      : `A ${tone} ${template?.name.toLowerCase() ?? "piece"} of "${memory.snappy_title}" — ${format}. Built around ${keyDetails
+          .slice(0, 3)
+          .join(", ")}. ${styleHint ? `Style: ${styleHint}.` : ""} Different from your existing art: ${differentiator.toLowerCase()}`.trim();
 
   return {
     artform: rec.artform,
@@ -252,6 +266,10 @@ export function buildMockBrief(args: {
     summary,
     movieControls,
   };
+}
+
+function capFirst(s: string): string {
+  return s ? s[0].toUpperCase() + s.slice(1) : s;
 }
 
 function inferTone(answer: string): string {

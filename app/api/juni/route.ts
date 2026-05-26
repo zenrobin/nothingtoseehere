@@ -110,11 +110,14 @@ async function callOpenAI(
   userMessage: string,
   settings: Pick<AppSettings, "llm">
 ): Promise<{ text: string; request: unknown }> {
-  if (!settings.llm.apiKey) {
-    throw new Error("OpenAI API key not set in Settings.");
+  const apiKey = settings.llm.apiKey || process.env.OPENAI_API_KEY || "";
+  if (!apiKey) {
+    throw new Error(
+      "OpenAI API key not set. Add OPENAI_API_KEY to env or paste a key in Settings."
+    );
   }
   const { default: OpenAI } = await import("openai");
-  const client = new OpenAI({ apiKey: settings.llm.apiKey });
+  const client = new OpenAI({ apiKey });
   const request = {
     model: settings.llm.model || "gpt-4o-mini",
     temperature: settings.llm.temperature,
@@ -135,11 +138,14 @@ async function callAnthropic(
   userMessage: string,
   settings: Pick<AppSettings, "llm">
 ): Promise<{ text: string; request: unknown }> {
-  if (!settings.llm.apiKey) {
-    throw new Error("Anthropic API key not set in Settings.");
+  const apiKey = settings.llm.apiKey || process.env.ANTHROPIC_API_KEY || "";
+  if (!apiKey) {
+    throw new Error(
+      "Anthropic API key not set. Add ANTHROPIC_API_KEY to env or paste a key in Settings."
+    );
   }
   const { default: Anthropic } = await import("@anthropic-ai/sdk");
-  const client = new Anthropic({ apiKey: settings.llm.apiKey });
+  const client = new Anthropic({ apiKey });
   const request = {
     model: settings.llm.model || "claude-haiku-4-5-20251001",
     max_tokens: settings.llm.maxTokens,

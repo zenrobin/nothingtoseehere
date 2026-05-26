@@ -2,6 +2,7 @@
 
 import React from "react";
 import type { ArtFormTemplate, JuniRecommendation } from "@/types";
+import { useDragScroll } from "@/lib/useDragScroll";
 
 interface Props {
   recs: JuniRecommendation[];
@@ -16,8 +17,12 @@ export function RecommendationCards({
   selectedId,
   onSelect,
 }: Props) {
+  const ref = useDragScroll<HTMLDivElement>();
   return (
-    <div className="flex gap-3 overflow-x-auto no-scrollbar -mx-5 px-5 pb-1">
+    <div
+      ref={ref}
+      className="flex gap-3 overflow-x-auto no-scrollbar -mx-5 px-5 pb-1 select-none"
+    >
       {recs.map((r) => {
         const tpl = artForms.find((t) => t.id === r.suggestedTemplateId);
         const isSelected = selectedId === r.id;

@@ -2,6 +2,7 @@
 
 import React from "react";
 import type { ArtFormTemplate } from "@/types";
+import { useDragScroll } from "@/lib/useDragScroll";
 
 interface Props {
   templates: ArtFormTemplate[];
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export function ArtFormCarousel({ templates, highlightedId, onSelect }: Props) {
+  const ref = useDragScroll<HTMLDivElement>();
   return (
     <div className="-mx-5 px-5">
       <div className="flex items-baseline justify-between mb-2">
@@ -20,7 +22,10 @@ export function ArtFormCarousel({ templates, highlightedId, onSelect }: Props) {
           See all
         </button>
       </div>
-      <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
+      <div
+        ref={ref}
+        className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 select-none"
+      >
         {templates.map((t) => {
           const isHi = highlightedId === t.id;
           return (

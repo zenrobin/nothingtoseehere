@@ -19,8 +19,40 @@ export default function Page() {
   useEffect(() => setHydrated(true), []);
 
   const settings = useAppStore((s) => s.settings);
+  const setSettings = useAppStore((s) => s.setSettings);
   const hasOnboarded = useAppStore((s) => s.hasOnboarded);
   const setOnboarded = useAppStore((s) => s.setOnboarded);
+
+  // Auto-pick provider on first hydration based on what the server has.
+  useEffect(() => {
+    if (!hydrated) return;
+    let cancelled = false;
+    fetch("/api/config")
+      .then((r) => r.json())
+      .then((cfg) => {
+        if (cancelled) return;
+        const provider = settings.llm.provider;
+        if (provider === "mock") {
+          if (cfg.hasAnthropicKey) {
+            setSettings((s) => ({
+              ...s,
+              llm: { ...s.llm, provider: "anthropic" },
+            }));
+          } else if (cfg.hasOpenAIKey) {
+            setSettings((s) => ({
+              ...s,
+              llm: { ...s.llm, provider: "openai" },
+            }));
+          }
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+    // Only on first hydration
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrated]);
   const juniOpen = useAppStore((s) => s.juniOpen);
   const openJuni = useAppStore((s) => s.openJuni);
   const closeJuni = useAppStore((s) => s.closeJuni);

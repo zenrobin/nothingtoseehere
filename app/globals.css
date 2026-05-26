@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  background: #1A1B20;
+  color: #0E0F12;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* iPhone-shaped device frame on desktop */
+.device-frame {
+  width: 100%;
+  max-width: 393px;
+  min-height: 100dvh;
+  background: #F7F5F1;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (min-width: 480px) {
+  .device-frame {
+    margin: 24px auto;
+    min-height: auto;
+    height: 852px;
+    border-radius: 44px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35), inset 0 0 0 8px #0E0F12;
+    padding: 8px;
+  }
+  .device-inner {
+    height: 100%;
+    width: 100%;
+    border-radius: 36px;
+    overflow: hidden;
+    background: #F7F5F1;
+    position: relative;
+  }
+}
+
+.device-inner {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  background: #F7F5F1;
+}
+
+.scroll-area {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.scroll-area::-webkit-scrollbar {
+  width: 4px;
+}
+.scroll-area::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.04) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.04) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.juni-grain {
+  background-image:
+    radial-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+    radial-gradient(rgba(0,0,0,0.03) 1px, transparent 1px);
+  background-size: 12px 12px, 7px 7px;
+  background-position: 0 0, 3px 3px;
+}

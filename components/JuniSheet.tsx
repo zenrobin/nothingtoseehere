@@ -210,7 +210,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
         {/* Header */}
         <div className="px-5 pt-2 pb-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-juni-DEFAULT text-white grid place-items-center text-[13px] font-bold">
+            <div className="w-8 h-8 rounded-full bg-juni text-white grid place-items-center text-[13px] font-bold">
               J
             </div>
             <div>
@@ -289,7 +289,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
             <button
               onClick={submitFreeform}
               disabled={!freeform.trim()}
-              className="w-8 h-8 rounded-full grid place-items-center bg-juni-DEFAULT text-white disabled:opacity-40"
+              className="w-8 h-8 rounded-full grid place-items-center bg-juni text-white disabled:opacity-40"
               aria-label="Send"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
@@ -382,7 +382,7 @@ function JuniBody(props: {
             </h3>
             <button
               onClick={onMoreIdeas}
-              className="text-[11px] text-juni-DEFAULT font-medium"
+              className="text-[11px] text-juni font-medium"
             >
               More ideas...
             </button>
@@ -452,7 +452,7 @@ function Loading() {
     <div className="space-y-4 animate-fade-in">
       <div className="rounded-2xl bg-white p-4 shadow-card">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-full bg-juni-DEFAULT/90 grid place-items-center text-white text-[10px] font-bold animate-pulse-soft">
+          <div className="w-6 h-6 rounded-full bg-juni/90 grid place-items-center text-white text-[10px] font-bold animate-pulse-soft">
             J
           </div>
           <div className="text-[12px] text-ink-500">Juni is reading your memory…</div>
@@ -495,7 +495,7 @@ function FollowupBlock(props: {
     <div className="space-y-3 animate-slide-up">
       <div className="rounded-2xl bg-juni-soft p-4">
         <div className="flex items-center gap-2 mb-2">
-          <div className="w-6 h-6 rounded-full bg-juni-DEFAULT text-white grid place-items-center text-[10px] font-bold">
+          <div className="w-6 h-6 rounded-full bg-juni text-white grid place-items-center text-[10px] font-bold">
             J
           </div>
           <div className="text-[11px] uppercase tracking-widest text-juni-ink font-semibold">
@@ -519,7 +519,7 @@ function FollowupBlock(props: {
       {followupAnswer && (
         <button
           onClick={onBuildBrief}
-          className="w-full rounded-full py-3 text-[13px] font-semibold text-white bg-juni-DEFAULT active:scale-[0.99]"
+          className="w-full rounded-full py-3 text-[13px] font-semibold text-white bg-juni active:scale-[0.99]"
         >
           Continue
         </button>

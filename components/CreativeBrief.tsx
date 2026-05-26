@@ -13,7 +13,7 @@ export function CreativeBriefCard({ brief, onConfirm, onChangeDirection }: Props
   return (
     <div className="rounded-2xl bg-white shadow-card p-4 animate-slide-up">
       <div className="flex items-center gap-2">
-        <div className="w-7 h-7 rounded-full bg-juni-DEFAULT text-white grid place-items-center text-[12px] font-bold">
+        <div className="w-7 h-7 rounded-full bg-juni text-white grid place-items-center text-[12px] font-bold">
           J
         </div>
         <div className="text-[11px] uppercase tracking-widest text-ink-500 font-semibold">
@@ -44,7 +44,7 @@ export function CreativeBriefCard({ brief, onConfirm, onChangeDirection }: Props
         </button>
         <button
           onClick={onConfirm}
-          className="flex-1 rounded-full py-3 text-[13px] font-semibold text-white bg-juni-DEFAULT active:scale-[0.99]"
+          className="flex-1 rounded-full py-3 text-[13px] font-semibold text-white bg-juni active:scale-[0.99]"
         >
           Create this
         </button>

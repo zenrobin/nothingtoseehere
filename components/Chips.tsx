@@ -19,7 +19,7 @@ export function Chips({ chips, selected, onSelect }: Props) {
             onClick={() => onSelect(c)}
             className={`px-3 py-2 rounded-full text-[12px] font-medium transition active:scale-[0.98] ${
               isSel
-                ? "bg-juni-DEFAULT text-white"
+                ? "bg-juni text-white"
                 : "bg-white text-ink-700 border border-ink-100"
             }`}
           >

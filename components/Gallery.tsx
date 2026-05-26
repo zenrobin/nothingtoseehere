@@ -62,12 +62,13 @@ export function Gallery({ onClose, onStartCreate }: Props) {
                   className={`relative aspect-[4/5] rounded-2xl overflow-hidden bg-gradient-to-br ${t.art.thumbColor} shadow-card`}
                 >
                   <div className="absolute inset-0 juni-grain opacity-50" />
-                  <div className="absolute bottom-2 left-2 right-2">
-                    <div className="text-[11px] font-semibold text-white drop-shadow">
-                      {t.art.title}
+                  <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
+                  <div className="absolute bottom-2.5 left-2.5 right-2.5">
+                    <div className="text-[9px] text-white/85 uppercase tracking-widest font-medium">
+                      {t.art.kind === "movie" ? "Movie" : "GenArt"}
                     </div>
-                    <div className="text-[9px] text-white/80 uppercase tracking-widest">
-                      {t.art.kind}
+                    <div className="text-[13px] font-semibold text-white leading-tight mt-0.5">
+                      {t.art.title}
                     </div>
                   </div>
                 </div>
@@ -80,15 +81,16 @@ export function Gallery({ onClose, onStartCreate }: Props) {
                 className={`relative aspect-[4/5] rounded-2xl overflow-hidden bg-gradient-to-br ${r.thumbGradient} shadow-card`}
               >
                 <div className="absolute inset-0 juni-grain opacity-50" />
-                <div className="absolute top-2 left-2 bg-juni-DEFAULT text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
+                <div className="absolute top-2 left-2 bg-juni text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
                   New
                 </div>
-                <div className="absolute bottom-2 left-2 right-2">
-                  <div className="text-[11px] font-semibold text-white drop-shadow">
-                    {r.title}
+                <div className="absolute bottom-2.5 left-2.5 right-2.5">
+                  <div className="text-[9px] text-white/85 uppercase tracking-widest font-medium">
+                    {r.kind === "movie" ? "Movie" : "GenArt"}
                   </div>
-                  <div className="text-[9px] text-white/80 uppercase tracking-widest">
-                    {r.kind}
+                  <div className="text-[13px] font-semibold text-white leading-tight mt-0.5">
+                    {r.title}
                   </div>
                 </div>
               </div>
@@ -101,7 +103,7 @@ export function Gallery({ onClose, onStartCreate }: Props) {
       <div className="absolute bottom-5 right-5 z-20">
         <button
           onClick={() => setPicking(true)}
-          className="flex items-center gap-2 pl-4 pr-5 py-3.5 rounded-full bg-juni-DEFAULT text-white shadow-card active:scale-[0.98]"
+          className="flex items-center gap-2 pl-4 pr-5 py-3.5 rounded-full bg-juni text-white shadow-card active:scale-[0.98]"
         >
           <span className="text-[14px] font-semibold">Create</span>
           <span className="w-6 h-6 rounded-full bg-white/20 grid place-items-center text-[15px] leading-none">
@@ -122,7 +124,7 @@ export function Gallery({ onClose, onStartCreate }: Props) {
               <div className="w-10 h-1 rounded-full bg-ink-100" />
             </div>
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-full bg-juni-DEFAULT text-white grid place-items-center text-[13px] font-bold">
+              <div className="w-8 h-8 rounded-full bg-juni text-white grid place-items-center text-[13px] font-bold">
                 J
               </div>
               <div>

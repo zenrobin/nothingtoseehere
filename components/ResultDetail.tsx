@@ -54,11 +54,11 @@ export function ResultDetail({
         <h2 className="font-serif text-[26px] mt-5 text-ink-900 tracking-tight">
           {result.title}
         </h2>
-        <div className="text-[11px] text-juni-DEFAULT mt-1">Made by Juni</div>
+        <div className="text-[11px] text-juni mt-1">Made by Juni</div>
 
         <div className="mt-4 rounded-2xl bg-white p-4 shadow-card">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full bg-juni-DEFAULT text-white grid place-items-center text-[10px] font-bold">
+            <div className="w-6 h-6 rounded-full bg-juni text-white grid place-items-center text-[10px] font-bold">
               J
             </div>
             <div className="text-[11px] uppercase tracking-widest text-ink-500 font-semibold">
@@ -108,7 +108,7 @@ function ActionBtn({
     <button
       onClick={onClick}
       className={`flex items-center gap-2 rounded-2xl px-3.5 py-3 shadow-card active:scale-[0.99] ${
-        accent ? "bg-juni-DEFAULT text-white" : "bg-white text-ink-900"
+        accent ? "bg-juni text-white" : "bg-white text-ink-900"
       }`}
     >
       <span className="text-[14px]">{icon}</span>

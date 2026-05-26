@@ -106,7 +106,7 @@ export function MemoryDetail(props: Props) {
       <div className="flex-1 scroll-area pb-32">
         {/* Hero */}
         <div className="px-5 pt-2">
-          <div className="text-[11px] uppercase tracking-widest text-juni-DEFAULT font-medium">
+          <div className="text-[11px] uppercase tracking-widest text-juni font-medium">
             {memory.categories[0]?.main ?? "Memory"}
             {memory.timeline[0]?.location
               ? ` · ${memory.timeline[0].location}`
@@ -162,7 +162,7 @@ export function MemoryDetail(props: Props) {
       <div className="absolute bottom-5 right-5 z-20">
         <button
           onClick={props.onCreate}
-          className="group flex items-center gap-2 pl-4 pr-5 py-3.5 rounded-full bg-juni-DEFAULT text-white shadow-card shadow-juni-DEFAULT/30 active:scale-[0.98] transition"
+          className="group flex items-center gap-2 pl-4 pr-5 py-3.5 rounded-full bg-juni text-white shadow-card shadow-juni/30 active:scale-[0.98] transition"
         >
           <span className="text-[14px] font-semibold">Create Artwork</span>
           <span className="w-6 h-6 rounded-full bg-white/20 grid place-items-center text-[15px] leading-none">

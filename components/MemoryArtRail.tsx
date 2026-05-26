@@ -81,7 +81,7 @@ function PendingCard({ brief }: { brief: string }) {
       <div className="relative h-40 w-32 rounded-2xl overflow-hidden bg-gradient-to-br from-juni-soft via-paper-cream to-juni-mint/40 shadow-card">
         <div className="absolute inset-0 shimmer" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-3">
-          <div className="w-7 h-7 rounded-full bg-juni-DEFAULT/90 grid place-items-center text-white text-[11px] font-bold animate-pulse-soft">
+          <div className="w-7 h-7 rounded-full bg-juni/90 grid place-items-center text-white text-[11px] font-bold animate-pulse-soft">
             J
           </div>
           <div className="mt-2 text-[11px] font-medium text-ink-700">
@@ -122,7 +122,7 @@ function ResultCard({
       >
         <div className="absolute inset-0 juni-grain opacity-60" />
         {isNew && (
-          <div className="absolute top-2 left-2 bg-juni-DEFAULT text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
+          <div className="absolute top-2 left-2 bg-juni text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
             New
           </div>
         )}
@@ -136,7 +136,7 @@ function ResultCard({
         <div className="text-[13px] font-semibold text-ink-900 truncate">
           {title}
         </div>
-        <div className="text-[11px] text-juni-DEFAULT truncate">Made by Juni</div>
+        <div className="text-[11px] text-juni truncate">Made by Juni</div>
       </div>
     </button>
   );

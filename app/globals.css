@@ -16,33 +16,14 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* iPhone-shaped device frame on desktop */
+/* iPhone-shaped device frame */
 .device-frame {
   width: 100%;
   max-width: 393px;
-  min-height: 100dvh;
+  height: 100dvh;
   background: #F7F5F1;
   position: relative;
   overflow: hidden;
-}
-
-@media (min-width: 480px) {
-  .device-frame {
-    margin: 24px auto;
-    min-height: auto;
-    height: 852px;
-    border-radius: 44px;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35), inset 0 0 0 8px #0E0F12;
-    padding: 8px;
-  }
-  .device-inner {
-    height: 100%;
-    width: 100%;
-    border-radius: 36px;
-    overflow: hidden;
-    background: #F7F5F1;
-    position: relative;
-  }
 }
 
 .device-inner {
@@ -50,6 +31,20 @@ body {
   width: 100%;
   position: relative;
   background: #F7F5F1;
+  overflow: hidden;
+}
+
+@media (min-width: 480px) {
+  .device-frame {
+    margin: 24px auto;
+    height: 852px;
+    border-radius: 44px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35), inset 0 0 0 8px #0E0F12;
+    padding: 8px;
+  }
+  .device-inner {
+    border-radius: 36px;
+  }
 }
 
 .scroll-area {

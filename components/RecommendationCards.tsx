@@ -27,7 +27,7 @@ export function RecommendationCards({
             onClick={() => onSelect(r.id)}
             className={`shrink-0 w-[260px] text-left rounded-2xl p-3 transition active:scale-[0.99] ${
               isSelected
-                ? "bg-juni-DEFAULT text-white shadow-card"
+                ? "bg-juni text-white shadow-card"
                 : "bg-white text-ink-900 shadow-card"
             }`}
           >

@@ -32,7 +32,7 @@ export function SettingsPanel() {
             onClick={() => {
               if (confirm("Reset all settings to defaults?")) resetSettings();
             }}
-            className="text-[11px] text-juni-DEFAULT font-medium px-2"
+            className="text-[11px] text-juni font-medium px-2"
           >
             Reset
           </button>
@@ -405,7 +405,7 @@ function Toggle({
       <span className="text-[13px] text-ink-700">{label}</span>
       <span
         className={`w-10 h-6 rounded-full p-0.5 transition ${
-          value ? "bg-juni-DEFAULT" : "bg-ink-100"
+          value ? "bg-juni" : "bg-ink-100"
         }`}
       >
         <span
@@ -487,7 +487,7 @@ function JsonEditor({
             setError(e?.message ?? "Invalid JSON");
           }
         }}
-        className="w-full mt-1 rounded-full py-2 text-[12px] font-semibold text-white bg-juni-DEFAULT"
+        className="w-full mt-1 rounded-full py-2 text-[12px] font-semibold text-white bg-juni"
       >
         Apply
       </button>

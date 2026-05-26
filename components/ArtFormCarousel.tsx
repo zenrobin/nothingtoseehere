@@ -16,7 +16,7 @@ export function ArtFormCarousel({ templates, highlightedId, onSelect }: Props) {
         <h3 className="text-[12px] uppercase tracking-widest text-ink-500 font-semibold">
           ArtForms
         </h3>
-        <button className="text-[11px] text-juni-DEFAULT font-medium">
+        <button className="text-[11px] text-juni font-medium">
           See all
         </button>
       </div>
@@ -29,7 +29,7 @@ export function ArtFormCarousel({ templates, highlightedId, onSelect }: Props) {
               onClick={() => onSelect?.(t.id)}
               className={`shrink-0 w-36 text-left rounded-2xl overflow-hidden bg-white border transition ${
                 isHi
-                  ? "border-juni-DEFAULT shadow-card"
+                  ? "border-juni shadow-card"
                   : "border-transparent shadow-card"
               }`}
             >
@@ -38,7 +38,7 @@ export function ArtFormCarousel({ templates, highlightedId, onSelect }: Props) {
               >
                 <div className="absolute inset-0 juni-grain opacity-50" />
                 {isHi && (
-                  <div className="absolute top-1.5 right-1.5 text-[9px] uppercase tracking-widest font-semibold text-white bg-juni-DEFAULT px-1.5 py-0.5 rounded-full">
+                  <div className="absolute top-1.5 right-1.5 text-[9px] uppercase tracking-widest font-semibold text-white bg-juni px-1.5 py-0.5 rounded-full">
                     Suggested
                   </div>
                 )}

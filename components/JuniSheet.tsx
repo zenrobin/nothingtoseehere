@@ -483,6 +483,7 @@ function RecommendationsView({
             artForms={settings.artForms}
             selectedId={selectedRec?.id ?? null}
             onSelect={onPickRec}
+            coverPhotoDataUrl={pickCoverPhoto(settings)}
           />
         </div>
       )}
@@ -490,6 +491,20 @@ function RecommendationsView({
       {showNudge && <NudgeBubble />}
     </div>
   );
+}
+
+function pickCoverPhoto(
+  settings: ReturnType<typeof useAppStore.getState>["settings"]
+): string | null {
+  const coverId = settings.memory?.cover_photo_id;
+  if (coverId) {
+    const match = settings.photoAnalyses.find(
+      (p) => p.photo_id === coverId && !!p.imageDataUrl
+    );
+    if (match?.imageDataUrl) return match.imageDataUrl;
+  }
+  const first = settings.photoAnalyses.find((p) => !!p.imageDataUrl);
+  return first?.imageDataUrl ?? null;
 }
 
 function NudgeBubble() {

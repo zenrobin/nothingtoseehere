@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import type { ExistingArt, GenerationJob } from "@/types";
 import { useAppStore } from "@/lib/store";
+import { placeholderStyle } from "@/lib/placeholder";
 
 interface Props {
   onClose: () => void;
@@ -59,7 +60,8 @@ export function Gallery({ onClose, onStartCreate }: Props) {
               return (
                 <div
                   key={`a-${t.art.id}-${i}`}
-                  className={`relative aspect-[4/5] rounded-2xl overflow-hidden bg-gradient-to-br ${t.art.thumbColor} shadow-card`}
+                  className="relative aspect-[4/5] rounded-2xl overflow-hidden shadow-card"
+                  style={placeholderStyle(t.art.kind)}
                 >
                   <div className="absolute inset-0 juni-grain opacity-50" />
                   <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
@@ -78,7 +80,8 @@ export function Gallery({ onClose, onStartCreate }: Props) {
             return (
               <div
                 key={`j-${t.job.id}-${i}`}
-                className={`relative aspect-[4/5] rounded-2xl overflow-hidden bg-gradient-to-br ${r.thumbGradient} shadow-card`}
+                className="relative aspect-[4/5] rounded-2xl overflow-hidden shadow-card"
+                style={placeholderStyle(r.kind)}
               >
                 <div className="absolute inset-0 juni-grain opacity-50" />
                 <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />

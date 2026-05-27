@@ -3,6 +3,7 @@
 import React from "react";
 import type { ExistingArt, GenerationJob } from "@/types";
 import { useDragScroll } from "@/lib/useDragScroll";
+import { placeholderStyle } from "@/lib/placeholder";
 
 interface Props {
   art: ExistingArt[];
@@ -48,25 +49,30 @@ export function MemoryArtRail({ art, pendingJob, completedJob, onResultTap }: Pr
 }
 
 function ArtCard({ art }: { art: ExistingArt }) {
+  const isMovie = art.kind === "movie";
   return (
     <div className="shrink-0 w-32">
       <div
-        className={`relative h-40 w-32 rounded-2xl shadow-card overflow-hidden bg-gradient-to-br ${art.thumbColor}`}
+        className="relative h-40 w-32 rounded-2xl shadow-card overflow-hidden"
+        style={placeholderStyle(art.kind)}
       >
-        <div className="absolute inset-0 juni-grain opacity-50" />
-        <div className="absolute bottom-2 left-2 right-2">
-          {art.kind === "movie" && (
-            <div className="flex items-center gap-1 text-[10px] font-medium text-white/90 bg-black/40 backdrop-blur rounded-full px-2 py-0.5 w-fit">
-              <span>▶</span>
-              <span>Movie</span>
-            </div>
-          )}
-          {art.kind === "genArt" && (
-            <div className="text-[10px] font-medium text-ink-700 bg-white/70 backdrop-blur rounded-full px-2 py-0.5 w-fit">
-              GenArt
-            </div>
-          )}
+        <div className="absolute inset-0 juni-grain opacity-40" />
+        <div className="absolute top-2 left-2">
+          <div
+            className={`text-[9px] uppercase tracking-widest font-semibold px-1.5 py-0.5 rounded-full ${
+              isMovie ? "bg-white/90 text-slate-900" : "bg-white/90 text-orange-950"
+            }`}
+          >
+            {isMovie ? "Movie" : "GenArt"}
+          </div>
         </div>
+        {isMovie && (
+          <div className="absolute inset-0 grid place-items-center">
+            <div className="w-9 h-9 rounded-full bg-white/85 grid place-items-center text-slate-900 text-[14px] leading-none">
+              ▶
+            </div>
+          </div>
+        )}
       </div>
       <div className="mt-2 px-0.5">
         <div className="text-[13px] font-semibold text-ink-900 truncate">
@@ -106,36 +112,48 @@ function PendingCard({ brief }: { brief: string }) {
 
 function ResultCard({
   title,
-  gradient,
   kind,
   isNew,
   onClick,
 }: {
   title: string;
-  gradient: string;
+  gradient?: string;
   kind: string;
   isNew?: boolean;
   onClick?: () => void;
 }) {
+  const isMovie = kind === "movie";
   return (
     <button
       onClick={onClick}
       className="shrink-0 w-32 text-left animate-fade-in"
     >
       <div
-        className={`relative h-40 w-32 rounded-2xl shadow-card overflow-hidden bg-gradient-to-br ${gradient}`}
+        className="relative h-40 w-32 rounded-2xl shadow-card overflow-hidden"
+        style={placeholderStyle(kind as any)}
       >
-        <div className="absolute inset-0 juni-grain opacity-60" />
+        <div className="absolute inset-0 juni-grain opacity-40" />
         {isNew && (
-          <div className="absolute top-2 left-2 bg-juni text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
+          <div className="absolute top-2 right-2 bg-juni text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
             New
           </div>
         )}
-        <div className="absolute bottom-2 left-2 right-2">
-          <div className="text-[10px] font-medium text-ink-700 bg-white/80 backdrop-blur rounded-full px-2 py-0.5 w-fit">
-            {kind === "movie" ? "Movie" : "GenArt"}
+        <div className="absolute top-2 left-2">
+          <div
+            className={`text-[9px] uppercase tracking-widest font-semibold px-1.5 py-0.5 rounded-full ${
+              isMovie ? "bg-white/90 text-slate-900" : "bg-white/90 text-orange-950"
+            }`}
+          >
+            {isMovie ? "Movie" : "GenArt"}
           </div>
         </div>
+        {isMovie && (
+          <div className="absolute inset-0 grid place-items-center">
+            <div className="w-9 h-9 rounded-full bg-white/85 grid place-items-center text-slate-900 text-[14px] leading-none">
+              ▶
+            </div>
+          </div>
+        )}
       </div>
       <div className="mt-2 px-0.5">
         <div className="text-[13px] font-semibold text-ink-900 truncate">

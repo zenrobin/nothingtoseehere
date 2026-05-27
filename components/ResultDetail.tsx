@@ -3,6 +3,7 @@
 import React from "react";
 import type { GenerationJob } from "@/types";
 import { TypewriterText } from "./TypewriterText";
+import { placeholderStyle } from "@/lib/placeholder";
 
 interface Props {
   job: GenerationJob;
@@ -38,7 +39,8 @@ export function ResultDetail({
       </div>
       <div className="flex-1 scroll-area px-5 pb-32">
         <div
-          className={`relative aspect-[4/5] rounded-3xl overflow-hidden shadow-card bg-gradient-to-br ${result.thumbGradient}`}
+          className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-card"
+          style={placeholderStyle(result.kind)}
         >
           <div className="absolute inset-0 juni-grain" />
           <div className="absolute top-3 left-3 bg-white/80 backdrop-blur text-[10px] uppercase tracking-widest font-semibold text-ink-700 px-2 py-1 rounded-full">

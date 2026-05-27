@@ -21,6 +21,7 @@ export default function Page() {
   const settings = useAppStore((s) => s.settings);
   const setSettings = useAppStore((s) => s.setSettings);
   const hasOnboarded = useAppStore((s) => s.hasOnboarded);
+  const everOnboarded = useAppStore((s) => s.everOnboarded);
   const setOnboarded = useAppStore((s) => s.setOnboarded);
 
   // Auto-pick provider on first hydration based on what the server has.
@@ -172,6 +173,7 @@ export default function Page() {
           onCreate={startCreate}
           onGallery={() => setShowGallery(true)}
           onSettings={() => router.push("/settings")}
+          onChangeMemory={() => setOnboarded(false)}
           onResultTap={(job) => setShowResult(job)}
         />
 
@@ -226,7 +228,10 @@ export default function Page() {
         )}
 
         {!hasOnboarded && (
-          <SetupScreen onDone={() => setOnboarded(true)} />
+          <SetupScreen
+            onDone={() => setOnboarded(true)}
+            isRevisit={everOnboarded}
+          />
         )}
       </DeviceFrame>
     </div>

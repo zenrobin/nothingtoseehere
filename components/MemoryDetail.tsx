@@ -1,11 +1,9 @@
 "use client";
 
-import React, { useRef } from "react";
+import React from "react";
 import type { GenerationJob, Memory, PhotoAnalysis, ExistingArt } from "@/types";
 import { MemoryArtRail } from "./MemoryArtRail";
 import { MemoryMedia } from "./MemoryMedia";
-import { parseMemoryZip } from "@/lib/zipMemoryParser";
-import { useAppStore } from "@/lib/store";
 
 interface Props {
   memory: Memory;
@@ -17,27 +15,12 @@ interface Props {
   onCreate: () => void;
   onGallery: () => void;
   onSettings: () => void;
+  onChangeMemory: () => void;
   onResultTap: (job: GenerationJob) => void;
 }
 
 export function MemoryDetail(props: Props) {
   const { memory, photoAnalyses, existingArt, pendingJob, completedJob } = props;
-  const loadFromZip = useAppStore((s) => s.loadMemoryFromZip);
-  const setToast = useAppStore((s) => s.setToast);
-  const fileRef = useRef<HTMLInputElement>(null);
-
-  const handleZipChange = async (file: File | undefined) => {
-    if (!file) return;
-    try {
-      const parsed = await parseMemoryZip(file);
-      loadFromZip({ memory: parsed.memory, photoAnalyses: parsed.photoAnalyses });
-      setToast({ title: "Memory loaded", subtitle: parsed.memory.snappy_title });
-      setTimeout(() => setToast(null), 2200);
-    } catch (e: any) {
-      setToast({ title: "Couldn't parse ZIP", subtitle: e?.message });
-      setTimeout(() => setToast(null), 3000);
-    }
-  };
 
   return (
     <div className="h-full flex flex-col relative bg-paper">
@@ -62,10 +45,10 @@ export function MemoryDetail(props: Props) {
         </div>
         <div className="flex items-center gap-1">
           <button
-            onClick={() => fileRef.current?.click()}
+            onClick={props.onChangeMemory}
             className="w-9 h-9 rounded-full grid place-items-center text-ink-700 hover:bg-black/5"
-            aria-label="Upload ZIP"
-            title="Upload memory ZIP"
+            aria-label="Change memory or photos"
+            title="Change memory or photos"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path
@@ -77,13 +60,6 @@ export function MemoryDetail(props: Props) {
               />
             </svg>
           </button>
-          <input
-            ref={fileRef}
-            type="file"
-            accept=".zip,application/zip,application/x-zip-compressed"
-            hidden
-            onChange={(e) => handleZipChange(e.target.files?.[0])}
-          />
           <button
             onClick={props.onSettings}
             className="w-9 h-9 rounded-full grid place-items-center text-ink-700 hover:bg-black/5"

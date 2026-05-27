@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useAppStore } from "@/lib/store";
 import { parseMemoryZip } from "@/lib/zipMemoryParser";
 import { TypewriterText } from "./TypewriterText";
@@ -8,17 +8,15 @@ import type { PhotoAnalysis } from "@/types";
 
 interface Props {
   onDone: () => void;
+  /** True when the user is re-entering setup from the app (vs first-run). */
+  isRevisit?: boolean;
 }
 
-type Stage = "intro" | "ready";
-
-export function SetupScreen({ onDone }: Props) {
+export function SetupScreen({ onDone, isRevisit }: Props) {
   const settings = useAppStore((s) => s.settings);
   const loadFromZip = useAppStore((s) => s.loadMemoryFromZip);
   const setSettings = useAppStore((s) => s.setSettings);
 
-  const zipRef = useRef<HTMLInputElement>(null);
-  const photoRef = useRef<HTMLInputElement>(null);
   const [zipName, setZipName] = useState<string | null>(null);
   const [extraPhotos, setExtraPhotos] = useState<
     { file: File; dataUrl: string; photoId: number | null }[]
@@ -30,8 +28,13 @@ export function SetupScreen({ onDone }: Props) {
     memory: any;
     photoAnalyses: PhotoAnalysis[];
   } | null>(null);
-  const [stage, setStage] = useState<Stage>("intro");
-  const [introDone, setIntroDone] = useState(false);
+  const [introDone, setIntroDone] = useState(isRevisit ?? false);
+
+  const currentMemoryTitle =
+    settings.memory?.snappy_title ?? settings.memory?.id ?? null;
+  const currentPhotoCount = settings.photoAnalyses.filter(
+    (p) => p.imageDataUrl
+  ).length;
 
   async function handleZip(file: File | undefined) {
     if (!file) return;
@@ -57,13 +60,17 @@ export function SetupScreen({ onDone }: Props) {
     if (!files || files.length === 0) return;
     const next: typeof extraPhotos = [];
     for (const file of Array.from(files)) {
-      const dataUrl = await fileToDataUrl(file);
-      const idMatch = file.name.match(/(\d{4,})/);
-      next.push({
-        file,
-        dataUrl,
-        photoId: idMatch ? Number(idMatch[1]) : null,
-      });
+      try {
+        const dataUrl = await fileToDataUrl(file);
+        const idMatch = file.name.match(/(\d{4,})/);
+        next.push({
+          file,
+          dataUrl,
+          photoId: idMatch ? Number(idMatch[1]) : null,
+        });
+      } catch (e) {
+        console.error("Failed to read photo", file.name, e);
+      }
     }
     setExtraPhotos((prev) => [...prev, ...next]);
   }
@@ -85,14 +92,25 @@ export function SetupScreen({ onDone }: Props) {
     onDone();
   }
 
-  function skip() {
-    onDone();
+  function clearPhoto(i: number) {
+    setExtraPhotos((prev) => prev.filter((_, idx) => idx !== i));
   }
+
+  const hasInput = parsedMemory || extraPhotos.length > 0;
+  const primaryLabel = parsedMemory
+    ? `Continue with "${parsedMemoryTitle}"`
+    : extraPhotos.length > 0
+    ? `Continue with ${extraPhotos.length} photo${
+        extraPhotos.length > 1 ? "s" : ""
+      } added`
+    : isRevisit
+    ? `Keep "${currentMemoryTitle ?? "current memory"}"`
+    : "Use the sample memory";
 
   return (
     <div className="absolute inset-0 z-50 bg-paper flex flex-col">
       {/* Decorative orb header */}
-      <div className="relative h-44 overflow-hidden">
+      <div className="relative h-44 overflow-hidden shrink-0">
         <div
           className="absolute inset-0"
           style={{
@@ -109,33 +127,64 @@ export function SetupScreen({ onDone }: Props) {
             animation: "float-orb 4.5s ease-in-out infinite",
           }}
         />
+        {isRevisit && (
+          <button
+            onClick={onDone}
+            className="absolute top-3 right-4 text-[11px] font-medium text-ink-500 px-3 py-1.5 rounded-full bg-white/70 backdrop-blur shadow-card"
+          >
+            Cancel
+          </button>
+        )}
       </div>
 
-      <div className="flex-1 px-6 pb-6 flex flex-col">
+      <div className="flex-1 px-6 pb-6 flex flex-col scroll-area">
         <div className="text-[11px] uppercase tracking-widest text-juni font-semibold">
           Juni
         </div>
         <h1 className="mt-1 font-serif text-[28px] leading-tight tracking-tight text-ink-900">
-          <TypewriterText
-            text="Hi — I'm Juni. Let's start with a memory."
-            speedMs={18}
-            onDone={() => setIntroDone(true)}
-            cursor
-          />
+          {isRevisit ? (
+            "Swap the memory or add photos."
+          ) : (
+            <TypewriterText
+              text="Hi — I'm Juni. Let's start with a memory."
+              speedMs={18}
+              onDone={() => setIntroDone(true)}
+              cursor
+            />
+          )}
         </h1>
 
         {introDone && (
           <p className="mt-3 text-[13px] leading-relaxed text-ink-700 animate-fade-in">
-            <TypewriterText
-              text="Drop in a memory ZIP (and any photos you want me to see), or skip and use the sample memory."
-              speedMs={10}
-              cursor={false}
-            />
+            {isRevisit ? (
+              currentMemoryTitle ? (
+                <>
+                  Currently loaded:{" "}
+                  <span className="font-semibold text-ink-900">
+                    {currentMemoryTitle}
+                  </span>
+                  {currentPhotoCount > 0
+                    ? ` · ${currentPhotoCount} photo${
+                        currentPhotoCount > 1 ? "s" : ""
+                      }`
+                    : ""}
+                </>
+              ) : (
+                "Drop in a memory ZIP and any photos."
+              )
+            ) : (
+              <TypewriterText
+                text="Drop in a memory ZIP (and any photos you want me to see), or skip and use the sample memory."
+                speedMs={10}
+                cursor={false}
+              />
+            )}
           </p>
         )}
 
         <div className="mt-6 space-y-3">
-          <UploadCard
+          <UploadLabel
+            htmlFor="setup-zip"
             title="Memory ZIP"
             subtitle={
               zipName
@@ -147,7 +196,7 @@ export function SetupScreen({ onDone }: Props) {
                 : "memory-episode-*.zip"
             }
             accent={!!parsedMemory}
-            onClick={() => zipRef.current?.click()}
+            cta={parsedMemory ? "Change" : "Choose file"}
             icon={
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                 <path
@@ -159,27 +208,31 @@ export function SetupScreen({ onDone }: Props) {
                 />
               </svg>
             }
-            cta={parsedMemory ? "Change" : "Choose file"}
           />
           <input
-            ref={zipRef}
+            id="setup-zip"
             type="file"
             accept=".zip,application/zip,application/x-zip-compressed"
-            hidden
-            onChange={(e) => handleZip(e.target.files?.[0])}
+            className="sr-only"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              handleZip(f);
+              e.currentTarget.value = ""; // allow re-uploading same name
+            }}
           />
 
-          <UploadCard
+          <UploadLabel
+            htmlFor="setup-photos"
             title="Photos (optional)"
             subtitle={
               extraPhotos.length > 0
                 ? `${extraPhotos.length} photo${
                     extraPhotos.length > 1 ? "s" : ""
-                  } added`
-                : "Drop in photos from the memory — Juni will pair them with analyses if it can."
+                  } added — tap to add more`
+                : "Drop in JPG/PNG/HEIC. Juni will pair filenames with photo_ids if they match."
             }
             accent={extraPhotos.length > 0}
-            onClick={() => photoRef.current?.click()}
+            cta="Add photos"
             icon={
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                 <rect
@@ -195,29 +248,38 @@ export function SetupScreen({ onDone }: Props) {
                 <path d="M21 17l-5-5-6 6" stroke="currentColor" strokeWidth="2" />
               </svg>
             }
-            cta="Add photos"
           />
           <input
-            ref={photoRef}
+            id="setup-photos"
             type="file"
-            accept="image/*"
+            accept="image/*,.heic,.heif"
             multiple
-            hidden
-            onChange={(e) => handlePhotos(e.target.files)}
+            className="sr-only"
+            onChange={(e) => {
+              handlePhotos(e.target.files);
+              e.currentTarget.value = "";
+            }}
           />
 
           {extraPhotos.length > 0 && (
-            <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-6 px-6">
+            <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-6 px-6 pt-1">
               {extraPhotos.map((p, i) => (
                 <div key={i} className="relative shrink-0">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={p.dataUrl}
                     alt=""
-                    className="w-14 h-14 rounded-lg object-cover shadow-card"
+                    className="w-16 h-16 rounded-lg object-cover shadow-card"
                   />
+                  <button
+                    onClick={() => clearPhoto(i)}
+                    className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-ink-900 text-white grid place-items-center text-[10px] leading-none shadow-card"
+                    aria-label="Remove"
+                  >
+                    ×
+                  </button>
                   {p.photoId !== null && (
-                    <div className="absolute -bottom-1 -right-1 text-[8px] bg-juni text-white rounded-full px-1.5 py-0.5 font-semibold">
+                    <div className="absolute -bottom-1 left-1 text-[8px] bg-juni text-white rounded-full px-1.5 py-0.5 font-semibold">
                       #{p.photoId}
                     </div>
                   )}
@@ -237,18 +299,16 @@ export function SetupScreen({ onDone }: Props) {
             disabled={parsing}
             className="w-full py-3.5 rounded-full bg-juni text-white text-[14px] font-semibold shadow-card disabled:opacity-50 active:scale-[0.99]"
           >
-            {parsedMemory
-              ? `Continue with "${parsedMemoryTitle}"`
-              : extraPhotos.length > 0
-              ? "Continue with these photos"
-              : "Use the sample memory"}
+            {primaryLabel}
           </button>
-          {(parsedMemory || extraPhotos.length > 0) && (
+          {hasInput && (
             <button
-              onClick={skip}
+              onClick={onDone}
               className="w-full py-2.5 rounded-full text-[12px] font-medium text-ink-500"
             >
-              Skip and use the sample memory
+              {isRevisit
+                ? `Cancel and keep "${currentMemoryTitle ?? "current"}"`
+                : "Skip and use the sample memory"}
             </button>
           )}
         </div>
@@ -257,25 +317,25 @@ export function SetupScreen({ onDone }: Props) {
   );
 }
 
-function UploadCard({
+function UploadLabel({
+  htmlFor,
   title,
   subtitle,
   accent,
-  onClick,
-  icon,
   cta,
+  icon,
 }: {
+  htmlFor: string;
   title: string;
   subtitle: string;
   accent?: boolean;
-  onClick: () => void;
-  icon: React.ReactNode;
   cta: string;
+  icon: React.ReactNode;
 }) {
   return (
-    <button
-      onClick={onClick}
-      className={`w-full rounded-2xl shadow-card p-4 flex items-center gap-3 active:scale-[0.99] transition border ${
+    <label
+      htmlFor={htmlFor}
+      className={`w-full rounded-2xl shadow-card p-4 flex items-center gap-3 active:scale-[0.99] transition border cursor-pointer ${
         accent
           ? "bg-juni-soft border-juni/30"
           : "bg-white border-transparent"
@@ -295,7 +355,7 @@ function UploadCard({
         </div>
       </div>
       <div className="text-[11px] font-semibold text-juni shrink-0">{cta}</div>
-    </button>
+    </label>
   );
 }
 
@@ -333,7 +393,6 @@ function mergePhotosIntoAnalyses(
       next[writeIdx] = { ...next[writeIdx], imageDataUrl: extras[i].dataUrl };
       writeIdx++;
     } else {
-      // Add a synthetic photo entry so the photo still shows up in media
       next.push({
         photo_id: 9000000 + i,
         description: extras[i].file.name,

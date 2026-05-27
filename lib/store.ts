@@ -194,7 +194,17 @@ export const useAppStore = create<AppState>()(
     {
       name: "juni-cfs-prototype",
       partialize: (state) => ({
-        settings: state.settings,
+        // Strip large image data URLs before writing to localStorage.
+        // Photos are session-only — a refresh clears them, but the app
+        // survives the QuotaExceededError that a dozen full-resolution
+        // phone photos would otherwise trigger.
+        settings: {
+          ...state.settings,
+          photoAnalyses: state.settings.photoAnalyses.map((p) => ({
+            ...p,
+            imageDataUrl: undefined,
+          })),
+        },
         jobs: state.jobs,
         hasOnboarded: state.hasOnboarded,
         everOnboarded: state.everOnboarded,

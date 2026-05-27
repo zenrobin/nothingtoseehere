@@ -46,11 +46,15 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
     [recs, selectedRecId]
   );
 
-  // Load recommendations on open
+  // Load recommendations on open. If a prefetch already filled them in,
+  // just flip the state so the conversation renders immediately.
   useEffect(() => {
     let cancelled = false;
     async function load() {
-      if (recs) return;
+      if (recs) {
+        setJuniState("recommendations_ready");
+        return;
+      }
       setJuniState("recommendations_loading");
       try {
         const ctx = {

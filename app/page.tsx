@@ -12,6 +12,7 @@ import { SetupScreen } from "@/components/SetupScreen";
 import { useAppStore } from "@/lib/store";
 import type { CreativeBrief, GenerationJob, ExistingArt } from "@/types";
 import { startGenerationJob } from "@/lib/mockGeneration";
+import { fetchRecommendations } from "@/lib/juniClient";
 
 export default function Page() {
   const router = useRouter();
@@ -65,6 +66,8 @@ export default function Page() {
   const setSelectedRec = useAppStore((s) => s.setSelectedRec);
   const setFollowupAnswer = useAppStore((s) => s.setFollowupAnswer);
   const setBrief = useAppStore((s) => s.setBrief);
+  const recs = useAppStore((s) => s.recommendations);
+  const setDebug = useAppStore((s) => s.setDebug);
   const decrementCreations = useAppStore((s) => s.decrementCreations);
   const addExistingArt = useAppStore((s) => s.addExistingArt);
   const toast = useAppStore((s) => s.toast);
@@ -73,6 +76,50 @@ export default function Page() {
   const [showResult, setShowResult] = useState<GenerationJob | null>(null);
   const [showGallery, setShowGallery] = useState(false);
   const movedToArtRef = useRef<string | null>(null);
+  const prefetchedForRef = useRef<string | null>(null);
+
+  // Prefetch recommendations as soon as a memory is loaded so opening the
+  // Juni sheet feels instant. The same prefetch is invalidated when the
+  // memory changes (loadMemoryFromZip nulls recommendations).
+  useEffect(() => {
+    if (!hydrated || !hasOnboarded || !settings.memory || juniOpen) return;
+    if (recs) {
+      prefetchedForRef.current = settings.memory.id;
+      return;
+    }
+    if (prefetchedForRef.current === settings.memory.id) return;
+    prefetchedForRef.current = settings.memory.id;
+
+    const ctx = {
+      memory: settings.memory,
+      photoAnalyses: settings.photoAnalyses,
+      existingArt: settings.existingArt,
+      artForms: settings.artForms,
+      capabilities: settings.capabilities,
+    };
+    fetchRecommendations({
+      settings: {
+        llm: settings.llm,
+        prompts: settings.prompts,
+        style: settings.style,
+        capabilities: settings.capabilities,
+      },
+      context: ctx,
+    })
+      .then((resp) => {
+        setRecs(resp.data);
+        setDebug({
+          lastContext: ctx,
+          lastRequest: resp.debug.request,
+          lastResponse: resp.debug.response,
+        });
+      })
+      .catch((e) => {
+        console.warn("recommendation prefetch failed", e);
+        prefetchedForRef.current = null; // allow retry on next open
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrated, hasOnboarded, settings.memory?.id, recs]);
 
   const pendingJob =
     activeJob && activeJob.status === "pending" ? activeJob : null;

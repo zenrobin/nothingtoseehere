@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useAppStore } from "@/lib/store";
 import { parseMemoryZip } from "@/lib/zipMemoryParser";
+import { fileToResizedDataUrl } from "@/lib/imageResize";
 import { TypewriterText } from "./TypewriterText";
 import type { PhotoAnalysis } from "@/types";
 
@@ -58,10 +59,12 @@ export function SetupScreen({ onDone, isRevisit }: Props) {
 
   async function handlePhotos(files: FileList | null) {
     if (!files || files.length === 0) return;
+    setError(null);
     const next: typeof extraPhotos = [];
     for (const file of Array.from(files)) {
       try {
-        const dataUrl = await fileToDataUrl(file);
+        // Resize to a sane max so we don't blow out localStorage / memory.
+        const dataUrl = await fileToResizedDataUrl(file, 1200, 0.85);
         const idMatch = file.name.match(/(\d{4,})/);
         next.push({
           file,
@@ -70,6 +73,7 @@ export function SetupScreen({ onDone, isRevisit }: Props) {
         });
       } catch (e) {
         console.error("Failed to read photo", file.name, e);
+        setError(`Couldn't read ${file.name}.`);
       }
     }
     setExtraPhotos((prev) => [...prev, ...next]);
@@ -262,7 +266,11 @@ export function SetupScreen({ onDone, isRevisit }: Props) {
           />
 
           {extraPhotos.length > 0 && (
-            <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-6 px-6 pt-1">
+            <>
+              <div className="text-[10px] text-ink-300 px-1">
+                Photos stay for this session only — a hard refresh will clear them.
+              </div>
+              <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-6 px-6 pt-1">
               {extraPhotos.map((p, i) => (
                 <div key={i} className="relative shrink-0">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -286,6 +294,7 @@ export function SetupScreen({ onDone, isRevisit }: Props) {
                 </div>
               ))}
             </div>
+            </>
           )}
 
           {error && (
@@ -357,15 +366,6 @@ function UploadLabel({
       <div className="text-[11px] font-semibold text-juni shrink-0">{cta}</div>
     </label>
   );
-}
-
-function fileToDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result));
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(file);
-  });
 }
 
 function mergePhotosIntoAnalyses(

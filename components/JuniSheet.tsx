@@ -10,7 +10,6 @@ import type {
 } from "@/types";
 import { Chips } from "./Chips";
 import { RecommendationCards } from "./RecommendationCards";
-import { ArtFormCarousel } from "./ArtFormCarousel";
 import { CreativeBriefCard } from "./CreativeBrief";
 import { buildMockBrief } from "@/lib/juniClient";
 import { MoviePathPanel } from "./MoviePath";
@@ -432,11 +431,24 @@ function RecommendationsView({
   onMoreIdeas: () => void;
 }) {
   const [openingTyped, setOpeningTyped] = useState(false);
+  const [cardsRevealed, setCardsRevealed] = useState(false);
 
-  // When user picks a concept, the followup is handled by FollowupBlock; we still
-  // want the opening cards to stay visible. Brief replaces the cards.
+  // After cards animate in, wait a beat then reveal the nudge so it lands
+  // as a separate chat turn rather than all at once.
+  useEffect(() => {
+    if (!openingTyped) return;
+    const t = setTimeout(() => setCardsRevealed(true), 650);
+    return () => clearTimeout(t);
+  }, [openingTyped]);
+
+  const showCards = openingTyped && state !== "brief_ready";
+  const showNudge =
+    cardsRevealed &&
+    state === "recommendations_ready" &&
+    !selectedRec;
+
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
       <JuniBubble>
         <p className="text-[14px] leading-relaxed text-ink-900">
           <TypewriterText
@@ -453,15 +465,15 @@ function RecommendationsView({
         )}
       </JuniBubble>
 
-      {openingTyped && state !== "brief_ready" && (
-        <div className="animate-slide-up">
-          <div className="flex items-baseline justify-between mb-2">
-            <h3 className="text-[12px] uppercase tracking-widest text-ink-500 font-semibold">
-              Directions
+      {showCards && (
+        <div className="pl-9 animate-slide-up">
+          <div className="flex items-baseline justify-between mb-1.5">
+            <h3 className="text-[10px] uppercase tracking-widest text-ink-500 font-semibold">
+              {recs.recommendations.length} ideas
             </h3>
             <button
               onClick={onMoreIdeas}
-              className="text-[11px] text-juni font-medium"
+              className="text-[10px] text-juni font-medium"
             >
               More ideas...
             </button>
@@ -475,16 +487,22 @@ function RecommendationsView({
         </div>
       )}
 
-      {openingTyped &&
-        state === "recommendations_ready" &&
-        settings.capabilities.artForms && (
-          <div className="animate-fade-in">
-            <ArtFormCarousel
-              templates={settings.artForms}
-              highlightedId={selectedRec?.suggestedTemplateId ?? null}
-            />
-          </div>
-        )}
+      {showNudge && <NudgeBubble />}
+    </div>
+  );
+}
+
+function NudgeBubble() {
+  return (
+    <div className="animate-fade-in">
+      <JuniBubble>
+        <p className="text-[13px] leading-relaxed text-ink-900">
+          <TypewriterText
+            text="Tap one to dig into it — or just tell me what you actually want and I'll build from that."
+            speedMs={10}
+          />
+        </p>
+      </JuniBubble>
     </div>
   );
 }

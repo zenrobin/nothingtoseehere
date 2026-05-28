@@ -88,7 +88,7 @@ export function MemoryDetail(props: Props) {
               ? ` · ${memory.timeline[0].location}`
               : ""}
           </div>
-          <h1 className="mt-1 font-serif text-[34px] leading-[1.05] tracking-tight text-ink-900">
+          <h1 className="mt-1 font-serif text-[34px] leading-[1.05] tracking-tight text-red-600">
             {memory.snappy_title}
           </h1>
           <div className="mt-1 text-[13px] text-ink-500">

@@ -39,18 +39,7 @@ export function CreativeBriefCard({ brief, onConfirm, onChangeDirection }: Props
             />
           </p>
         )}
-        {typed && brief.keyDetails.length > 0 && (
-          <div className="mt-3 flex flex-wrap gap-1.5 animate-fade-in">
-            {brief.keyDetails.slice(0, 4).map((d) => (
-              <span
-                key={d}
-                className="text-[11px] px-2.5 py-1 rounded-full bg-juni-soft text-juni-ink font-medium"
-              >
-                {d}
-              </span>
-            ))}
-          </div>
-        )}
+
         {typed && (
           <div className="mt-4 flex gap-2.5 animate-fade-in">
             <button

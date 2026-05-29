@@ -361,12 +361,26 @@ function JuniBody(props: {
     setMovieControls,
   } = props;
 
-  const messagesEndRef = React.useRef<HTMLDivElement>(null);
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom of the chat container as elements are added/state changes.
+  // Automatically scroll the parent scroll area to the bottom in real-time
+  // as the content grows (e.g., during typewriter typing).
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [state, selectedRec?.id, followupAnswer]);
+    const el = containerRef.current;
+    if (!el) return;
+
+    const parent = el.parentElement;
+    if (!parent) return;
+
+    const observer = new ResizeObserver(() => {
+      parent.scrollTop = parent.scrollHeight;
+    });
+
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   if (state === "recommendations_loading") {
     return <ThinkingBubble label="Juni is reading your memory…" />;
@@ -387,7 +401,7 @@ function JuniBody(props: {
   if (!recs) return null;
 
   return (
-    <div className="space-y-5 pb-6">
+    <div ref={containerRef} className="space-y-5 pb-6">
       {/* 1. Juni's opening message and recommended cards */}
       <RecommendationsView
         key={`opening-${recs.openingMessage}`}
@@ -461,9 +475,6 @@ function JuniBody(props: {
           onChangeDirection={onChangeDirection}
         />
       )}
-
-      {/* Scroll anchor */}
-      <div ref={messagesEndRef} />
     </div>
   );
 }

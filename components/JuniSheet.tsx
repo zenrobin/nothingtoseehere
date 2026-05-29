@@ -586,7 +586,7 @@ function RecommendationsView({
 
 function pickCoverPhoto(
   settings: ReturnType<typeof useAppStore.getState>["settings"]
-): string | null {
+): string {
   const coverId = settings.memory?.cover_photo_id;
   if (coverId) {
     const match = settings.photoAnalyses.find(
@@ -595,7 +595,35 @@ function pickCoverPhoto(
     if (match?.imageDataUrl) return match.imageDataUrl;
   }
   const first = settings.photoAnalyses.find((p) => !!p.imageDataUrl);
-  return first?.imageDataUrl ?? null;
+  if (first?.imageDataUrl) return first.imageDataUrl;
+
+  // Curated premium photography mapping (100% reliable Unsplash CDN)
+  const title = (settings.memory?.snappy_title || "").toLowerCase();
+  const summary = (settings.memory?.memory_summary || "").toLowerCase();
+
+  // A. Island / Sunset / Beach theme
+  if (title.includes("island") || title.includes("beach") || summary.includes("island") || summary.includes("sunset")) {
+    return "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&h=300&q=80";
+  }
+  // B. House / Architecture facade
+  if (title.includes("house") || title.includes("home") || summary.includes("house") || summary.includes("facade")) {
+    return "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&h=300&q=80";
+  }
+  // C. Cozy entrance / steps / porch
+  if (title.includes("bike") || title.includes("steps") || summary.includes("bicycle") || summary.includes("porch")) {
+    return "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&h=300&q=80";
+  }
+
+  // Fallback to active dynamic placeholder search (Flickr)
+  const queryWords: string[] = [];
+  if (settings.memory?.snappy_title) {
+    settings.memory.snappy_title.split(" ").forEach((w) => {
+      const clean = w.replace(/[^a-zA-Z]/g, "").toLowerCase();
+      if (clean && clean.length > 2) queryWords.push(clean);
+    });
+  }
+  const query = queryWords.length > 0 ? queryWords.join(",") : "scenery,landscape";
+  return `https://loremflickr.com/400/300/${query}`;
 }
 
 function NudgeBubble() {

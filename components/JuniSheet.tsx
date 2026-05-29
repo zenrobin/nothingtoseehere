@@ -97,6 +97,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
   function pickRec(id: string) {
     setSelectedRec(id);
     setFollowupAnswer(null);
+    setBrief(null);
     setMovieControls(undefined);
     setJuniState("concept_selected");
   }
@@ -314,6 +315,19 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
   );
 }
 
+function UserBubble({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex gap-2.5 items-start justify-end animate-fade-in pl-10">
+      <div className="rounded-2xl rounded-tr-sm bg-white text-ink-900 shadow-card px-4 py-3 text-[13.5px] leading-relaxed text-left">
+        {children}
+      </div>
+      <div className="w-7 h-7 shrink-0 rounded-full bg-ink-100 text-ink-700 font-bold grid place-items-center text-[11px] shadow-card">
+        Me
+      </div>
+    </div>
+  );
+}
+
 function JuniBody(props: {
   state: ReturnType<typeof useAppStore.getState>["juniState"];
   error: string | null;
@@ -347,6 +361,13 @@ function JuniBody(props: {
     setMovieControls,
   } = props;
 
+  const messagesEndRef = React.useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom of the chat container as elements are added/state changes.
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [state, selectedRec?.id, followupAnswer]);
+
   if (state === "recommendations_loading") {
     return <ThinkingBubble label="Juni is reading your memory…" />;
   }
@@ -366,7 +387,8 @@ function JuniBody(props: {
   if (!recs) return null;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 pb-6">
+      {/* 1. Juni's opening message and recommended cards */}
       <RecommendationsView
         key={`opening-${recs.openingMessage}`}
         recs={recs}
@@ -377,37 +399,61 @@ function JuniBody(props: {
         onMoreIdeas={onMoreIdeas}
       />
 
-      {selectedRec &&
-        (state === "concept_selected" || state === "followup_answered") &&
-        selectedRec.artform === "genArt" && (
-          <FollowupBlock
-            selectedRec={selectedRec}
-            followupAnswer={followupAnswer}
-            onAnswer={onAnswerFollowup}
-            onBuildBrief={onBuildBrief}
-            artFormName={
-              settings.artForms.find(
-                (t) => t.id === selectedRec.suggestedTemplateId
-              )?.name
-            }
-          />
-        )}
+      {/* 2. User Bubble showing selected concept */}
+      {selectedRec && (
+        <UserBubble>
+          Let's go with the <span className="font-semibold">"{selectedRec.title}"</span> concept.
+        </UserBubble>
+      )}
 
-      {selectedRec &&
-        (state === "concept_selected" || state === "followup_answered") &&
-        selectedRec.artform === "movie" && (
-          <MoviePathPanel
-            memory={settings.memory!}
-            hasPeople={false}
-            onConfirm={(controls) => {
-              setMovieControls(controls);
-              onAnswerFollowup(`movie:${controls.theme}:${controls.length}`);
-              setTimeout(() => onBuildBrief(), 50);
-            }}
-            onCancel={onChangeDirection}
-          />
-        )}
+      {/* 3. Juni's Follow-up Question Block */}
+      {selectedRec && selectedRec.artform === "genArt" && (
+        <FollowupBlock
+          selectedRec={selectedRec}
+          followupAnswer={followupAnswer}
+          onAnswer={onAnswerFollowup}
+          onBuildBrief={onBuildBrief}
+          artFormName={
+            settings.artForms.find(
+              (t) => t.id === selectedRec.suggestedTemplateId
+            )?.name
+          }
+        />
+      )}
 
+      {/* 4. User Bubble showing GenArt Follow-up Answer */}
+      {selectedRec && selectedRec.artform === "genArt" && followupAnswer && (
+        <UserBubble>
+          {followupAnswer}
+        </UserBubble>
+      )}
+
+      {/* 5. Movie Controls Panel or User Bubble for selected Movie Controls */}
+      {selectedRec && selectedRec.artform === "movie" && (
+        <>
+          {(!followupAnswer || state === "concept_selected") ? (
+            <MoviePathPanel
+              memory={settings.memory!}
+              hasPeople={false}
+              onConfirm={(controls) => {
+                setMovieControls(controls);
+                onAnswerFollowup(`movie:${controls.theme}:${controls.length}`);
+                setTimeout(() => onBuildBrief(), 50);
+              }}
+              onCancel={onChangeDirection}
+            />
+          ) : (
+            movieControls && (
+              <UserBubble>
+                Theme: <span className="font-semibold capitalize">{movieControls.theme}</span>,{" "}
+                Length: <span className="font-semibold capitalize">{movieControls.length}</span>
+              </UserBubble>
+            )
+          )}
+        </>
+      )}
+
+      {/* 6. Creative Brief Card */}
       {state === "brief_ready" && useAppStore.getState().brief && (
         <CreativeBriefCard
           brief={useAppStore.getState().brief!}
@@ -415,6 +461,9 @@ function JuniBody(props: {
           onChangeDirection={onChangeDirection}
         />
       )}
+
+      {/* Scroll anchor */}
+      <div ref={messagesEndRef} />
     </div>
   );
 }
@@ -434,18 +483,26 @@ function RecommendationsView({
   onPickRec: (id: string) => void;
   onMoreIdeas: () => void;
 }) {
-  const [openingTyped, setOpeningTyped] = useState(false);
-  const [cardsRevealed, setCardsRevealed] = useState(false);
+  const [openingTyped, setOpeningTyped] = useState(!!selectedRec);
+  const [cardsRevealed, setCardsRevealed] = useState(!!selectedRec);
+
+  useEffect(() => {
+    if (selectedRec) {
+      setOpeningTyped(true);
+      setCardsRevealed(true);
+    }
+  }, [selectedRec]);
 
   // After cards animate in, wait a beat then reveal the nudge so it lands
   // as a separate chat turn rather than all at once.
   useEffect(() => {
+    if (selectedRec) return;
     if (!openingTyped) return;
     const t = setTimeout(() => setCardsRevealed(true), 650);
     return () => clearTimeout(t);
-  }, [openingTyped]);
+  }, [openingTyped, selectedRec]);
 
-  const showCards = openingTyped && state !== "brief_ready";
+  const showCards = openingTyped;
   const showNudge =
     cardsRevealed &&
     state === "recommendations_ready" &&
@@ -455,11 +512,15 @@ function RecommendationsView({
     <div className="space-y-3">
       <JuniBubble>
         <p className="text-[14px] leading-relaxed text-ink-900">
-          <TypewriterText
-            text={recs.openingMessage}
-            speedMs={12}
-            onDone={() => setOpeningTyped(true)}
-          />
+          {selectedRec ? (
+            recs.openingMessage
+          ) : (
+            <TypewriterText
+              text={recs.openingMessage}
+              speedMs={12}
+              onDone={() => setOpeningTyped(true)}
+            />
+          )}
         </p>
         {openingTyped && recs.memoryRead.alreadyCovered.length > 0 && (
           <div className="mt-3 text-[11px] text-ink-500 animate-fade-in">
@@ -561,15 +622,20 @@ function FollowupBlock(props: {
 }) {
   const { selectedRec, followupAnswer, onAnswer, onBuildBrief, artFormName } =
     props;
-  const [thinking, setThinking] = useState(true);
-  const [typed, setTyped] = useState(false);
+  const [thinking, setThinking] = useState(!followupAnswer);
+  const [typed, setTyped] = useState(!!followupAnswer);
 
   useEffect(() => {
+    if (followupAnswer) {
+      setThinking(false);
+      setTyped(true);
+      return;
+    }
     setThinking(true);
     setTyped(false);
     const t = setTimeout(() => setThinking(false), 700);
     return () => clearTimeout(t);
-  }, [selectedRec.id]);
+  }, [selectedRec.id, followupAnswer]);
 
   return (
     <div className="space-y-3 animate-slide-up">
@@ -585,11 +651,15 @@ function FollowupBlock(props: {
             <ThinkingDots />
           ) : (
             <p className="text-[14px] leading-relaxed text-juni-ink">
-              <TypewriterText
-                text={selectedRec.followupQuestion.question}
-                speedMs={14}
-                onDone={() => setTyped(true)}
-              />
+              {followupAnswer ? (
+                selectedRec.followupQuestion.question
+              ) : (
+                <TypewriterText
+                  text={selectedRec.followupQuestion.question}
+                  speedMs={14}
+                  onDone={() => setTyped(true)}
+                />
+              )}
             </p>
           )}
           {typed && artFormName && (
@@ -600,22 +670,19 @@ function FollowupBlock(props: {
           )}
         </div>
       </div>
-      {typed && (
+      {typed && !followupAnswer && (
         <div className="animate-fade-in">
           <Chips
             chips={selectedRec.followupQuestion.chips}
             selected={followupAnswer}
-            onSelect={onAnswer}
+            onSelect={(chip) => {
+              onAnswer(chip);
+              setTimeout(() => {
+                onBuildBrief();
+              }, 50);
+            }}
           />
         </div>
-      )}
-      {followupAnswer && (
-        <button
-          onClick={onBuildBrief}
-          className="w-full rounded-full py-3 text-[13px] font-semibold text-white bg-juni active:scale-[0.99] animate-fade-in"
-        >
-          Continue
-        </button>
       )}
     </div>
   );

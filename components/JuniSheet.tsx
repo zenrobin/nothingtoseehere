@@ -9,7 +9,7 @@ import type {
   MovieControls,
 } from "@/types";
 import { Chips } from "./Chips";
-import { RecommendationCards } from "./RecommendationCards";
+import { RecommendationCards, getCardImage } from "./RecommendationCards";
 import { CreativeBriefCard } from "./CreativeBrief";
 import { buildMockBrief } from "@/lib/juniClient";
 import { MoviePathPanel } from "./MoviePath";
@@ -331,12 +331,26 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
   );
 }
 
-function UserBubble({ children }: { children: React.ReactNode }) {
+interface UserBubbleProps {
+  children: React.ReactNode;
+  image?: string;
+}
+
+function UserBubble({ children, image }: UserBubbleProps) {
   return (
-    <div className="flex justify-end animate-fade-in pl-10 my-1">
-      <div className="rounded-2xl bg-[#F8F7F3] text-ink-900 px-4 py-2.5 text-[14px] leading-relaxed text-left max-w-[85%] font-normal">
+    <div className="flex items-center justify-end gap-3 animate-fade-in pl-10 my-1">
+      <div className={`rounded-2xl bg-[#F8F7F3] text-ink-900 px-4 py-2.5 text-[14px] leading-relaxed text-left font-normal ${
+        image ? "max-w-[calc(100%-60px)]" : "max-w-[85%]"
+      }`}>
         {children}
       </div>
+      {image && (
+        <img
+          src={image}
+          alt=""
+          className="w-12 h-16 object-cover rounded-lg shadow-md border border-white/80 shrink-0 select-none animate-fade-in"
+        />
+      )}
     </div>
   );
 }
@@ -435,7 +449,7 @@ function JuniBody(props: {
 
       {/* 2. User Bubble showing selected concept */}
       {selectedRec && (
-        <UserBubble>
+        <UserBubble image={getCardImage(selectedRec, pickCoverPhoto(settings))}>
           Let's go with the <span className="font-semibold">"{selectedRec.title}"</span> concept.
         </UserBubble>
       )}
@@ -533,14 +547,14 @@ function RecommendationsView({
     return () => clearTimeout(t);
   }, [openingTyped, selectedRec]);
 
-  const showCards = openingTyped;
+  const showCards = openingTyped && !selectedRec;
   const showNudge =
     cardsRevealed &&
     state === "recommendations_ready" &&
     !selectedRec;
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-1.5">
       <JuniBubble>
         <p className="text-[14px] leading-relaxed text-ink-900">
           {selectedRec ? (
@@ -563,23 +577,16 @@ function RecommendationsView({
 
       {showCards && (
         <div className="animate-slide-up">
-          <div className="pl-[38px] flex items-baseline justify-between mb-1.5">
-            <h3 className="text-[10px] uppercase tracking-widest text-ink-500 font-semibold">
-              {recs.recommendations.length} ideas
-            </h3>
-          </div>
           <RecommendationCards
             recs={recs.recommendations}
             artForms={settings.artForms}
-            selectedId={selectedRec?.id ?? null}
+            selectedId={null}
             onSelect={onPickRec}
             coverPhotoDataUrl={pickCoverPhoto(settings)}
             onMoreIdeas={onMoreIdeas}
           />
         </div>
       )}
-
-      {showNudge && <NudgeBubble />}
     </div>
   );
 }
@@ -626,20 +633,7 @@ function pickCoverPhoto(
   return `https://loremflickr.com/400/300/${query}`;
 }
 
-function NudgeBubble() {
-  return (
-    <div className="animate-fade-in">
-      <JuniBubble>
-        <p className="text-[14px] leading-relaxed text-ink-900">
-          <TypewriterText
-            text="Tap one to dig into it — or just tell me what you actually want and I'll build from that."
-            speedMs={10}
-          />
-        </p>
-      </JuniBubble>
-    </div>
-  );
-}
+
 
 function JuniBubble({ children }: { children: React.ReactNode }) {
   return (

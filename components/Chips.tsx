@@ -20,7 +20,7 @@ export function Chips({ chips, selected, onSelect }: Props) {
             className={`px-3.5 py-2 rounded-full text-[12px] font-semibold transition active:scale-[0.98] ${
               isSel
                 ? "bg-juni text-white shadow-sm"
-                : "bg-paper-warm hover:bg-paper-warm/80 text-ink-700"
+                : "bg-juni-soft hover:bg-juni-soft/80 text-juni-ink"
             }`}
           >
             {c}

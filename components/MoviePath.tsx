@@ -32,26 +32,21 @@ export function MoviePathPanel({ memory, hasPeople, onConfirm, onCancel }: Props
 
   return (
     <div className="space-y-5 animate-slide-up">
-      <div className="flex gap-2.5 items-start">
-        <div className="w-7 h-7 shrink-0 rounded-full bg-juni text-white grid place-items-center text-[12px] font-bold shadow-card">
-          J
+      <div className="py-2">
+        <div className="text-[11px] uppercase tracking-widest text-ink-500 font-semibold mb-1">
+          Movie
         </div>
-        <div className="flex-1 rounded-2xl rounded-tl-sm bg-white shadow-card p-4">
-          <div className="text-[11px] uppercase tracking-widest text-ink-500 font-semibold mb-1.5">
-            Movie
-          </div>
-          {thinking ? (
-            <ThinkingDots />
-          ) : (
-            <p className="text-[14px] leading-relaxed text-ink-900">
-              <TypewriterText
-                text="I'd make a 30-second movie — three details, three title cards, solo piano. Or a longer, more elegant version that pulls in the whole façade. Pick how it should feel."
-                speedMs={10}
-                onDone={() => setTyped(true)}
-              />
-            </p>
-          )}
-        </div>
+        {thinking ? (
+          <ThinkingDots />
+        ) : (
+          <p className="text-[14px] leading-relaxed text-ink-900 font-normal">
+            <TypewriterText
+              text="I'd make a 30-second movie — three details, three title cards, solo piano. Or a longer, more elegant version that pulls in the whole façade. Pick how it should feel."
+              speedMs={10}
+              onDone={() => setTyped(true)}
+            />
+          </p>
+        )}
       </div>
 
       {typed && (

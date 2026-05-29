@@ -208,7 +208,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
         onClick={onClose}
       />
       {/* Sheet */}
-      <div className="mt-auto relative h-[calc(100%-64px)] bg-paper-cream rounded-t-3xl shadow-sheet animate-slide-up flex flex-col">
+      <div className="mt-auto relative h-[calc(100%-64px)] bg-white rounded-t-3xl shadow-sheet animate-slide-up flex flex-col">
         {/* iOS Visual Header Container with white BG, bottom divider, and shadow */}
         <div className="bg-white rounded-t-3xl shadow-md border-b border-ink-100/60 flex flex-col z-10 select-none">
           {/* Drag Handle */}
@@ -275,7 +275,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
         </div>
 
         {/* Sticky input */}
-        <div className="border-t border-ink-100/70 bg-paper-cream/95 backdrop-blur px-3 py-2.5">
+        <div className="border-t border-ink-100/70 bg-white/95 backdrop-blur px-3 py-2.5">
           <div className="flex items-center gap-2 bg-white rounded-full px-3 py-2 shadow-card">
             <input
               value={freeform}
@@ -333,12 +333,9 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
 
 function UserBubble({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex gap-2.5 items-start justify-end animate-fade-in pl-10">
-      <div className="rounded-2xl rounded-tr-sm bg-white text-ink-900 shadow-card px-4 py-3 text-[13.5px] leading-relaxed text-left">
+    <div className="flex justify-end animate-fade-in pl-10 my-1">
+      <div className="rounded-2xl bg-paper-warm text-ink-900 px-4 py-2.5 text-[14px] leading-relaxed text-left max-w-[85%] font-normal">
         {children}
-      </div>
-      <div className="w-7 h-7 shrink-0 rounded-full bg-ink-100 text-ink-700 font-bold grid place-items-center text-[11px] shadow-card">
-        Me
       </div>
     </div>
   );
@@ -605,7 +602,7 @@ function NudgeBubble() {
   return (
     <div className="animate-fade-in">
       <JuniBubble>
-        <p className="text-[13px] leading-relaxed text-ink-900">
+        <p className="text-[14px] leading-relaxed text-ink-900">
           <TypewriterText
             text="Tap one to dig into it — or just tell me what you actually want and I'll build from that."
             speedMs={10}
@@ -618,11 +615,8 @@ function NudgeBubble() {
 
 function JuniBubble({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex gap-2.5 items-start animate-fade-in">
-      <div className="w-7 h-7 shrink-0 rounded-full bg-juni text-white grid place-items-center text-[12px] font-bold shadow-card">
-        J
-      </div>
-      <div className="flex-1 rounded-2xl rounded-tl-sm bg-white shadow-card p-4">
+    <div className="animate-fade-in py-1">
+      <div className="text-[14px] leading-relaxed text-ink-900">
         {children}
       </div>
     </div>
@@ -631,13 +625,8 @@ function JuniBubble({ children }: { children: React.ReactNode }) {
 
 function ThinkingBubble({ label }: { label: string }) {
   return (
-    <div className="flex gap-2.5 items-start animate-fade-in">
-      <div className="w-7 h-7 shrink-0 rounded-full bg-juni text-white grid place-items-center text-[12px] font-bold shadow-card animate-pulse-soft">
-        J
-      </div>
-      <div className="flex-1 rounded-2xl rounded-tl-sm bg-white shadow-card px-4 py-3.5">
-        <ThinkingDots label={label} />
-      </div>
+    <div className="animate-fade-in py-2">
+      <ThinkingDots label={label} />
     </div>
   );
 }
@@ -667,19 +656,16 @@ function FollowupBlock(props: {
   }, [selectedRec.id, followupAnswer]);
 
   return (
-    <div className="space-y-3 animate-slide-up">
-      <div className="flex gap-2.5 items-start">
-        <div className="w-7 h-7 shrink-0 rounded-full bg-juni text-white grid place-items-center text-[12px] font-bold shadow-card">
-          J
+    <div className="space-y-3 animate-slide-up py-2">
+      <div>
+        <div className="text-[11px] uppercase tracking-widest text-ink-500 font-semibold mb-1">
+          One quick question
         </div>
-        <div className="flex-1 rounded-2xl rounded-tl-sm bg-white shadow-card p-4">
-          <div className="text-[11px] uppercase tracking-widest text-ink-500 font-semibold mb-1.5">
-            One quick question
-          </div>
-          {thinking ? (
-            <ThinkingDots />
-          ) : (
-            <p className="text-[14px] leading-relaxed text-ink-900">
+        {thinking ? (
+          <ThinkingDots />
+        ) : (
+          <div className="space-y-1">
+            <p className="text-[14px] leading-relaxed text-ink-900 font-normal">
               {followupAnswer ? (
                 selectedRec.followupQuestion.question
               ) : (
@@ -690,29 +676,29 @@ function FollowupBlock(props: {
                 />
               )}
             </p>
-          )}
-          {typed && artFormName && (
-            <div className="mt-2 text-[11px] text-ink-400 animate-fade-in">
-              Building on the{" "}
-              <span className="font-semibold text-ink-600">{artFormName}</span> template.
-            </div>
-          )}
-          {typed && !followupAnswer && (
-            <div className="mt-4 animate-fade-in">
-              <Chips
-                chips={selectedRec.followupQuestion.chips}
-                selected={followupAnswer}
-                onSelect={(chip) => {
-                  onAnswer(chip);
-                  setTimeout(() => {
-                    onBuildBrief();
-                  }, 50);
-                }}
-              />
-            </div>
-          )}
-        </div>
+            {typed && artFormName && (
+              <div className="text-[11.5px] text-ink-500 animate-fade-in mt-1">
+                Building on the{" "}
+                <span className="font-semibold text-ink-600">{artFormName}</span> template.
+              </div>
+            )}
+          </div>
+        )}
       </div>
+      {typed && !followupAnswer && (
+        <div className="pt-2 animate-fade-in">
+          <Chips
+            chips={selectedRec.followupQuestion.chips}
+            selected={followupAnswer}
+            onSelect={(chip) => {
+              onAnswer(chip);
+              setTimeout(() => {
+                onBuildBrief();
+              }, 50);
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }

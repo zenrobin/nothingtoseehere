@@ -36,29 +36,17 @@ export function RecommendationCards({
           <button
             key={r.id}
             onClick={() => onSelect(r.id)}
-            className={`shrink-0 w-[178px] text-left rounded-2xl overflow-hidden transition active:scale-[0.99] ${
-              isSelected
-                ? "bg-juni text-white shadow-card ring-2 ring-juni"
-                : "bg-white text-ink-900 shadow-card"
-            }`}
+            className="shrink-0 w-[178px] text-left rounded-2xl overflow-hidden transition active:scale-[0.99] bg-white text-ink-900 shadow-card"
           >
             <CardThumb
               isMovie={isMovie}
               coverPhotoDataUrl={coverPhotoDataUrl}
             />
             <div className="px-2.5 pt-2 pb-2.5">
-              <div
-                className={`text-[13px] font-semibold leading-tight line-clamp-1 ${
-                  isSelected ? "text-white" : "text-ink-900"
-                }`}
-              >
+              <div className="text-[13px] font-semibold leading-tight line-clamp-1 text-ink-900">
                 {r.title}
               </div>
-              <div
-                className={`mt-1 text-[10.5px] leading-snug line-clamp-2 ${
-                  isSelected ? "text-white/85" : "text-ink-500"
-                }`}
-              >
+              <div className="mt-1 text-[10.5px] leading-snug line-clamp-2 text-ink-500">
                 {r.why}
               </div>
             </div>

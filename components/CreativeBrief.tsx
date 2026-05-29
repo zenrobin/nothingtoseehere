@@ -23,18 +23,15 @@ export function CreativeBriefCard({ brief, onConfirm, onChangeDirection }: Props
   }, [brief.summary]);
 
   return (
-    <div className="flex gap-2.5 items-start animate-slide-up">
-      <div className="w-7 h-7 shrink-0 rounded-full bg-juni text-white grid place-items-center text-[12px] font-bold shadow-card">
-        J
-      </div>
-      <div className="flex-1 rounded-2xl rounded-tl-sm bg-white shadow-card p-4">
-        <div className="text-[11px] uppercase tracking-widest text-ink-500 font-semibold mb-2">
+    <div className="space-y-3 animate-slide-up py-2">
+      <div>
+        <div className="text-[11px] uppercase tracking-widest text-ink-500 font-semibold mb-1">
           Here's what I'll make
         </div>
         {thinking ? (
           <ThinkingDots />
         ) : (
-          <p className="text-[14px] leading-relaxed text-ink-900">
+          <p className="text-[14px] leading-relaxed text-ink-900 font-normal">
             <TypewriterText
               text={brief.summary}
               speedMs={10}
@@ -47,7 +44,7 @@ export function CreativeBriefCard({ brief, onConfirm, onChangeDirection }: Props
             {brief.keyDetails.slice(0, 4).map((d) => (
               <span
                 key={d}
-                className="text-[11px] px-2 py-0.5 rounded-full bg-juni-soft text-juni-ink"
+                className="text-[11px] px-2.5 py-1 rounded-full bg-juni-soft text-juni-ink font-medium"
               >
                 {d}
               </span>
@@ -55,7 +52,7 @@ export function CreativeBriefCard({ brief, onConfirm, onChangeDirection }: Props
           </div>
         )}
         {typed && (
-          <div className="mt-4 flex gap-2 animate-fade-in">
+          <div className="mt-4 flex gap-2.5 animate-fade-in">
             <button
               onClick={onChangeDirection}
               className="flex-1 rounded-full py-3 text-[13px] font-semibold text-ink-700 bg-paper-warm active:scale-[0.99]"

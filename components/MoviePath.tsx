@@ -1,121 +1,119 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import type { Memory, MovieControls } from "@/types";
-import { Chips } from "./Chips";
-import { TypewriterText } from "./TypewriterText";
-import { ThinkingDots } from "./ThinkingDots";
 
 interface Props {
   memory: Memory;
   hasPeople: boolean;
-  onConfirm: (controls: MovieControls) => void;
-  onCancel: () => void;
+  theme: MovieControls["theme"];
+  setTheme: (t: MovieControls["theme"]) => void;
+  length: MovieControls["length"];
+  setLength: (l: MovieControls["length"]) => void;
+  textDensity: MovieControls["textDensity"];
+  setTextDensity: (d: MovieControls["textDensity"]) => void;
+  feature: string;
+  setFeature: (f: string) => void;
 }
 
-export function MoviePathPanel({ memory, hasPeople, onConfirm, onCancel }: Props) {
-  const [theme, setTheme] = useState<MovieControls["theme"]>("elegant");
-  const [length, setLength] = useState<MovieControls["length"]>("shorter");
-  const [textDensity, setTextDensity] =
-    useState<MovieControls["textDensity"]>("less");
-  const featureOptions = hasPeople
-    ? ["Whole memory", "A specific person", "Details and place"]
-    : ["Feature the place", "Feature everyday details", "Let Juni choose"];
-  const [feature, setFeature] = useState<string>(featureOptions[2]);
-  const [thinking, setThinking] = useState(true);
-  const [typed, setTyped] = useState(false);
+function SegmentedControl<T extends string>({
+  options,
+  selected,
+  onChange,
+}: {
+  options: { value: T; label: string }[];
+  selected: T;
+  onChange: (value: T) => void;
+}) {
+  return (
+    <div className="flex bg-[#EAE8E2]/70 p-0.5 rounded-full w-full select-none border border-ink-200/10 h-9 items-center">
+      {options.map((opt) => {
+        const isSelected = selected === opt.value;
+        return (
+          <button
+            key={opt.value}
+            type="button"
+            onClick={() => onChange(opt.value)}
+            className={`flex-1 text-center rounded-full text-[12px] font-semibold transition-all duration-300 outline-none h-8 flex items-center justify-center ${
+              isSelected
+                ? "bg-white text-ink-900 shadow-sm"
+                : "text-ink-500 hover:text-ink-800 active:opacity-70"
+            }`}
+          >
+            {opt.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
-  useEffect(() => {
-    const t = setTimeout(() => setThinking(false), 500);
-    return () => clearTimeout(t);
-  }, []);
+export function MoviePathPanel({
+  memory,
+  hasPeople,
+  theme,
+  setTheme,
+  length,
+  setLength,
+  textDensity,
+  setTextDensity,
+  feature,
+  setFeature,
+}: Props) {
+  const featureOptions = hasPeople
+    ? [
+        { value: "Whole memory", label: "Whole Memory" },
+        { value: "A specific person", label: "Person" },
+        { value: "Details and place", label: "Details & Place" },
+      ]
+    : [
+        { value: "Feature the place", label: "Place" },
+        { value: "Feature everyday details", label: "Details" },
+        { value: "Let Juni choose", label: "Juni's Choice" },
+      ];
 
   return (
-    <div className="space-y-5 animate-slide-up">
-      <div className="py-2">
-        <div className="text-[11px] uppercase tracking-widest text-ink-500 font-semibold mb-1">
-          Movie
-        </div>
-        {thinking ? (
-          <ThinkingDots />
-        ) : (
-          <p className="text-[14px] leading-relaxed text-ink-900 font-normal">
-            <TypewriterText
-              text="I'd make a 30-second movie — three details, three title cards, solo piano. Or a longer, more elegant version that pulls in the whole façade. Pick how it should feel."
-              speedMs={10}
-              onDone={() => setTyped(true)}
-            />
-          </p>
-        )}
-      </div>
-
-      {typed && (
-        <div className="space-y-5 animate-fade-in">
+    <div className="space-y-4 select-none">
       <Group label="Theme">
-        <Chips
-          chips={["Elegant", "Joyful"]}
-          selected={theme === "elegant" ? "Elegant" : "Joyful"}
-          onSelect={(c) =>
-            setTheme(c.toLowerCase() === "elegant" ? "elegant" : "joyful")
-          }
+        <SegmentedControl
+          options={[
+            { value: "elegant", label: "Elegant" },
+            { value: "joyful", label: "Joyful" },
+          ]}
+          selected={theme}
+          onChange={setTheme}
         />
       </Group>
 
       <Group label="Length">
-        <Chips
-          chips={["Shorter", "Longer"]}
-          selected={length === "shorter" ? "Shorter" : "Longer"}
-          onSelect={(c) =>
-            setLength(c.toLowerCase() === "shorter" ? "shorter" : "longer")
-          }
+        <SegmentedControl
+          options={[
+            { value: "shorter", label: "Shorter" },
+            { value: "longer", label: "Longer" },
+          ]}
+          selected={length}
+          onChange={setLength}
         />
       </Group>
 
-      <Group label="Text">
-        <Chips
-          chips={["Less text", "More text"]}
-          selected={textDensity === "less" ? "Less text" : "More text"}
-          onSelect={(c) =>
-            setTextDensity(
-              c.toLowerCase().includes("less") ? "less" : "more"
-            )
-          }
+      <Group label="Text Density">
+        <SegmentedControl
+          options={[
+            { value: "less", label: "Less Text" },
+            { value: "more", label: "More Text" },
+          ]}
+          selected={textDensity}
+          onChange={setTextDensity}
         />
       </Group>
 
-      <Group label="Feature">
-        <Chips chips={featureOptions} selected={feature} onSelect={setFeature} />
-        {!hasPeople && (
-          <div className="mt-2 text-[11px] text-ink-500">
-            No person detected in this memory yet — featuring a person isn't
-            available.
-          </div>
-        )}
+      <Group label="Focus Area">
+        <SegmentedControl
+          options={featureOptions}
+          selected={feature}
+          onChange={setFeature}
+        />
       </Group>
-
-      <div className="flex gap-2 pt-2">
-        <button
-          onClick={onCancel}
-          className="flex-1 rounded-full py-3 text-[13px] font-semibold text-ink-700 bg-paper-warm active:scale-[0.99]"
-        >
-          Back
-        </button>
-        <button
-          onClick={() =>
-            onConfirm({
-              theme,
-              length,
-              textDensity,
-              feature,
-            })
-          }
-          className="flex-1 rounded-full py-3 text-[13px] font-semibold text-white bg-juni active:scale-[0.99]"
-        >
-          Make this movie
-        </button>
-      </div>
-        </div>
-      )}
     </div>
   );
 }
@@ -128,8 +126,8 @@ function Group({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <div className="text-[11px] uppercase tracking-widest text-ink-500 font-semibold mb-2">
+    <div className="space-y-1.5">
+      <div className="text-[10px] uppercase tracking-widest text-ink-400 font-bold pl-1">
         {label}
       </div>
       {children}

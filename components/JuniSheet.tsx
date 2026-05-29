@@ -39,6 +39,11 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
   const [movieControls, setMovieControls] = useState<MovieControls | undefined>(
     undefined
   );
+  const [movieIntroTyped, setMovieIntroTyped] = useState(false);
+  const [theme, setTheme] = useState<MovieControls["theme"]>("elegant");
+  const [length, setLength] = useState<MovieControls["length"]>("shorter");
+  const [textDensity, setTextDensity] = useState<MovieControls["textDensity"]>("less");
+  const [feature, setFeature] = useState<string>("Let Juni choose");
 
   const memory = settings.memory!;
   const selectedRec: JuniRecommendation | undefined = useMemo(
@@ -100,6 +105,11 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
     setBrief(null);
     setMovieControls(undefined);
     setJuniState("concept_selected");
+    setMovieIntroTyped(false);
+    setTheme("elegant");
+    setLength("shorter");
+    setTextDensity("less");
+    setFeature("Let Juni choose");
   }
 
   function answerFollowup(chip: string) {
@@ -150,6 +160,15 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
     setBrief(b);
     setDebug({ lastBrief: b });
     setJuniState("brief_ready");
+  }
+
+  function confirmMovieSettings() {
+    setMovieControls({ theme, length, textDensity, feature });
+    answerFollowup(`movie:${theme}:${length}`);
+    setTimeout(() => {
+      buildBrief();
+      setMovieIntroTyped(false);
+    }, 50);
   }
 
   function confirmCreate() {
@@ -268,9 +287,23 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
               setFollowupAnswer(null);
               setBrief(null);
               setJuniState("recommendations_ready");
+              setMovieIntroTyped(false);
             }}
             movieControls={movieControls}
             setMovieControls={setMovieControls}
+            
+            // Movie inline customizer props
+            movieIntroTyped={movieIntroTyped}
+            onMovieIntroDone={() => setMovieIntroTyped(true)}
+            theme={theme}
+            setTheme={setTheme}
+            length={length}
+            setLength={setLength}
+            textDensity={textDensity}
+            setTextDensity={setTextDensity}
+            feature={feature}
+            setFeature={setFeature}
+            onConfirmMovieSettings={confirmMovieSettings}
           />
         </div>
 
@@ -326,6 +359,8 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
             </button>
           </div>
         </div>
+
+        {/* Absolute bottom sheet removed in favor of inline customization */}
       </div>
     </div>
   );
@@ -370,6 +405,19 @@ function JuniBody(props: {
   onChangeDirection: () => void;
   movieControls: MovieControls | undefined;
   setMovieControls: (m: MovieControls | undefined) => void;
+  
+  // Movie inline states
+  movieIntroTyped: boolean;
+  onMovieIntroDone: () => void;
+  theme: MovieControls["theme"];
+  setTheme: (t: MovieControls["theme"]) => void;
+  length: MovieControls["length"];
+  setLength: (l: MovieControls["length"]) => void;
+  textDensity: MovieControls["textDensity"];
+  setTextDensity: (d: MovieControls["textDensity"]) => void;
+  feature: string;
+  setFeature: (f: string) => void;
+  onConfirmMovieSettings: () => void;
 }) {
   const {
     state,
@@ -386,6 +434,17 @@ function JuniBody(props: {
     onChangeDirection,
     movieControls,
     setMovieControls,
+    movieIntroTyped,
+    onMovieIntroDone,
+    theme,
+    setTheme,
+    length,
+    setLength,
+    textDensity,
+    setTextDensity,
+    feature,
+    setFeature,
+    onConfirmMovieSettings,
   } = props;
 
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -454,6 +513,59 @@ function JuniBody(props: {
         </UserBubble>
       )}
 
+      {/* 2b. Movie introduction bubble from Juni */}
+      {selectedRec && selectedRec.artform === "movie" && (
+        <div className="animate-fade-in py-1">
+          <div className="flex items-start gap-2.5">
+            <div className="w-8 h-8 rounded-full bg-juni text-white grid place-items-center text-[13px] font-bold shadow-sm shrink-0">
+              J
+            </div>
+            <div className="rounded-2xl bg-juni-soft/20 text-ink-900 px-4 py-2.5 text-[14px] leading-relaxed text-left font-normal max-w-[85%]">
+              {!followupAnswer ? (
+                <TypewriterText
+                  text="I'd make a 30-second movie — three details, three title cards, solo piano. Or a longer, more elegant version that pulls in the whole façade. Pick how it should feel."
+                  speedMs={10}
+                  onDone={onMovieIntroDone}
+                />
+              ) : (
+                "I'd make a 30-second movie — three details, three title cards, solo piano. Or a longer, more elegant version that pulls in the whole façade. Pick how it should feel."
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 2c. Inline Customization Modal */}
+      {selectedRec && selectedRec.artform === "movie" && (!followupAnswer || state === "concept_selected") && movieIntroTyped && (
+        <div className="animate-slide-up pl-10.5 pr-0 mt-2 select-none w-full">
+          <div className="bg-white border border-ink-200/50 rounded-[28px] p-4 shadow-md flex flex-col w-full">
+            {/* Segmented Controls settings */}
+            <MoviePathPanel
+              memory={settings.memory!}
+              hasPeople={false}
+              theme={theme}
+              setTheme={setTheme}
+              length={length}
+              setLength={setLength}
+              textDensity={textDensity}
+              setTextDensity={setTextDensity}
+              feature={feature}
+              setFeature={setFeature}
+            />
+
+            {/* Bottom Purple Submit Button */}
+            <div className="pt-4">
+              <button
+                onClick={onConfirmMovieSettings}
+                className="w-full rounded-full py-3.5 text-[13px] font-semibold text-white bg-juni hover:bg-juni-dark active:scale-[0.98] transition shadow-md"
+              >
+                Use these settings
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 3. Juni's Follow-up Question Block */}
       {selectedRec && selectedRec.artform === "genArt" && (
         <FollowupBlock
@@ -476,29 +588,12 @@ function JuniBody(props: {
         </UserBubble>
       )}
 
-      {/* 5. Movie Controls Panel or User Bubble for selected Movie Controls */}
-      {selectedRec && selectedRec.artform === "movie" && (
-        <>
-          {(!followupAnswer || state === "concept_selected") ? (
-            <MoviePathPanel
-              memory={settings.memory!}
-              hasPeople={false}
-              onConfirm={(controls) => {
-                setMovieControls(controls);
-                onAnswerFollowup(`movie:${controls.theme}:${controls.length}`);
-                setTimeout(() => onBuildBrief(), 50);
-              }}
-              onCancel={onChangeDirection}
-            />
-          ) : (
-            movieControls && (
-              <UserBubble>
-                Theme: <span className="font-semibold capitalize">{movieControls.theme}</span>,{" "}
-                Length: <span className="font-semibold capitalize">{movieControls.length}</span>
-              </UserBubble>
-            )
-          )}
-        </>
+      {/* 5. Finalized Movie Selection User Bubble in chat */}
+      {selectedRec && selectedRec.artform === "movie" && followupAnswer && movieControls && (
+        <UserBubble>
+          Theme: <span className="font-semibold capitalize">{movieControls.theme}</span>,{" "}
+          Length: <span className="font-semibold capitalize">{movieControls.length}</span>
+        </UserBubble>
       )}
 
       {/* 6. Creative Brief Card */}

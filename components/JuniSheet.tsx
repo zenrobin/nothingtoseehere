@@ -532,33 +532,35 @@ function JuniBody(props: {
 
           {/* 2c. Inline Customization Modal */}
           {(!followupAnswer || state === "concept_selected") && movieIntroTyped && (
-            <div className="animate-slide-up pl-10.5 pr-0 select-none w-full">
-              <div className="bg-[#F8F7F3] border border-ink-200/30 rounded-[28px] p-4 flex flex-col w-full">
-                {/* Segmented Controls settings */}
-                <MoviePathPanel
-                  memory={settings.memory!}
-                  hasPeople={false}
-                  theme={theme}
-                  setTheme={setTheme}
-                  length={length}
-                  setLength={setLength}
-                  textDensity={textDensity}
-                  setTextDensity={setTextDensity}
-                  feature={feature}
-                  setFeature={setFeature}
-                />
-
-                {/* Bottom Purple Submit Button */}
-                <div className="pt-4 flex justify-center">
-                  <button
-                    onClick={onConfirmMovieSettings}
-                    className="h-[42px] px-8 rounded-full text-[13px] font-semibold text-white bg-juni hover:bg-juni-dark active:scale-[0.98] transition flex items-center justify-center shadow-sm"
-                  >
-                    Use these settings
-                  </button>
+            <>
+              <div className="animate-slide-up pl-10.5 pr-0 select-none w-full">
+                <div className="bg-[#F8F7F3] border border-ink-200/30 rounded-[28px] p-4 flex flex-col w-full">
+                  {/* Segmented Controls settings */}
+                  <MoviePathPanel
+                    memory={settings.memory!}
+                    hasPeople={false}
+                    theme={theme}
+                    setTheme={setTheme}
+                    length={length}
+                    setLength={setLength}
+                    textDensity={textDensity}
+                    setTextDensity={setTextDensity}
+                    feature={feature}
+                    setFeature={setFeature}
+                  />
                 </div>
               </div>
-            </div>
+
+              {/* Bottom Purple Submit Button */}
+              <div className="pt-1 flex justify-center animate-slide-up pl-10.5 pr-0 w-full">
+                <button
+                  onClick={onConfirmMovieSettings}
+                  className="h-[42px] px-8 rounded-full text-[13px] font-semibold text-white bg-juni hover:bg-juni-dark active:scale-[0.98] transition flex items-center justify-center shadow-sm"
+                >
+                  Use these settings
+                </button>
+              </div>
+            </>
           )}
         </div>
       )}

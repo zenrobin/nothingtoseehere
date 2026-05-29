@@ -52,39 +52,45 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
   );
 
   // Load recommendations on open. If a prefetch already filled them in,
-  // just flip the state so the conversation renders immediately.
+  // we still hold the "Juni is reading your memory…" beat for a moment so
+  // the conversation feels considered rather than instantaneous.
   useEffect(() => {
     let cancelled = false;
+    const READING_BEAT_MS = 1600;
     async function load() {
-      if (recs) {
-        setJuniState("recommendations_ready");
-        return;
-      }
+      const start = Date.now();
       setJuniState("recommendations_loading");
       try {
-        const ctx = {
-          memory,
-          photoAnalyses: settings.photoAnalyses,
-          existingArt: settings.existingArt,
-          artForms: settings.artForms,
-          capabilities: settings.capabilities,
-        };
-        const resp = await fetchRecommendations({
-          settings: {
-            llm: settings.llm,
-            prompts: settings.prompts,
-            style: settings.style,
+        if (!recs) {
+          const ctx = {
+            memory,
+            photoAnalyses: settings.photoAnalyses,
+            existingArt: settings.existingArt,
+            artForms: settings.artForms,
             capabilities: settings.capabilities,
-          },
-          context: ctx,
-        });
+          };
+          const resp = await fetchRecommendations({
+            settings: {
+              llm: settings.llm,
+              prompts: settings.prompts,
+              style: settings.style,
+              capabilities: settings.capabilities,
+            },
+            context: ctx,
+          });
+          if (cancelled) return;
+          setRecs(resp.data);
+          setDebug({
+            lastContext: ctx,
+            lastRequest: resp.debug.request,
+            lastResponse: resp.debug.response,
+          });
+        }
+        const remaining = Math.max(0, READING_BEAT_MS - (Date.now() - start));
+        if (remaining > 0) {
+          await new Promise((r) => setTimeout(r, remaining));
+        }
         if (cancelled) return;
-        setRecs(resp.data);
-        setDebug({
-          lastContext: ctx,
-          lastRequest: resp.debug.request,
-          lastResponse: resp.debug.response,
-        });
         setJuniState("recommendations_ready");
       } catch (e: any) {
         if (cancelled) return;
@@ -483,10 +489,15 @@ function JuniBody(props: {
     return (
       <JuniBubble>
         <p className="text-[14px] text-ink-900">
-          Hmm — I couldn't reach my brain. Try again or switch to mock mode in
-          Settings.
+          Hmm — I can't reach my brain right now. Check that
+          <code className="mx-1 px-1 py-0.5 rounded bg-ink-100 text-[12px]">
+            ANTHROPIC_API_KEY
+          </code>
+          is set in your environment, then try again.
         </p>
-        <div className="mt-1 text-[11px] text-ink-500">{error}</div>
+        <div className="mt-2 text-[11px] text-ink-500 leading-snug">
+          {error}
+        </div>
       </JuniBubble>
     );
   }
@@ -516,19 +527,17 @@ function JuniBody(props: {
       {/* 2b. Movie introduction bubble and settings block from Juni */}
       {selectedRec && selectedRec.artform === "movie" && (
         <div className="flex flex-col gap-3">
-          <div className="animate-fade-in">
-            <p className="text-[14px] leading-relaxed text-ink-900 font-normal">
-              {!followupAnswer ? (
-                <TypewriterText
-                  text="I'd make a 30-second movie — three details, three title cards, solo piano. Or a longer, more elegant version that pulls in the whole façade. Pick how it should feel."
-                  speedMs={10}
-                  onDone={onMovieIntroDone}
-                />
-              ) : (
-                "I'd make a 30-second movie — three details, three title cards, solo piano. Or a longer, more elegant version that pulls in the whole façade. Pick how it should feel."
-              )}
-            </p>
-          </div>
+          <JuniBubble>
+            {!followupAnswer ? (
+              <TypewriterText
+                text="I'd make a 30-second movie — three details, three title cards, solo piano. Or a longer, more elegant version that pulls in the whole façade. Pick how it should feel."
+                speedMs={10}
+                onDone={onMovieIntroDone}
+              />
+            ) : (
+              "I'd make a 30-second movie — three details, three title cards, solo piano. Or a longer, more elegant version that pulls in the whole façade. Pick how it should feel."
+            )}
+          </JuniBubble>
 
           {/* 2c. Inline Customization Modal */}
           {(!followupAnswer || state === "concept_selected") && movieIntroTyped && (
@@ -729,11 +738,30 @@ function pickCoverPhoto(
 
 
 
+function JuniAvatar({ pulse }: { pulse?: boolean }) {
+  return (
+    <div
+      className={`w-8 h-8 shrink-0 rounded-full bg-juni text-white grid place-items-center text-[12px] font-bold shadow-card ${
+        pulse ? "animate-pulse-soft" : ""
+      }`}
+      aria-hidden
+    >
+      J
+    </div>
+  );
+}
+
 function JuniBubble({ children }: { children: React.ReactNode }) {
   return (
-    <div className="animate-fade-in py-1">
-      <div className="text-[14px] leading-relaxed text-ink-900">
-        {children}
+    <div className="flex items-start gap-2.5 animate-fade-in py-1 pr-10">
+      <JuniAvatar />
+      <div className="flex-1 min-w-0">
+        <div className="text-[10px] uppercase tracking-widest text-juni font-semibold mb-1">
+          Juni
+        </div>
+        <div className="rounded-2xl rounded-tl-md bg-white shadow-card px-4 py-3 text-[14px] leading-relaxed text-ink-900">
+          {children}
+        </div>
       </div>
     </div>
   );
@@ -741,8 +769,16 @@ function JuniBubble({ children }: { children: React.ReactNode }) {
 
 function ThinkingBubble({ label }: { label: string }) {
   return (
-    <div className="animate-fade-in py-2">
-      <ThinkingDots label={label} />
+    <div className="flex items-start gap-2.5 animate-fade-in py-1 pr-10">
+      <JuniAvatar pulse />
+      <div className="flex-1 min-w-0">
+        <div className="text-[10px] uppercase tracking-widest text-juni font-semibold mb-1">
+          Juni
+        </div>
+        <div className="rounded-2xl rounded-tl-md bg-white shadow-card px-4 py-3 inline-flex items-center">
+          <ThinkingDots label={label} />
+        </div>
+      </div>
     </div>
   );
 }
@@ -772,37 +808,30 @@ function FollowupBlock(props: {
   }, [selectedRec.id, followupAnswer]);
 
   return (
-    <div className="space-y-3 animate-slide-up py-2">
-      <div>
-        <div className="text-[11px] uppercase tracking-widest text-ink-500 font-semibold mb-1">
-          One quick question
-        </div>
-        {thinking ? (
-          <ThinkingDots />
-        ) : (
-          <div className="space-y-1">
-            <p className="text-[14px] leading-relaxed text-ink-900 font-normal">
-              {followupAnswer ? (
-                selectedRec.followupQuestion.question
-              ) : (
-                <TypewriterText
-                  text={selectedRec.followupQuestion.question}
-                  speedMs={14}
-                  onDone={() => setTyped(true)}
-                />
-              )}
-            </p>
-            {typed && artFormName && (
-              <div className="text-[11.5px] text-ink-500 animate-fade-in mt-1">
-                Building on the{" "}
-                <span className="font-semibold text-ink-600">{artFormName}</span> template.
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+    <div className="space-y-3 animate-slide-up py-1">
+      {thinking ? (
+        <ThinkingBubble label="One quick question…" />
+      ) : (
+        <JuniBubble>
+          {followupAnswer ? (
+            selectedRec.followupQuestion.question
+          ) : (
+            <TypewriterText
+              text={selectedRec.followupQuestion.question}
+              speedMs={14}
+              onDone={() => setTyped(true)}
+            />
+          )}
+          {typed && artFormName && (
+            <div className="text-[11.5px] text-ink-500 animate-fade-in mt-2">
+              Building on the{" "}
+              <span className="font-semibold text-ink-600">{artFormName}</span> template.
+            </div>
+          )}
+        </JuniBubble>
+      )}
       {typed && !followupAnswer && (
-        <div className="pt-2 animate-fade-in">
+        <div className="pl-[42px] animate-fade-in">
           <Chips
             chips={selectedRec.followupQuestion.chips}
             selected={followupAnswer}

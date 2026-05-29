@@ -43,7 +43,16 @@ export async function fetchRecommendations(
   });
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`Juni request failed: ${res.status} ${text}`);
+    let message = `Juni request failed (${res.status})`;
+    try {
+      const body = JSON.parse(text);
+      if (typeof body?.error === "string" && body.error.trim()) {
+        message = body.error;
+      }
+    } catch {
+      if (text.trim()) message = text;
+    }
+    throw new Error(message);
   }
   return res.json();
 }

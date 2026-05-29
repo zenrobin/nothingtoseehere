@@ -208,7 +208,8 @@ export const useAppStore = create<AppState>()(
           })),
         },
         jobs: state.jobs,
-        hasOnboarded: state.hasOnboarded,
+        // Intentionally don't persist hasOnboarded — every refresh should
+        // land on the Setup screen so the user can pick a memory.
         everOnboarded: state.everOnboarded,
       }),
     }

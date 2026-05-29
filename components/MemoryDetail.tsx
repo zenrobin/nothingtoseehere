@@ -26,20 +26,8 @@ export function MemoryDetail(props: Props) {
     <div className="h-full flex flex-col relative bg-paper">
       {/* Top nav */}
       <div className="flex items-center justify-between px-4 pt-2 pb-2">
-        <button
-          onClick={props.onGallery}
-          className="w-9 h-9 rounded-full grid place-items-center text-ink-700 hover:bg-black/5 active:bg-black/10"
-          aria-label="Gallery"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M4 6h16M4 12h16M4 18h16"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
+        {/* Gallery hamburger is hidden until that flow has something to show. */}
+        <div className="w-9 h-9" aria-hidden="true" />
         <div className="text-[11px] text-ink-500 uppercase tracking-widest">
           Memory
         </div>

@@ -513,14 +513,11 @@ function JuniBody(props: {
         </UserBubble>
       )}
 
-      {/* 2b. Movie introduction bubble from Juni */}
+      {/* 2b. Movie introduction bubble and settings block from Juni */}
       {selectedRec && selectedRec.artform === "movie" && (
-        <div className="animate-fade-in py-1">
-          <div className="flex items-start gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-juni text-white grid place-items-center text-[13px] font-bold shadow-sm shrink-0">
-              J
-            </div>
-            <div className="rounded-2xl bg-juni-soft/20 text-ink-900 px-4 py-2.5 text-[14px] leading-relaxed text-left font-normal max-w-[85%]">
+        <div className="flex flex-col gap-3">
+          <div className="animate-fade-in">
+            <p className="text-[14px] leading-relaxed text-ink-900 font-normal">
               {!followupAnswer ? (
                 <TypewriterText
                   text="I'd make a 30-second movie — three details, three title cards, solo piano. Or a longer, more elegant version that pulls in the whole façade. Pick how it should feel."
@@ -530,39 +527,39 @@ function JuniBody(props: {
               ) : (
                 "I'd make a 30-second movie — three details, three title cards, solo piano. Or a longer, more elegant version that pulls in the whole façade. Pick how it should feel."
               )}
-            </div>
+            </p>
           </div>
-        </div>
-      )}
 
-      {/* 2c. Inline Customization Modal */}
-      {selectedRec && selectedRec.artform === "movie" && (!followupAnswer || state === "concept_selected") && movieIntroTyped && (
-        <div className="animate-slide-up pl-10.5 pr-0 mt-2 select-none w-full">
-          <div className="bg-white border border-ink-200/50 rounded-[28px] p-4 shadow-md flex flex-col w-full">
-            {/* Segmented Controls settings */}
-            <MoviePathPanel
-              memory={settings.memory!}
-              hasPeople={false}
-              theme={theme}
-              setTheme={setTheme}
-              length={length}
-              setLength={setLength}
-              textDensity={textDensity}
-              setTextDensity={setTextDensity}
-              feature={feature}
-              setFeature={setFeature}
-            />
+          {/* 2c. Inline Customization Modal */}
+          {(!followupAnswer || state === "concept_selected") && movieIntroTyped && (
+            <div className="animate-slide-up pl-10.5 pr-0 select-none w-full">
+              <div className="bg-[#F8F7F3] border border-ink-200/30 rounded-[28px] p-4 flex flex-col w-full">
+                {/* Segmented Controls settings */}
+                <MoviePathPanel
+                  memory={settings.memory!}
+                  hasPeople={false}
+                  theme={theme}
+                  setTheme={setTheme}
+                  length={length}
+                  setLength={setLength}
+                  textDensity={textDensity}
+                  setTextDensity={setTextDensity}
+                  feature={feature}
+                  setFeature={setFeature}
+                />
 
-            {/* Bottom Purple Submit Button */}
-            <div className="pt-4">
-              <button
-                onClick={onConfirmMovieSettings}
-                className="w-full rounded-full py-3.5 text-[13px] font-semibold text-white bg-juni hover:bg-juni-dark active:scale-[0.98] transition shadow-md"
-              >
-                Use these settings
-              </button>
+                {/* Bottom Purple Submit Button */}
+                <div className="pt-4 flex justify-center">
+                  <button
+                    onClick={onConfirmMovieSettings}
+                    className="h-[42px] px-8 rounded-full text-[13px] font-semibold text-white bg-juni hover:bg-juni-dark active:scale-[0.98] transition flex items-center justify-center shadow-sm"
+                  >
+                    Use these settings
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
 

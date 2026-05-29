@@ -250,7 +250,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
         </div>
 
         {/* Body */}
-        <div className="flex-1 scroll-area no-scrollbar px-4 pt-5 pb-3 select-none">
+        <div className="flex-1 scroll-area no-scrollbar px-4 pt-3 pb-3 select-none">
           <JuniBody
             state={juniState}
             error={error}

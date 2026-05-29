@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { AppSettings, JuniRecommendationsResponse } from "@/types";
-import type { JuniContext, JuniRequestPayload } from "@/lib/juniClient";
+import type { JuniRequestPayload } from "@/lib/juniClient";
 import {
   buildRecommendationUserMessage,
   styleDirectives,
 } from "@/lib/juniPrompts";
-import { generateMockRecommendations } from "@/lib/juniClient";
 
 export const runtime = "nodejs";
 
@@ -24,17 +23,6 @@ export async function POST(req: NextRequest) {
     context,
   };
 
-  // Mock provider — purely deterministic, no network.
-  if (settings.llm.provider === "mock") {
-    const data = generateMockRecommendations(context);
-    return NextResponse.json({
-      data,
-      raw: JSON.stringify(data, null, 2),
-      debug: { ...debug, response: data },
-    });
-  }
-
-  // Build prompts
   const systemPrompt = `${settings.prompts.system}\n\n[STYLE DIRECTIVES]\n${styleDirectives(
     settings.style
   )}`;
@@ -50,52 +38,59 @@ export async function POST(req: NextRequest) {
     }
   );
 
+  const provider = settings.llm.provider;
+
   try {
-    if (settings.llm.provider === "openai") {
-      const result = await callOpenAI(systemPrompt, userMessage, settings);
-      const parsed = safeParseJson(result.text) as JuniRecommendationsResponse | null;
-      return NextResponse.json({
-        data: parsed ?? generateMockRecommendations(context),
-        raw: result.text,
-        debug: { ...debug, request: result.request, response: result.text },
-      });
+    let result: { text: string; request: unknown };
+    if (provider === "openai") {
+      result = await callOpenAI(systemPrompt, userMessage, settings);
+    } else if (provider === "anthropic") {
+      result = await callAnthropic(systemPrompt, userMessage, settings);
+    } else {
+      return NextResponse.json(
+        {
+          error: `Unsupported LLM provider "${provider}". Choose anthropic or openai in Settings.`,
+        },
+        { status: 400 }
+      );
     }
-    if (settings.llm.provider === "anthropic") {
-      const result = await callAnthropic(systemPrompt, userMessage, settings);
-      const parsed = safeParseJson(result.text) as JuniRecommendationsResponse | null;
-      return NextResponse.json({
-        data: parsed ?? generateMockRecommendations(context),
-        raw: result.text,
-        debug: { ...debug, request: result.request, response: result.text },
-      });
+
+    const parsed = safeParseJson(result.text) as
+      | JuniRecommendationsResponse
+      | null;
+    if (!parsed) {
+      return NextResponse.json(
+        {
+          error:
+            "Couldn't parse the model's response as JSON. Check the recommendation prompt or try again.",
+          raw: result.text,
+          debug: { ...debug, request: result.request, response: result.text },
+        },
+        { status: 502 }
+      );
     }
+    return NextResponse.json({
+      data: parsed,
+      raw: result.text,
+      debug: { ...debug, request: result.request, response: result.text },
+    });
   } catch (e: any) {
+    const message = e?.message ?? String(e);
     return NextResponse.json(
       {
-        data: generateMockRecommendations(context),
-        raw: `LLM error, fell back to mock: ${e?.message ?? String(e)}`,
-        debug: { ...debug, response: { error: e?.message ?? String(e) } },
+        error: message,
+        debug: { ...debug, response: { error: message } },
       },
-      { status: 200 }
+      { status: 502 }
     );
   }
-
-  // Fallback
-  const data = generateMockRecommendations(context);
-  return NextResponse.json({
-    data,
-    raw: JSON.stringify(data, null, 2),
-    debug: { ...debug, response: data },
-  });
 }
 
 function safeParseJson(text: string): unknown {
   if (!text) return null;
-  // Try direct
   try {
     return JSON.parse(text);
   } catch {}
-  // Try to extract a JSON block
   const match = text.match(/\{[\s\S]*\}/);
   if (match) {
     try {

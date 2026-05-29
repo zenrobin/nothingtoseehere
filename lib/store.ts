@@ -25,7 +25,7 @@ import {
 
 export const DEFAULT_SETTINGS: AppSettings = {
   llm: {
-    provider: "mock",
+    provider: "anthropic",
     model: "claude-haiku-4-5-20251001",
     apiKey: "",
     temperature: 0.7,

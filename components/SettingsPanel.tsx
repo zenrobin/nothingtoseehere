@@ -62,9 +62,8 @@ export function SettingsPanel() {
                 }
                 className="w-full bg-white border border-ink-100 rounded-lg px-3 py-2 text-[13px]"
               >
-                <option value="mock">mock</option>
-                <option value="openai">OpenAI</option>
                 <option value="anthropic">Anthropic</option>
+                <option value="openai">OpenAI</option>
               </select>
             </Field>
             <Field label="Model">
@@ -89,9 +88,7 @@ export function SettingsPanel() {
                   ? "Server has OPENAI_API_KEY set — leave blank to use it."
                   : settings.llm.provider === "anthropic"
                   ? "Set ANTHROPIC_API_KEY in Vercel env, or paste a key here (stored locally only)."
-                  : settings.llm.provider === "openai"
-                  ? "Set OPENAI_API_KEY in env, or paste a key here (stored locally only)."
-                  : "Not used in mock mode."
+                  : "Set OPENAI_API_KEY in env, or paste a key here (stored locally only)."
               }
             >
               <input

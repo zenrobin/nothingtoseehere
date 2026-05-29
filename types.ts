@@ -158,7 +158,7 @@ export interface GenerationJob {
   };
 }
 
-export type LLMProvider = "mock" | "openai" | "anthropic";
+export type LLMProvider = "anthropic" | "openai";
 
 export interface AppSettings {
   llm: {

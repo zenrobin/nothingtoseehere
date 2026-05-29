@@ -25,34 +25,16 @@ export default function Page() {
   const everOnboarded = useAppStore((s) => s.everOnboarded);
   const setOnboarded = useAppStore((s) => s.setOnboarded);
 
-  // Auto-pick provider on first hydration based on what the server has.
+  // Migrate any pre-existing "mock" provider in localStorage to anthropic.
+  // Mock is no longer a supported option.
   useEffect(() => {
     if (!hydrated) return;
-    let cancelled = false;
-    fetch("/api/config")
-      .then((r) => r.json())
-      .then((cfg) => {
-        if (cancelled) return;
-        const provider = settings.llm.provider;
-        if (provider === "mock") {
-          if (cfg.hasAnthropicKey) {
-            setSettings((s) => ({
-              ...s,
-              llm: { ...s.llm, provider: "anthropic" },
-            }));
-          } else if (cfg.hasOpenAIKey) {
-            setSettings((s) => ({
-              ...s,
-              llm: { ...s.llm, provider: "openai" },
-            }));
-          }
-        }
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-    // Only on first hydration
+    if ((settings.llm.provider as string) === "mock") {
+      setSettings((s) => ({
+        ...s,
+        llm: { ...s.llm, provider: "anthropic" },
+      }));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hydrated]);
   const juniOpen = useAppStore((s) => s.juniOpen);

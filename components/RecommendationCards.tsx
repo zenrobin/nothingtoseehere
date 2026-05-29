@@ -12,6 +12,7 @@ interface Props {
   onSelect: (id: string) => void;
   /** Optional cover photo (user's uploaded image) used as a subtle backdrop. */
   coverPhotoDataUrl?: string | null;
+  onMoreIdeas?: () => void;
 }
 
 export function RecommendationCards({
@@ -20,12 +21,13 @@ export function RecommendationCards({
   selectedId,
   onSelect,
   coverPhotoDataUrl,
+  onMoreIdeas,
 }: Props) {
   const ref = useDragScroll<HTMLDivElement>();
   return (
     <div
       ref={ref}
-      className="flex gap-2 overflow-x-auto no-scrollbar -mr-4 pr-4 pb-1 select-none"
+      className="flex gap-2 overflow-x-auto no-scrollbar -ml-4 pl-[54px] -mr-4 pr-4 pb-1 select-none"
     >
       {recs.map((r) => {
         const isSelected = selectedId === r.id;
@@ -63,6 +65,20 @@ export function RecommendationCards({
           </button>
         );
       })}
+      {onMoreIdeas && (
+        <button
+          onClick={onMoreIdeas}
+          className="shrink-0 w-[140px] h-[132px] text-center rounded-2xl border-2 border-dashed border-ink-100 bg-white hover:bg-ink-50/40 text-ink-900 shadow-card flex flex-col items-center justify-center gap-2 transition active:scale-[0.98] select-none"
+        >
+          <div className="w-9 h-9 rounded-full bg-juni-soft text-juni flex items-center justify-center font-bold text-[18px]">
+            +
+          </div>
+          <div>
+            <div className="text-[12px] font-semibold text-ink-800">More Ideas</div>
+            <div className="text-[9.5px] text-ink-400 mt-0.5">Explore more</div>
+          </div>
+        </button>
+      )}
     </div>
   );
 }

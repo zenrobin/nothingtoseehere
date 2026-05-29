@@ -558,17 +558,11 @@ function RecommendationsView({
       </JuniBubble>
 
       {showCards && (
-        <div className="pl-9 animate-slide-up">
-          <div className="flex items-baseline justify-between mb-1.5">
+        <div className="animate-slide-up">
+          <div className="pl-[38px] flex items-baseline justify-between mb-1.5">
             <h3 className="text-[10px] uppercase tracking-widest text-ink-500 font-semibold">
               {recs.recommendations.length} ideas
             </h3>
-            <button
-              onClick={onMoreIdeas}
-              className="text-[10px] text-juni font-medium"
-            >
-              More ideas...
-            </button>
           </div>
           <RecommendationCards
             recs={recs.recommendations}
@@ -576,6 +570,7 @@ function RecommendationsView({
             selectedId={selectedRec?.id ?? null}
             onSelect={onPickRec}
             coverPhotoDataUrl={pickCoverPhoto(settings)}
+            onMoreIdeas={onMoreIdeas}
           />
         </div>
       )}

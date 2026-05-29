@@ -194,15 +194,17 @@ export const useAppStore = create<AppState>()(
     {
       name: "juni-cfs-prototype",
       partialize: (state) => ({
-        // Strip large image data URLs before writing to localStorage.
-        // Photos are session-only — a refresh clears them, but the app
-        // survives the QuotaExceededError that a dozen full-resolution
-        // phone photos would otherwise trigger.
+        // Strip *base64* data URLs before writing to localStorage — those
+        // are the multi-MB blobs that overflow the quota. URL references
+        // (e.g. https://media.mixbook.com/.../photo.jpg from a memory ZIP)
+        // are tiny and worth persisting so photos survive a refresh.
         settings: {
           ...state.settings,
           photoAnalyses: state.settings.photoAnalyses.map((p) => ({
             ...p,
-            imageDataUrl: undefined,
+            imageDataUrl: p.imageDataUrl?.startsWith("data:")
+              ? undefined
+              : p.imageDataUrl,
           })),
         },
         jobs: state.jobs,

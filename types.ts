@@ -49,7 +49,21 @@ export interface PhotoAnalysis {
   key_elements: string[];
   location_context: string;
   time_context: string;
+  /**
+   * Either a data: URL from a locally-uploaded file or an https:// URL from
+   * the memory ZIP's photos.json. Both render the same way in <img src>.
+   */
   imageDataUrl?: string;
+  thumbnailUrl?: string;
+  width?: number;
+  height?: number;
+  latitude?: number;
+  longitude?: number;
+  parsedLocation?: {
+    city?: string | null;
+    country?: string | null;
+    point_of_interest?: string | null;
+  };
 }
 
 export type ArtFormKind = "genArt" | "movie" | "card" | "print" | "book";

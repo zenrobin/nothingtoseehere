@@ -44,7 +44,7 @@ export function CreativeBriefCard({ brief, onConfirm, onChangeDirection }: Props
           <div className="mt-4 flex gap-2.5 animate-fade-in">
             <button
               onClick={onChangeDirection}
-              className="flex-1 rounded-full py-3 text-[13px] font-semibold text-ink-700 bg-paper-warm active:scale-[0.99]"
+              className="flex-1 rounded-full py-3 text-[13px] font-semibold text-ink-700 bg-[#F8F7F3] active:scale-[0.99]"
             >
               Change direction
             </button>

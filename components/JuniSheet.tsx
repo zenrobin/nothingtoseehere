@@ -209,24 +209,24 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
       />
       {/* Sheet */}
       <div className="mt-auto relative h-[calc(100%-64px)] bg-white rounded-t-3xl shadow-sheet animate-slide-up flex flex-col">
-        {/* iOS Visual Header Container with white BG, bottom divider, and shadow */}
-        <div className="bg-white rounded-t-3xl shadow-md border-b border-ink-100/60 flex flex-col z-10 select-none">
-          {/* Drag Handle */}
-          <div className="pt-2.5 pb-1.5 flex flex-col items-center">
+         {/* iOS Visual Header Container with white BG, bottom divider, and shadow */}
+        <div className="h-16 bg-white rounded-t-3xl shadow-md border-b border-ink-100/60 relative flex items-center z-10 select-none">
+          {/* Absolute Drag Handle */}
+          <div className="absolute top-1.5 left-1/2 -translate-x-1/2">
             <div className="w-9 h-1 rounded-full bg-ink-200" />
           </div>
 
           {/* Header Content */}
-          <div className="px-4 pb-3.5 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-full bg-juni text-white grid place-items-center text-[14px] font-bold shadow-sm">
+          <div className="w-full px-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-juni text-white grid place-items-center text-[13px] font-bold shadow-sm">
                 J
               </div>
               <div>
-                <div className="text-[14px] font-semibold text-ink-900 leading-tight">
+                <div className="text-[13px] font-semibold text-ink-900 leading-none mb-0.5">
                   Juni
                 </div>
-                <div className="text-[10.5px] text-ink-500 leading-tight">
+                <div className="text-[10px] text-ink-500 leading-none">
                   Memory creative assistant
                 </div>
               </div>
@@ -238,10 +238,10 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
               </div>
               <button
                 onClick={onClose}
-                className="w-[42px] h-[42px] rounded-full bg-ink-100/50 hover:bg-ink-100/80 text-ink-600 flex items-center justify-center transition active:scale-95"
+                className="w-8 h-8 rounded-full bg-ink-100/50 hover:bg-ink-100/80 text-ink-600 flex items-center justify-center transition active:scale-95"
                 aria-label="Close"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
               </button>
@@ -334,7 +334,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
 function UserBubble({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex justify-end animate-fade-in pl-10 my-1">
-      <div className="rounded-2xl bg-paper-warm text-ink-900 px-4 py-2.5 text-[14px] leading-relaxed text-left max-w-[85%] font-normal">
+      <div className="rounded-2xl bg-[#F8F7F3] text-ink-900 px-4 py-2.5 text-[14px] leading-relaxed text-left max-w-[85%] font-normal">
         {children}
       </div>
     </div>

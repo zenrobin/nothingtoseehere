@@ -208,33 +208,49 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
         onClick={onClose}
       />
       {/* Sheet */}
-      <div className="mt-auto relative h-[88%] bg-paper-cream rounded-t-3xl shadow-sheet animate-slide-up flex flex-col">
-        <div className="pt-2 pb-1 flex flex-col items-center">
-          <div className="w-10 h-1 rounded-full bg-ink-100" />
-        </div>
-
-        {/* Header */}
-        <div className="px-5 pt-2 pb-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-juni text-white grid place-items-center text-[13px] font-bold">
-              J
-            </div>
-            <div>
-              <div className="text-[13px] font-semibold text-ink-900 leading-tight">
-                Juni
-              </div>
-              <div className="text-[10px] text-ink-500 leading-tight">
-                Memory creative assistant
-              </div>
-            </div>
+      <div className="mt-auto relative h-[calc(100%-64px)] bg-paper-cream rounded-t-3xl shadow-sheet animate-slide-up flex flex-col">
+        {/* iOS Visual Header Container with white BG, bottom divider, and shadow */}
+        <div className="bg-white rounded-t-3xl shadow-md border-b border-ink-100/60 flex flex-col z-10">
+          {/* Drag Handle */}
+          <div className="pt-2.5 pb-1.5 flex flex-col items-center">
+            <div className="w-9 h-1 rounded-full bg-ink-200" />
           </div>
-          <div className="text-[10px] text-ink-500 bg-white px-2.5 py-1 rounded-full border border-ink-100">
-            {settings.generation.creationsLeft} creations left
+
+          {/* Header Content */}
+          <div className="px-4 pb-3.5 flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-full bg-juni text-white grid place-items-center text-[14px] font-bold shadow-sm">
+                J
+              </div>
+              <div>
+                <div className="text-[14px] font-semibold text-ink-900 leading-tight">
+                  Juni
+                </div>
+                <div className="text-[10.5px] text-ink-500 leading-tight">
+                  Memory creative assistant
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <div className="text-[10px] text-orange-700 bg-orange-50/70 px-2.5 py-1 rounded-full border border-orange-100 font-medium">
+                {settings.generation.creationsLeft} creations left
+              </div>
+              <button
+                onClick={onClose}
+                className="w-[42px] h-[42px] rounded-full bg-ink-100/50 hover:bg-ink-100/80 text-ink-600 flex items-center justify-center transition active:scale-95"
+                aria-label="Close"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Body */}
-        <div className="flex-1 scroll-area px-5 pb-3">
+        <div className="flex-1 scroll-area no-scrollbar px-4 pt-5 pb-3">
           <JuniBody
             state={juniState}
             error={error}

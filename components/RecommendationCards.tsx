@@ -25,7 +25,7 @@ export function RecommendationCards({
   return (
     <div
       ref={ref}
-      className="flex gap-2 overflow-x-auto no-scrollbar -mr-5 pr-5 pb-1 select-none"
+      className="flex gap-2 overflow-x-auto no-scrollbar -mr-4 pr-4 pb-1 select-none"
     >
       {recs.map((r) => {
         const isSelected = selectedId === r.id;

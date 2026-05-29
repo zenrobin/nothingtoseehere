@@ -22,7 +22,6 @@ export default function Page() {
   const settings = useAppStore((s) => s.settings);
   const setSettings = useAppStore((s) => s.setSettings);
   const hasOnboarded = useAppStore((s) => s.hasOnboarded);
-  const everOnboarded = useAppStore((s) => s.everOnboarded);
   const setOnboarded = useAppStore((s) => s.setOnboarded);
 
   // Migrate any pre-existing "mock" provider in localStorage to anthropic.
@@ -257,10 +256,7 @@ export default function Page() {
         )}
 
         {!hasOnboarded && (
-          <SetupScreen
-            onDone={() => setOnboarded(true)}
-            isRevisit={everOnboarded}
-          />
+          <SetupScreen onDone={() => setOnboarded(true)} />
         )}
       </DeviceFrame>
     </div>

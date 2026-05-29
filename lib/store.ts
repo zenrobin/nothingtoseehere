@@ -66,7 +66,6 @@ export const DEFAULT_SETTINGS: AppSettings = {
 interface AppState {
   settings: AppSettings;
   hasOnboarded: boolean;
-  everOnboarded: boolean;
   juniState: JuniState;
   juniOpen: boolean;
   recommendations: JuniRecommendationsResponse | null;
@@ -106,7 +105,6 @@ export const useAppStore = create<AppState>()(
     (set, get) => ({
       settings: DEFAULT_SETTINGS,
       hasOnboarded: false,
-      everOnboarded: false,
       juniState: "memory_loaded",
       juniOpen: false,
       recommendations: null,
@@ -172,11 +170,7 @@ export const useAppStore = create<AppState>()(
             debug: { ...state.settings.debug, ...patch },
           },
         })),
-      setOnboarded: (v) =>
-        set((state) => ({
-          hasOnboarded: v,
-          everOnboarded: v ? true : state.everOnboarded,
-        })),
+      setOnboarded: (v) => set({ hasOnboarded: v }),
       decrementCreations: () =>
         set((state) => ({
           settings: {
@@ -194,24 +188,34 @@ export const useAppStore = create<AppState>()(
     {
       name: "juni-cfs-prototype",
       partialize: (state) => ({
-        // Strip *base64* data URLs before writing to localStorage — those
-        // are the multi-MB blobs that overflow the quota. URL references
-        // (e.g. https://media.mixbook.com/.../photo.jpg from a memory ZIP)
-        // are tiny and worth persisting so photos survive a refresh.
+        // Every refresh resets the prototype to the Setup screen, so we
+        // intentionally don't persist the active memory, photos, in-flight
+        // recommendations, brief, jobs, or onboarding flags. Only the
+        // admin-configurable bits in /settings stick — LLM provider/key,
+        // prompts, style sliders, capabilities, generation knobs, and the
+        // ArtForm catalog.
         settings: {
-          ...state.settings,
-          photoAnalyses: state.settings.photoAnalyses.map((p) => ({
-            ...p,
-            imageDataUrl: p.imageDataUrl?.startsWith("data:")
-              ? undefined
-              : p.imageDataUrl,
-          })),
+          llm: state.settings.llm,
+          prompts: state.settings.prompts,
+          style: state.settings.style,
+          capabilities: state.settings.capabilities,
+          generation: state.settings.generation,
+          artForms: state.settings.artForms,
         },
-        jobs: state.jobs,
-        // Intentionally don't persist hasOnboarded — every refresh should
-        // land on the Setup screen so the user can pick a memory.
-        everOnboarded: state.everOnboarded,
       }),
+      // Merge the (partial) persisted settings onto the defaults so memory /
+      // photoAnalyses / existingArt / debug come back fresh on every load.
+      merge: (persisted, current) => {
+        const p = (persisted ?? {}) as Partial<AppState>;
+        return {
+          ...current,
+          ...p,
+          settings: {
+            ...current.settings,
+            ...(p.settings ?? {}),
+          },
+        };
+      },
     }
   )
 );

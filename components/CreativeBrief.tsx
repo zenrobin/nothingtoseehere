@@ -27,7 +27,7 @@ export function CreativeBriefCard({ brief, onConfirm, onChangeDirection }: Props
       <div className="w-7 h-7 shrink-0 rounded-full bg-juni text-white grid place-items-center text-[12px] font-bold shadow-card">
         J
       </div>
-      <div className="flex-1 rounded-2xl rounded-tl-md bg-white shadow-card p-4">
+      <div className="flex-1 rounded-2xl rounded-tl-sm bg-white shadow-card p-4">
         <div className="text-[11px] uppercase tracking-widest text-ink-500 font-semibold mb-2">
           Here's what I'll make
         </div>

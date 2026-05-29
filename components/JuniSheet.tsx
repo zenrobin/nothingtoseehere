@@ -210,7 +210,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
       {/* Sheet */}
       <div className="mt-auto relative h-[calc(100%-64px)] bg-paper-cream rounded-t-3xl shadow-sheet animate-slide-up flex flex-col">
         {/* iOS Visual Header Container with white BG, bottom divider, and shadow */}
-        <div className="bg-white rounded-t-3xl shadow-md border-b border-ink-100/60 flex flex-col z-10">
+        <div className="bg-white rounded-t-3xl shadow-md border-b border-ink-100/60 flex flex-col z-10 select-none">
           {/* Drag Handle */}
           <div className="pt-2.5 pb-1.5 flex flex-col items-center">
             <div className="w-9 h-1 rounded-full bg-ink-200" />
@@ -250,7 +250,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
         </div>
 
         {/* Body */}
-        <div className="flex-1 scroll-area no-scrollbar px-4 pt-5 pb-3">
+        <div className="flex-1 scroll-area no-scrollbar px-4 pt-5 pb-3 select-none">
           <JuniBody
             state={juniState}
             error={error}
@@ -390,13 +390,20 @@ function JuniBody(props: {
 
     const observer = new ResizeObserver(() => {
       parent.scrollTop = parent.scrollHeight;
+      requestAnimationFrame(() => {
+        parent.scrollTop = parent.scrollHeight;
+      });
+      // Fallback delay to ensure it catches absolute final paint & layout settles
+      setTimeout(() => {
+        parent.scrollTop = parent.scrollHeight;
+      }, 100);
     });
 
     observer.observe(el);
     return () => {
       observer.disconnect();
     };
-  }, []);
+  }, [state, selectedRec?.id, followupAnswer, recs]);
 
   if (state === "recommendations_loading") {
     return <ThinkingBubble label="Juni is reading your memory…" />;
@@ -417,7 +424,7 @@ function JuniBody(props: {
   if (!recs) return null;
 
   return (
-    <div ref={containerRef} className="space-y-5 pb-6">
+    <div ref={containerRef} className="space-y-5 pb-1">
       {/* 1. Juni's opening message and recommended cards */}
       <RecommendationsView
         key={`opening-${recs.openingMessage}`}
@@ -615,7 +622,7 @@ function JuniBubble({ children }: { children: React.ReactNode }) {
       <div className="w-7 h-7 shrink-0 rounded-full bg-juni text-white grid place-items-center text-[12px] font-bold shadow-card">
         J
       </div>
-      <div className="flex-1 rounded-2xl rounded-tl-md bg-white shadow-card p-4">
+      <div className="flex-1 rounded-2xl rounded-tl-sm bg-white shadow-card p-4">
         {children}
       </div>
     </div>
@@ -628,7 +635,7 @@ function ThinkingBubble({ label }: { label: string }) {
       <div className="w-7 h-7 shrink-0 rounded-full bg-juni text-white grid place-items-center text-[12px] font-bold shadow-card animate-pulse-soft">
         J
       </div>
-      <div className="flex-1 rounded-2xl rounded-tl-md bg-white shadow-card px-4 py-3.5">
+      <div className="flex-1 rounded-2xl rounded-tl-sm bg-white shadow-card px-4 py-3.5">
         <ThinkingDots label={label} />
       </div>
     </div>
@@ -665,14 +672,14 @@ function FollowupBlock(props: {
         <div className="w-7 h-7 shrink-0 rounded-full bg-juni text-white grid place-items-center text-[12px] font-bold shadow-card">
           J
         </div>
-        <div className="flex-1 rounded-2xl rounded-tl-md bg-juni-soft p-4">
-          <div className="text-[11px] uppercase tracking-widest text-juni-ink font-semibold mb-1.5">
+        <div className="flex-1 rounded-2xl rounded-tl-sm bg-white shadow-card p-4">
+          <div className="text-[11px] uppercase tracking-widest text-ink-500 font-semibold mb-1.5">
             One quick question
           </div>
           {thinking ? (
             <ThinkingDots />
           ) : (
-            <p className="text-[14px] leading-relaxed text-juni-ink">
+            <p className="text-[14px] leading-relaxed text-ink-900">
               {followupAnswer ? (
                 selectedRec.followupQuestion.question
               ) : (
@@ -685,27 +692,27 @@ function FollowupBlock(props: {
             </p>
           )}
           {typed && artFormName && (
-            <div className="mt-2 text-[11px] text-juni-ink/70 animate-fade-in">
+            <div className="mt-2 text-[11px] text-ink-400 animate-fade-in">
               Building on the{" "}
-              <span className="font-semibold">{artFormName}</span> template.
+              <span className="font-semibold text-ink-600">{artFormName}</span> template.
+            </div>
+          )}
+          {typed && !followupAnswer && (
+            <div className="mt-4 animate-fade-in">
+              <Chips
+                chips={selectedRec.followupQuestion.chips}
+                selected={followupAnswer}
+                onSelect={(chip) => {
+                  onAnswer(chip);
+                  setTimeout(() => {
+                    onBuildBrief();
+                  }, 50);
+                }}
+              />
             </div>
           )}
         </div>
       </div>
-      {typed && !followupAnswer && (
-        <div className="animate-fade-in">
-          <Chips
-            chips={selectedRec.followupQuestion.chips}
-            selected={followupAnswer}
-            onSelect={(chip) => {
-              onAnswer(chip);
-              setTimeout(() => {
-                onBuildBrief();
-              }, 50);
-            }}
-          />
-        </div>
-      )}
     </div>
   );
 }

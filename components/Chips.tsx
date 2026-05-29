@@ -17,10 +17,10 @@ export function Chips({ chips, selected, onSelect }: Props) {
           <button
             key={c}
             onClick={() => onSelect(c)}
-            className={`px-3 py-2 rounded-full text-[12px] font-medium transition active:scale-[0.98] ${
+            className={`px-3.5 py-2 rounded-full text-[12px] font-semibold transition active:scale-[0.98] ${
               isSel
-                ? "bg-juni text-white"
-                : "bg-white text-ink-700 border border-ink-100"
+                ? "bg-juni text-white shadow-sm"
+                : "bg-paper-warm hover:bg-paper-warm/80 text-ink-700"
             }`}
           >
             {c}

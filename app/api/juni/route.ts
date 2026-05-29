@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { settings, context } = payload;
+  const { settings, context, conversation } = payload;
   const debug = {
     request: null as unknown,
     response: null as unknown,
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     settings.style
   )}`;
 
-  const userMessage = buildRecommendationUserMessage(
+  let userMessage = buildRecommendationUserMessage(
     settings.prompts.recommendation,
     {
       memory: context.memory,
@@ -37,6 +37,18 @@ export async function POST(req: NextRequest) {
       capabilities: context.capabilities,
     }
   );
+
+  // Layer conversation context onto the base prompt so the LLM can react.
+  if (conversation?.userMessage?.trim()) {
+    userMessage += `\n\n[USER MESSAGE]\nThe user just wrote: "${conversation.userMessage.trim()}"\n\nRespond to what they actually want. In the openingMessage, acknowledge their request specifically. Then provide 1-4 recommendations tailored to it (still grounded in this memory's specifics, but shifted in the direction they asked for). If they asked for a specific artform like "card", "movie", "print", or "book", make sure recommendations match that artform.`;
+  }
+  if (conversation?.excludeTitles?.length) {
+    const list = conversation.excludeTitles.map((t) => `- ${t}`).join("\n");
+    userMessage += `\n\n[ALREADY SHOWN — DO NOT REPEAT]\n${list}\n\nGenerate DIFFERENT ideas that don't overlap with the above.`;
+  }
+  if (conversation?.moreIdeas) {
+    userMessage += `\n\n[CONVERSATIONAL CONTEXT]\nThis is a "More ideas" follow-up. Open with a short conversational line like "Sure — here's a different angle:" or "Here are a few more directions:" so the message reads as continuing the same chat, not a fresh start.`;
+  }
 
   const provider = settings.llm.provider;
 

@@ -344,32 +344,64 @@ export function RecommendationCards({
 
       {/* 2. Focused card details card underneath */}
       {activeIndex < recs.length && recs[activeIndex] && (
-        <div className="relative z-10 mx-auto max-w-[325px] bg-[#F8F7F3] rounded-[24px] p-5 text-center shadow-sm animate-fade-in my-1">
-          <h4 className="font-bold text-ink-900 text-[15px] mb-1 leading-tight">
-            {recs[activeIndex].title}
-          </h4>
-          <p className="text-ink-500 text-[12.5px] leading-relaxed mb-3 line-clamp-3">
-            {recs[activeIndex].why}
-          </p>
-          {!selectedId && (
-            <div className="flex items-center justify-center gap-2 mt-1.5 flex-wrap">
-              {recs[activeIndex].artform === "genArt" && (
-                <button
-                  type="button"
-                  className="px-4 py-2.5 rounded-full border border-ink-200 text-ink-600 bg-white/80 backdrop-blur-sm font-semibold text-[13px] hover:bg-ink-50/40 active:scale-[0.98] transition shadow-sm"
+        (() => {
+          const focused = recs[activeIndex];
+          const isMovie = focused.artform === "movie";
+          const cta = isMovie ? "Make this movie" : "Make this artwork";
+          return (
+            <div className="relative z-10 mx-auto max-w-[325px] bg-[#F8F7F3] rounded-[24px] p-5 text-center shadow-sm animate-fade-in my-1">
+              <div className="flex justify-center mb-2">
+                <span
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold ${
+                    isMovie
+                      ? "bg-slate-900 text-white"
+                      : "bg-orange-950 text-white"
+                  }`}
                 >
-                  Swap photo
-                </button>
+                  {isMovie ? (
+                    <>
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3" />
+                      </svg>
+                      <span>Movie</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                      </svg>
+                      <span>GenArt</span>
+                    </>
+                  )}
+                </span>
+              </div>
+              <h4 className="font-bold text-ink-900 text-[15px] mb-1.5 leading-tight">
+                {focused.title}
+              </h4>
+              <p className="text-ink-600 text-[12px] leading-relaxed mb-3">
+                {focused.why}
+              </p>
+              {!selectedId && (
+                <div className="flex items-center justify-center gap-2 mt-1.5 flex-wrap">
+                  {focused.artform === "genArt" && (
+                    <button
+                      type="button"
+                      className="px-4 py-2.5 rounded-full border border-ink-200 text-ink-600 bg-white/80 backdrop-blur-sm font-semibold text-[13px] hover:bg-ink-50/40 active:scale-[0.98] transition shadow-sm"
+                    >
+                      Swap photo
+                    </button>
+                  )}
+                  <button
+                    onClick={() => onSelect(focused.id)}
+                    className="px-6 py-2.5 rounded-full bg-juni text-white font-semibold text-[13px] active:scale-[0.98] transition shadow-sm"
+                  >
+                    {cta}
+                  </button>
+                </div>
               )}
-              <button
-                onClick={() => onSelect(recs[activeIndex].id)}
-                className="px-6 py-2.5 rounded-full bg-juni text-white font-semibold text-[13px] active:scale-[0.98] transition shadow-sm"
-              >
-                Choose this direction
-              </button>
             </div>
-          )}
-        </div>
+          );
+        })()
       )}
 
       {activeIndex === recs.length && onMoreIdeas && (

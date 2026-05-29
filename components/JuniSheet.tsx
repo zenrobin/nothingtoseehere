@@ -36,6 +36,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
 
   const [error, setError] = useState<string | null>(null);
   const [freeform, setFreeform] = useState("");
+  const [userSaid, setUserSaid] = useState<string | null>(null);
   const [movieControls, setMovieControls] = useState<MovieControls | undefined>(
     undefined
   );
@@ -56,7 +57,10 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
   // the conversation feels considered rather than instantaneous.
   useEffect(() => {
     let cancelled = false;
-    const READING_BEAT_MS = 1600;
+    // Recs are typically already prefetched (either on Setup commit, or by
+    // the page-level effect). Hold a short, polite beat anyway so the
+    // chat doesn't snap open without any sense of Juni thinking.
+    const READING_BEAT_MS = 600;
     async function load() {
       const start = Date.now();
       setJuniState("recommendations_loading");
@@ -123,13 +127,12 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
     setJuniState("followup_answered");
   }
 
-  function moreIdeas() {
-    setRecs(null);
+  async function moreIdeas() {
+    const previousTitles = recs?.recommendations.map((r) => r.title) ?? [];
     setSelectedRec(null);
     setFollowupAnswer(null);
     setJuniState("recommendations_loading");
-    // re-run effect
-    setTimeout(() => {
+    try {
       const ctx = {
         memory,
         photoAnalyses: settings.photoAnalyses,
@@ -137,7 +140,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
         artForms: settings.artForms,
         capabilities: settings.capabilities,
       };
-      fetchRecommendations({
+      const r = await fetchRecommendations({
         settings: {
           llm: settings.llm,
           prompts: settings.prompts,
@@ -145,13 +148,17 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
           capabilities: settings.capabilities,
         },
         context: ctx,
-      })
-        .then((r) => {
-          setRecs(r.data);
-          setJuniState("recommendations_ready");
-        })
-        .catch(() => setJuniState("recommendations_ready"));
-    }, 100);
+        conversation: {
+          moreIdeas: true,
+          excludeTitles: previousTitles,
+        },
+      });
+      setRecs(r.data);
+      setJuniState("recommendations_ready");
+    } catch (e: any) {
+      setError(e?.message ?? "Failed to load more ideas");
+      setJuniState("recommendations_ready");
+    }
   }
 
   function buildBrief() {
@@ -189,39 +196,40 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
     onConfirmBrief(b);
   }
 
-  function submitFreeform() {
+  async function submitFreeform() {
     const text = freeform.trim();
     if (!text) return;
-    const fakeRec: JuniRecommendation = {
-      id: "rec-custom",
-      artform: "genArt",
-      title: "Your custom idea",
-      description: text,
-      why: "Built from what you described.",
-      suggestedTemplateId:
-        settings.artForms.find((a) => a.artform === "genArt")?.id ?? null,
-      followupQuestion: {
-        question: "What feeling should this lean into?",
-        chips: ["Quiet and editorial", "Warm and soft", "Nostalgic", "Surprise me"],
-      },
-    };
-    setRecs(
-      recs
-        ? { ...recs, recommendations: [fakeRec, ...recs.recommendations] }
-        : {
-            openingMessage: "Got it — here's where I'd take that.",
-            memoryRead: {
-              emotionalTone: [],
-              specificDetails: [],
-              alreadyCovered: [],
-              creativeOpportunities: [],
-            },
-            recommendations: [fakeRec],
-          }
-    );
-    setSelectedRec(fakeRec.id);
-    setJuniState("concept_selected");
     setFreeform("");
+    setUserSaid(text);
+    setSelectedRec(null);
+    setFollowupAnswer(null);
+    setJuniState("recommendations_loading");
+    try {
+      const ctx = {
+        memory,
+        photoAnalyses: settings.photoAnalyses,
+        existingArt: settings.existingArt,
+        artForms: settings.artForms,
+        capabilities: settings.capabilities,
+      };
+      const r = await fetchRecommendations({
+        settings: {
+          llm: settings.llm,
+          prompts: settings.prompts,
+          style: settings.style,
+          capabilities: settings.capabilities,
+        },
+        context: ctx,
+        conversation: {
+          userMessage: text,
+        },
+      });
+      setRecs(r.data);
+      setJuniState("recommendations_ready");
+    } catch (e: any) {
+      setError(e?.message ?? "Failed to respond to your message");
+      setJuniState("recommendations_ready");
+    }
   }
 
   return (
@@ -283,6 +291,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
             selectedRec={selectedRec}
             followupAnswer={followupAnswer}
             settings={settings}
+            userSaid={userSaid}
             onPickRec={pickRec}
             onAnswerFollowup={answerFollowup}
             onMoreIdeas={moreIdeas}
@@ -292,6 +301,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
               setSelectedRec(null);
               setFollowupAnswer(null);
               setBrief(null);
+              setUserSaid(null);
               setJuniState("recommendations_ready");
               setMovieIntroTyped(false);
             }}
@@ -403,6 +413,7 @@ function JuniBody(props: {
   selectedRec: JuniRecommendation | undefined;
   followupAnswer: string | null;
   settings: ReturnType<typeof useAppStore.getState>["settings"];
+  userSaid: string | null;
   onPickRec: (id: string) => void;
   onAnswerFollowup: (chip: string) => void;
   onMoreIdeas: () => void;
@@ -432,6 +443,7 @@ function JuniBody(props: {
     selectedRec,
     followupAnswer,
     settings,
+    userSaid: _userSaid,
     onPickRec,
     onAnswerFollowup,
     onMoreIdeas,
@@ -481,24 +493,37 @@ function JuniBody(props: {
     };
   }, [state, selectedRec?.id, followupAnswer, recs]);
 
+  const userSaidNode = _userSaid ? (
+    <UserBubble>{_userSaid}</UserBubble>
+  ) : null;
+  const thinkingLabel = _userSaid ? "Thinking…" : "Juni is reading your memory…";
+
   if (state === "recommendations_loading") {
-    return <ThinkingBubble label="Juni is reading your memory…" />;
+    return (
+      <div ref={containerRef}>
+        {userSaidNode}
+        <ThinkingBubble label={thinkingLabel} />
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <JuniBubble>
-        <p className="text-[14px] text-ink-900">
-          Hmm — I can't reach my brain right now. Check that
-          <code className="mx-1 px-1 py-0.5 rounded bg-ink-100 text-[12px]">
-            ANTHROPIC_API_KEY
-          </code>
-          is set in your environment, then try again.
-        </p>
-        <div className="mt-2 text-[11px] text-ink-500 leading-snug">
-          {error}
-        </div>
-      </JuniBubble>
+      <div ref={containerRef}>
+        {userSaidNode}
+        <JuniBubble>
+          <p className="text-[14px] text-ink-900">
+            Hmm — I can't reach my brain right now. Check that
+            <code className="mx-1 px-1 py-0.5 rounded bg-ink-100 text-[12px]">
+              ANTHROPIC_API_KEY
+            </code>
+            is set in your environment, then try again.
+          </p>
+          <div className="mt-2 text-[11px] text-ink-500 leading-snug">
+            {error}
+          </div>
+        </JuniBubble>
+      </div>
     );
   }
 
@@ -506,6 +531,8 @@ function JuniBody(props: {
 
   return (
     <div ref={containerRef} className="space-y-5 pb-1">
+      {userSaidNode}
+
       {/* 1. Juni's opening message and recommended cards */}
       <RecommendationsView
         key={`opening-${recs.openingMessage}`}

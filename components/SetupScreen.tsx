@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import { useAppStore } from "@/lib/store";
 import { parseMemoryZip } from "@/lib/zipMemoryParser";
-import type { PhotoAnalysis } from "@/types";
+import { fetchRecommendations } from "@/lib/juniClient";
+import type { Memory, PhotoAnalysis } from "@/types";
 
 interface Props {
   onDone: () => void;
@@ -14,6 +15,9 @@ const MEMORY_EXPORT_URL =
 
 export function SetupScreen({ onDone }: Props) {
   const loadFromZip = useAppStore((s) => s.loadMemoryFromZip);
+  const settings = useAppStore((s) => s.settings);
+  const setRecs = useAppStore((s) => s.setRecommendations);
+  const setDebug = useAppStore((s) => s.setDebug);
 
   const [zipName, setZipName] = useState<string | null>(null);
   const [parsing, setParsing] = useState(false);
@@ -23,6 +27,7 @@ export function SetupScreen({ onDone }: Props) {
     memory: any;
     photoAnalyses: PhotoAnalysis[];
   } | null>(null);
+  const [preparing, setPreparing] = useState(false);
 
   async function handleZip(file: File | undefined) {
     if (!file) return;
@@ -44,17 +49,71 @@ export function SetupScreen({ onDone }: Props) {
     }
   }
 
-  function commitAndContinue() {
+  async function commitAndContinue() {
+    setPreparing(true);
+    setError(null);
+
+    // Land the chosen memory in the store so the recommendation request
+    // builds against it, even before we move on to the Memory Detail screen.
+    let activeMemory: Memory;
+    let activePhotoAnalyses: PhotoAnalysis[];
     if (parsedMemory) {
       loadFromZip({
         memory: parsedMemory.memory,
         photoAnalyses: parsedMemory.photoAnalyses,
       });
+      activeMemory = parsedMemory.memory as Memory;
+      activePhotoAnalyses = parsedMemory.photoAnalyses;
+    } else {
+      activeMemory = settings.memory!;
+      activePhotoAnalyses = settings.photoAnalyses;
     }
-    onDone();
+
+    // Pre-read while still on the Setup screen so the chat itself feels
+    // close to instant once the user opens it.
+    try {
+      const existingArt =
+        parsedMemory && activeMemory.id !== settings.memory?.id
+          ? []
+          : settings.existingArt;
+      const ctx = {
+        memory: activeMemory,
+        photoAnalyses: activePhotoAnalyses,
+        existingArt,
+        artForms: settings.artForms,
+        capabilities: settings.capabilities,
+      };
+      const resp = await fetchRecommendations({
+        settings: {
+          llm: settings.llm,
+          prompts: settings.prompts,
+          style: settings.style,
+          capabilities: settings.capabilities,
+        },
+        context: ctx,
+      });
+      setRecs(resp.data);
+      setDebug({
+        lastContext: ctx,
+        lastRequest: resp.debug.request,
+        lastResponse: resp.debug.response,
+      });
+      onDone();
+    } catch (e: any) {
+      // Don't block — surface the error in the chat as before.
+      console.warn("Setup prefetch failed", e);
+      setError(
+        "Juni couldn't reach the LLM. We'll show you the memory and you can try from there."
+      );
+      onDone();
+    } finally {
+      setPreparing(false);
+    }
   }
 
-  const primaryLabel = parsedMemory
+  const primaryLabel = preparing
+    ? "Juni is reading your memory…"
+    : parsedMemory
     ? `Continue with "${parsedMemoryTitle}"`
     : "Use the sample memory";
 
@@ -152,7 +211,7 @@ export function SetupScreen({ onDone }: Props) {
         <div className="mt-auto pt-6 space-y-2">
           <button
             onClick={commitAndContinue}
-            disabled={parsing}
+            disabled={parsing || preparing}
             className="w-full py-3.5 rounded-full bg-juni text-white text-[14px] font-semibold shadow-card disabled:opacity-50 active:scale-[0.99]"
           >
             {primaryLabel}

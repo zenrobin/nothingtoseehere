@@ -20,9 +20,25 @@ export interface JuniContext {
   capabilities: AppSettings["capabilities"];
 }
 
+export interface JuniConversationContext {
+  /** Freeform user message to respond to ("I want to make a birthday card"). */
+  userMessage?: string;
+  /**
+   * Titles of recommendations already shown — Juni should skip these and
+   * suggest something different.
+   */
+  excludeTitles?: string[];
+  /**
+   * When true, signals this is a "more ideas" follow-up. The opening message
+   * should be conversational ("Sure — here's a different angle…").
+   */
+  moreIdeas?: boolean;
+}
+
 export interface JuniRequestPayload {
   settings: Pick<AppSettings, "llm" | "prompts" | "style" | "capabilities">;
   context: JuniContext;
+  conversation?: JuniConversationContext;
 }
 
 export async function fetchRecommendations(

@@ -18,10 +18,11 @@ import { ThinkingDots } from "./ThinkingDots";
 
 interface Props {
   onConfirmBrief: (brief: CreativeBriefT) => void;
+  onSeeArtwork?: (job: any) => void;
   onClose: () => void;
 }
 
-export function JuniSheet({ onConfirmBrief, onClose }: Props) {
+export function JuniSheet({ onConfirmBrief, onSeeArtwork, onClose }: Props) {
   const settings = useAppStore((s) => s.settings);
   const juniState = useAppStore((s) => s.juniState);
   const setJuniState = useAppStore((s) => s.setJuniState);
@@ -45,6 +46,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
   const [length, setLength] = useState<MovieControls["length"]>("shorter");
   const [textDensity, setTextDensity] = useState<MovieControls["textDensity"]>("less");
   const [feature, setFeature] = useState<string>("Let Juni choose");
+  const [createdRecIds, setCreatedRecIds] = useState<string[]>([]);
 
   const memory = settings.memory!;
   const selectedRec: JuniRecommendation | undefined = useMemo(
@@ -193,6 +195,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
       followupAnswer: followupAnswer ?? "Surprise me",
       movieControls,
     });
+    setCreatedRecIds((prev) => [...prev, selectedRec.id]);
     onConfirmBrief(b);
   }
 
@@ -297,6 +300,9 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
             onMoreIdeas={moreIdeas}
             onBuildBrief={buildBrief}
             onConfirmCreate={confirmCreate}
+            onSeeArtwork={onSeeArtwork}
+            createdRecIds={createdRecIds}
+            setCreatedRecIds={setCreatedRecIds}
             onChangeDirection={() => {
               setSelectedRec(null);
               setFollowupAnswer(null);
@@ -419,6 +425,9 @@ function JuniBody(props: {
   onMoreIdeas: () => void;
   onBuildBrief: () => void;
   onConfirmCreate: () => void;
+  onSeeArtwork?: (job: any) => void;
+  createdRecIds: string[];
+  setCreatedRecIds: React.Dispatch<React.SetStateAction<string[]>>;
   onChangeDirection: () => void;
   movieControls: MovieControls | undefined;
   setMovieControls: (m: MovieControls | undefined) => void;
@@ -449,6 +458,9 @@ function JuniBody(props: {
     onMoreIdeas,
     onBuildBrief,
     onConfirmCreate,
+    onSeeArtwork,
+    createdRecIds,
+    setCreatedRecIds,
     onChangeDirection,
     movieControls,
     setMovieControls,
@@ -466,6 +478,28 @@ function JuniBody(props: {
   } = props;
 
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const activeJob = useAppStore((s) => s.activeJob);
+
+  const [statusTyped, setStatusTyped] = useState(false);
+  const [carouselRevealed, setCarouselRevealed] = useState(false);
+
+  useEffect(() => {
+    setStatusTyped(false);
+    setCarouselRevealed(false);
+  }, [createdRecIds.length]);
+
+  useEffect(() => {
+    if (!statusTyped) return;
+    const t = setTimeout(() => setCarouselRevealed(true), 400);
+    return () => clearTimeout(t);
+  }, [statusTyped]);
+
+  useEffect(() => {
+    if (selectedRec && createdRecIds.includes(selectedRec.id) && state === "generated") {
+      setStatusTyped(true);
+      setCarouselRevealed(true);
+    }
+  }, [state, selectedRec, createdRecIds]);
 
   // Automatically scroll the parent scroll area to the bottom in real-time
   // as the content grows (e.g., during typewriter typing).
@@ -544,15 +578,47 @@ function JuniBody(props: {
         onMoreIdeas={onMoreIdeas}
       />
 
+      {/* 1.5. Historic Creations Scroll History */}
+      {createdRecIds
+        .filter((id) => id !== selectedRec?.id)
+        .map((id) => {
+          const r = recs.recommendations.find((x) => x.id === id);
+          if (!r) return null;
+          
+          const job = useAppStore.getState().jobs.find((j) => j.brief.conceptId === id);
+          const isGenerating = job?.status === "pending";
+          const isComplete = job?.status === "complete";
+          
+          return (
+            <div key={`history-${id}`} className="space-y-4 animate-fade-in pt-3 border-t border-ink-100/30">
+              <UserBubble image={getCardImage(r, settings.photoAnalyses, pickCoverPhoto(settings))}>
+                Let's go with the <span className="font-semibold">"{r.title}"</span> concept.
+              </UserBubble>
+              <JuniBubble>
+                {isGenerating ? (
+                  <div className="flex items-center gap-2">
+                    <span className="animate-spin text-juni font-bold">⏳</span>
+                    <span>I'm on it! I'm creating your <strong>"{r.title}"</strong> artwork now...</span>
+                  </div>
+                ) : isComplete ? (
+                  <span>🎉 All done! Your <strong>"{r.title}"</strong> is ready! I've added it to your memory's collection.</span>
+                ) : (
+                  <span>I've submitted <strong>"{r.title}"</strong> to be created.</span>
+                )}
+              </JuniBubble>
+            </div>
+          );
+        })}
+
       {/* 2. User Bubble showing selected concept */}
-      {selectedRec && (
+      {selectedRec && !createdRecIds.includes(selectedRec.id) && (
         <UserBubble image={getCardImage(selectedRec, settings.photoAnalyses, pickCoverPhoto(settings))}>
           Let's go with the <span className="font-semibold">"{selectedRec.title}"</span> concept.
         </UserBubble>
       )}
 
       {/* 2b. Movie introduction bubble and settings block from Juni */}
-      {selectedRec && selectedRec.artform === "movie" && (
+      {selectedRec && !createdRecIds.includes(selectedRec.id) && selectedRec.artform === "movie" && (
         <div className="flex flex-col gap-3">
           <JuniBubble>
             {!followupAnswer ? (
@@ -602,7 +668,7 @@ function JuniBody(props: {
       )}
 
       {/* 3. Juni's Follow-up Question Block */}
-      {selectedRec && selectedRec.artform === "genArt" && (
+      {selectedRec && !createdRecIds.includes(selectedRec.id) && selectedRec.artform === "genArt" && (
         <FollowupBlock
           selectedRec={selectedRec}
           followupAnswer={followupAnswer}
@@ -617,14 +683,14 @@ function JuniBody(props: {
       )}
 
       {/* 4. User Bubble showing GenArt Follow-up Answer */}
-      {selectedRec && selectedRec.artform === "genArt" && followupAnswer && (
+      {selectedRec && !createdRecIds.includes(selectedRec.id) && selectedRec.artform === "genArt" && followupAnswer && (
         <UserBubble>
           {followupAnswer}
         </UserBubble>
       )}
 
       {/* 5. Finalized Movie Selection User Bubble in chat */}
-      {selectedRec && selectedRec.artform === "movie" && followupAnswer && movieControls && (
+      {selectedRec && !createdRecIds.includes(selectedRec.id) && selectedRec.artform === "movie" && followupAnswer && movieControls && (
         <UserBubble>
           Theme: <span className="font-semibold capitalize">{movieControls.theme}</span>,{" "}
           Length: <span className="font-semibold capitalize">{movieControls.length}</span>
@@ -632,12 +698,84 @@ function JuniBody(props: {
       )}
 
       {/* 6. Creative Brief Card */}
-      {state === "brief_ready" && useAppStore.getState().brief && (
+      {state === "brief_ready" && selectedRec && !createdRecIds.includes(selectedRec.id) && useAppStore.getState().brief && (
         <CreativeBriefCard
           brief={useAppStore.getState().brief!}
           onConfirm={onConfirmCreate}
           onChangeDirection={onChangeDirection}
         />
+      )}
+
+      {/* 7. Active Generating Continuous Turn */}
+      {selectedRec && createdRecIds.includes(selectedRec.id) && (
+        <div className="space-y-5 animate-fade-in">
+          {/* User Bubble confirmation */}
+          <UserBubble image={getCardImage(selectedRec, settings.photoAnalyses, pickCoverPhoto(settings))}>
+            Create this
+          </UserBubble>
+
+          {/* Combined Status & Hook bubble (keeps static/typewritten) */}
+          <JuniBubble>
+            {state === "generation_failed" ? (
+              <span>⚠️ Hmm, something went wrong while creating your artwork. Please try again!</span>
+            ) : statusTyped ? (
+              <span>Creating your "{selectedRec.title}" artwork now! 🎨 I'll let you know the second it's ready. In the meantime, what else should we try with this memory?</span>
+            ) : (
+              <TypewriterText
+                text={`Creating your "${selectedRec.title}" artwork now! 🎨 I'll let you know the second it's ready. In the meantime, what else should we try with this memory?`}
+                speedMs={10}
+                onDone={() => setStatusTyped(true)}
+              />
+            )}
+          </JuniBubble>
+
+          {/* Secondary Carousel with remaining options */}
+          {carouselRevealed && (() => {
+            const remainingRecs = recs.recommendations.filter(
+              (r) => !createdRecIds.includes(r.id)
+            );
+            if (remainingRecs.length === 0) {
+              return (
+                <div className="pl-[42px] text-[12px] text-ink-400 italic animate-fade-in">
+                  We've explored all the recommended directions for this memory!
+                </div>
+              );
+            }
+            return (
+              <div className="animate-slide-up">
+                <RecommendationCards
+                  recs={remainingRecs}
+                  artForms={settings.artForms}
+                  selectedId={null}
+                  onSelect={onPickRec}
+                  photoAnalyses={settings.photoAnalyses}
+                  coverPhotoDataUrl={pickCoverPhoto(settings)}
+                  onMoreIdeas={onMoreIdeas}
+                />
+              </div>
+            );
+          })()}
+
+          {/* 8. Success Follow-up Message and CTA Button (Appended BELOW the recommendations carousel when completed) */}
+          {state === "generated" && activeJob && activeJob.brief.conceptId === selectedRec.id && (
+            <div className="space-y-3 animate-slide-up">
+              <JuniBubble>
+                <span>Good news! I've finished your <strong>"{selectedRec.title}"</strong> artwork! Do you want to check it out?</span>
+              </JuniBubble>
+              <div className="pl-10.5 animate-fade-in flex justify-start">
+                <button
+                  onClick={() => onSeeArtwork && onSeeArtwork(activeJob)}
+                  className="px-6 py-2.5 rounded-full bg-juni text-white font-semibold text-[13px] active:scale-[0.98] transition shadow-md flex items-center gap-1.5 hover:bg-juni-dark"
+                >
+                  <span>See artwork</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

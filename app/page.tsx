@@ -124,12 +124,13 @@ export default function Page() {
 
   function handleConfirmBrief(brief: CreativeBrief) {
     if (!settings.memory) return;
-    closeJuni();
     decrementCreations();
-    setToast({
-      title: "Your art is on the way",
-      subtitle: "Usually it takes up to 30 sec to finish.",
-    });
+    if (!juniOpen) {
+      setToast({
+        title: "Your art is on the way",
+        subtitle: "Usually it takes up to 30 sec to finish.",
+      });
+    }
     movedToArtRef.current = null;
     startGenerationJob({
       memoryId: settings.memory.id,
@@ -140,23 +141,32 @@ export default function Page() {
         upsertJob(job);
         if (job.status === "complete") {
           setJuniState("generated");
-          setToast({
-            title: "Your art is ready",
-            subtitle: `Tap "${job.brief.conceptTitle}" to view`,
-          });
-          setTimeout(() => setToast(null), 3200);
+          if (!useAppStore.getState().juniOpen) {
+            setToast({
+              title: "Your art is ready",
+              subtitle: `Tap "${job.brief.conceptTitle}" to view`,
+            });
+            setTimeout(() => setToast(null), 3200);
+          }
         } else if (job.status === "failed") {
           setJuniState("generation_failed");
-          setToast({
-            title: "Generation failed",
-            subtitle: "Try again — Juni will pick a slightly different path.",
-          });
-          setTimeout(() => setToast(null), 3200);
+          if (!useAppStore.getState().juniOpen) {
+            setToast({
+              title: "Generation failed",
+              subtitle: "Try again — Juni will pick a slightly different path.",
+            });
+            setTimeout(() => setToast(null), 3200);
+          }
         } else {
           setJuniState("generating");
         }
       },
     });
+  }
+
+  function handleSeeArtwork(job: GenerationJob) {
+    closeJuni();
+    setShowResult(job);
   }
 
   // When a completed job is acknowledged via tapping, move it into existing art
@@ -208,6 +218,7 @@ export default function Page() {
         {juniOpen && (
           <JuniSheet
             onConfirmBrief={handleConfirmBrief}
+            onSeeArtwork={handleSeeArtwork}
             onClose={closeJuni}
           />
         )}

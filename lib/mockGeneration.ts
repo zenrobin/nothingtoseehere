@@ -11,6 +11,7 @@ const RESULT_GRADIENTS: Record<string, string> = {
 export function startGenerationJob(args: {
   memoryId: string;
   brief: CreativeBrief;
+  imageUrl?: string;
   delayMs: number;
   failureRatePct: number;
   onUpdate: (job: GenerationJob) => void;
@@ -23,6 +24,7 @@ export function startGenerationJob(args: {
     brief: args.brief,
     status: "pending",
     startedAt,
+    imageUrl: args.imageUrl,
   };
   args.onUpdate(initial);
 

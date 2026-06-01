@@ -120,22 +120,38 @@ export const useAppStore = create<AppState>()(
 
       setSettings: (updater) =>
         set((state) => ({ settings: updater(state.settings) })),
-      resetSettings: () => set({ settings: DEFAULT_SETTINGS }),
+      resetSettings: () =>
+        set({
+          settings: DEFAULT_SETTINGS,
+          hasOnboarded: false,
+          juniState: "memory_loaded",
+          juniOpen: false,
+          recommendations: null,
+          selectedRecId: null,
+          followupAnswer: null,
+          brief: null,
+          activeJob: null,
+          jobs: [],
+        }),
       loadMemoryFromZip: ({ memory, photoAnalyses }) =>
         set((state) => ({
           settings: {
             ...state.settings,
             memory,
             photoAnalyses,
-            existingArt:
-              memory.id === state.settings.memory?.id
-                ? state.settings.existingArt
-                : [],
+            existingArt: [], // Always empty artworks on ZIP upload to start from scratch!
+            generation: {
+              ...state.settings.generation,
+              creationsLeft: DEFAULT_SETTINGS.generation.creationsLeft, // Reset creations count
+            },
           },
           juniState: "memory_loaded",
           recommendations: null,
           selectedRecId: null,
+          followupAnswer: null,
           brief: null,
+          activeJob: null, // Clear active generation job
+          jobs: [], // Clear all generation job history
         })),
       setMemoryRaw: (memory, photoAnalyses) =>
         set((state) => ({

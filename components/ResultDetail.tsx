@@ -3,7 +3,7 @@
 import React from "react";
 import type { GenerationJob } from "@/types";
 import { TypewriterText } from "./TypewriterText";
-import { placeholderStyle } from "@/lib/placeholder";
+import { placeholderStyle, placeholderTintStyle } from "@/lib/placeholder";
 
 interface Props {
   job: GenerationJob;
@@ -42,6 +42,19 @@ export function ResultDetail({
           className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-card"
           style={placeholderStyle(result.kind)}
         >
+          {job.imageUrl && (
+            <>
+              <img
+                src={job.imageUrl}
+                alt={result.title}
+                className="absolute inset-0 w-full h-full object-cover animate-fade-in animate-duration-300"
+              />
+              <div
+                className="absolute inset-0 opacity-45 mix-blend-multiply"
+                style={placeholderTintStyle(result.kind)}
+              />
+            </>
+          )}
           <div className="absolute inset-0 juni-grain" />
           <div className="absolute top-3 left-3 bg-white/80 backdrop-blur text-[10px] uppercase tracking-widest font-semibold text-ink-700 px-2 py-1 rounded-full">
             {result.kind === "movie" ? "Movie" : "GenArt"}

@@ -3,7 +3,7 @@
 import React from "react";
 import type { ExistingArt, GenerationJob } from "@/types";
 import { useDragScroll } from "@/lib/useDragScroll";
-import { placeholderStyle } from "@/lib/placeholder";
+import { placeholderStyle, placeholderTintStyle } from "@/lib/placeholder";
 
 interface Props {
   art: ExistingArt[];
@@ -36,26 +36,40 @@ export function MemoryArtRail({ art, pendingJob, completedJob, onResultTap }: Pr
             title={completedJob.result.title}
             kind={completedJob.result.kind}
             gradient={completedJob.result.thumbGradient}
+            imageUrl={completedJob.imageUrl}
             isNew
             onClick={() => onResultTap(completedJob)}
           />
         )}
         {art.map((a) => (
-          <ArtCard key={a.id} art={a} />
+          <ArtCard key={a.id} art={a} onClick={() => onResultTap(artToJob(a))} />
         ))}
       </div>
     </div>
   );
 }
 
-function ArtCard({ art }: { art: ExistingArt }) {
+function ArtCard({ art, onClick }: { art: ExistingArt; onClick?: () => void }) {
   const isMovie = art.kind === "movie";
   return (
-    <div className="shrink-0 w-32">
+    <button onClick={onClick} className="shrink-0 w-32 text-left active:scale-[0.99] transition">
       <div
         className="relative h-40 w-32 rounded-2xl shadow-card overflow-hidden"
         style={placeholderStyle(art.kind)}
       >
+        {art.imageUrl && (
+          <>
+            <img
+              src={art.imageUrl}
+              alt={art.title}
+              className="absolute inset-0 w-full h-full object-cover animate-fade-in animate-duration-300"
+            />
+            <div
+              className="absolute inset-0 opacity-40 mix-blend-multiply"
+              style={placeholderTintStyle(art.kind)}
+            />
+          </>
+        )}
         <div className="absolute inset-0 juni-grain opacity-40" />
         <div className="absolute top-2 left-2">
           <div
@@ -82,7 +96,7 @@ function ArtCard({ art }: { art: ExistingArt }) {
           <div className="text-[11px] text-ink-500 truncate">{art.subtitle}</div>
         )}
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -113,11 +127,13 @@ function PendingCard({ brief }: { brief: string }) {
 function ResultCard({
   title,
   kind,
+  imageUrl,
   isNew,
   onClick,
 }: {
   title: string;
   gradient?: string;
+  imageUrl?: string;
   kind: string;
   isNew?: boolean;
   onClick?: () => void;
@@ -132,6 +148,19 @@ function ResultCard({
         className="relative h-40 w-32 rounded-2xl shadow-card overflow-hidden"
         style={placeholderStyle(kind as any)}
       >
+        {imageUrl && (
+          <>
+            <img
+              src={imageUrl}
+              alt={title}
+              className="absolute inset-0 w-full h-full object-cover animate-fade-in animate-duration-300"
+            />
+            <div
+              className="absolute inset-0 opacity-40 mix-blend-multiply"
+              style={placeholderTintStyle(kind as any)}
+            />
+          </>
+        )}
         <div className="absolute inset-0 juni-grain opacity-40" />
         {isNew && (
           <div className="absolute top-2 right-2 bg-juni text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
@@ -163,4 +192,35 @@ function ResultCard({
       </div>
     </button>
   );
+}
+
+function artToJob(art: ExistingArt): GenerationJob {
+  const isMovie = art.kind === "movie";
+  return {
+    id: art.id.startsWith("art-from-") ? art.id.slice("art-from-".length) : art.id,
+    memoryId: art.memoryId,
+    status: "complete",
+    startedAt: Date.now(),
+    imageUrl: art.imageUrl,
+    brief: {
+      artform: isMovie ? "movie" : "genArt",
+      sourceMemoryId: art.memoryId,
+      conceptId: "",
+      conceptTitle: art.title,
+      templateId: null,
+      templateName: null,
+      tone: "quiet and personal",
+      keyDetails: [],
+      differentiator: "made by Juni",
+      summary: art.title,
+    },
+    result: {
+      title: art.title,
+      explanation: isMovie 
+        ? `I made this movie feel quiet and personal, so it lingers on the everyday details instead of trying to summarize the whole day.`
+        : `I made this feel quiet and personal, so it goes somewhere your other art doesn't already cover.`,
+      thumbGradient: art.thumbColor,
+      kind: art.kind,
+    }
+  };
 }

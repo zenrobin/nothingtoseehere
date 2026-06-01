@@ -479,14 +479,26 @@ function JuniBody(props: {
 
   const containerRef = React.useRef<HTMLDivElement>(null);
   const activeJob = useAppStore((s) => s.activeJob);
+  const jobs = useAppStore((s) => s.jobs);
+  const completedJobForRec = selectedRec
+    ? jobs.find((j) => j.brief.conceptId === selectedRec.id && j.status === "complete")
+    : null;
+  const finishedJob = activeJob || completedJobForRec;
 
   const [statusTyped, setStatusTyped] = useState(false);
   const [carouselRevealed, setCarouselRevealed] = useState(false);
+  const [successMessageTyped, setSuccessMessageTyped] = useState(
+    () => selectedRec ? jobs.some((j) => j.brief.conceptId === selectedRec.id && j.status === "complete") : false
+  );
 
   useEffect(() => {
     setStatusTyped(false);
     setCarouselRevealed(false);
-  }, [createdRecIds.length]);
+    const isAlreadyComplete = selectedRec 
+      ? useAppStore.getState().jobs.some((j) => j.brief.conceptId === selectedRec.id && j.status === "complete") 
+      : false;
+    setSuccessMessageTyped(isAlreadyComplete);
+  }, [createdRecIds.length, selectedRec?.id]);
 
   useEffect(() => {
     if (!statusTyped) return;
@@ -510,15 +522,25 @@ function JuniBody(props: {
     const parent = el.parentElement;
     if (!parent) return;
 
-    const observer = new ResizeObserver(() => {
+    // Force scroll to bottom once on state transitions (e.g. creative brief / job success loaded)
+    parent.scrollTop = parent.scrollHeight;
+    requestAnimationFrame(() => {
       parent.scrollTop = parent.scrollHeight;
-      requestAnimationFrame(() => {
+    });
+
+    const observer = new ResizeObserver(() => {
+      // Only scroll if the user was already near the bottom of the container (within 65px threshold)
+      // so we do not disrupt active horizontal swiping or manual card browsing.
+      const threshold = 65;
+      const isNearBottom =
+        parent.scrollHeight - parent.clientHeight - parent.scrollTop < threshold;
+
+      if (isNearBottom) {
         parent.scrollTop = parent.scrollHeight;
-      });
-      // Fallback delay to ensure it catches absolute final paint & layout settles
-      setTimeout(() => {
-        parent.scrollTop = parent.scrollHeight;
-      }, 100);
+        requestAnimationFrame(() => {
+          parent.scrollTop = parent.scrollHeight;
+        });
+      }
     });
 
     observer.observe(el);
@@ -757,22 +779,32 @@ function JuniBody(props: {
           })()}
 
           {/* 8. Success Follow-up Message and CTA Button (Appended BELOW the recommendations carousel when completed) */}
-          {state === "generated" && activeJob && activeJob.brief.conceptId === selectedRec.id && (
+          {state === "generated" && finishedJob && selectedRec && finishedJob.brief.conceptId === selectedRec.id && (
             <div className="space-y-3 animate-slide-up">
-              <JuniBubble>
-                <span>Good news! I've finished your <strong>"{selectedRec.title}"</strong> artwork! Do you want to check it out?</span>
+              <JuniBubble image={finishedJob.imageUrl || getCardImage(selectedRec, settings.photoAnalyses, pickCoverPhoto(settings))}>
+                {successMessageTyped ? (
+                  <span>Good news! I've finished your <strong>"{selectedRec.title}"</strong> artwork! Do you want to check it out?</span>
+                ) : (
+                  <TypewriterText
+                    text={`Good news! I've finished your "${selectedRec.title}" artwork! Do you want to check it out?`}
+                    speedMs={12}
+                    onDone={() => setSuccessMessageTyped(true)}
+                  />
+                )}
               </JuniBubble>
-              <div className="pl-10.5 animate-fade-in flex justify-start">
-                <button
-                  onClick={() => onSeeArtwork && onSeeArtwork(activeJob)}
-                  className="px-6 py-2.5 rounded-full bg-juni text-white font-semibold text-[13px] active:scale-[0.98] transition shadow-md flex items-center gap-1.5 hover:bg-juni-dark"
-                >
-                  <span>See artwork</span>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </div>
+              {successMessageTyped && (
+                <div className="pl-10.5 animate-fade-in flex justify-start">
+                  <button
+                    onClick={() => onSeeArtwork && onSeeArtwork(finishedJob)}
+                    className="px-6 py-2.5 rounded-full bg-juni text-white font-semibold text-[13px] active:scale-[0.98] transition shadow-md flex items-center gap-1.5 hover:bg-juni-dark animate-fade-in"
+                  >
+                    <span>See artwork</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -917,7 +949,7 @@ function JuniAvatar({ pulse }: { pulse?: boolean }) {
   );
 }
 
-function JuniBubble({ children }: { children: React.ReactNode }) {
+function JuniBubble({ children, image }: { children: React.ReactNode; image?: string }) {
   return (
     <div className="flex items-start gap-2.5 animate-fade-in py-1 pr-10">
       <JuniAvatar />
@@ -925,8 +957,17 @@ function JuniBubble({ children }: { children: React.ReactNode }) {
         <div className="text-[10px] uppercase tracking-widest text-juni font-semibold mb-1">
           Juni
         </div>
-        <div className="rounded-2xl rounded-tl-md bg-white shadow-card px-4 py-3 text-[14px] leading-relaxed text-ink-900">
-          {children}
+        <div className="flex items-start gap-3">
+          <div className="flex-1 rounded-2xl rounded-tl-md bg-white shadow-card px-4 py-3 text-[14px] leading-relaxed text-ink-900">
+            {children}
+          </div>
+          {image && (
+            <img
+              src={image}
+              alt=""
+              className="w-12 h-16 object-cover rounded-lg shadow-md border border-white/80 shrink-0 select-none animate-fade-in animate-duration-300"
+            />
+          )}
         </div>
       </div>
     </div>

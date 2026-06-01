@@ -132,9 +132,23 @@ export default function Page() {
       });
     }
     movedToArtRef.current = null;
+
+    // Resolve the chosen photo imageUrl from recommendation
+    let imageUrl: string | undefined;
+    const rec = recs?.recommendations.find((r) => r.id === brief.conceptId);
+    if (rec?.photoId) {
+      const matched = settings.photoAnalyses.find(
+        (p) => String(p.photo_id) === String(rec.photoId)
+      );
+      if (matched?.imageDataUrl) {
+        imageUrl = matched.imageDataUrl;
+      }
+    }
+
     startGenerationJob({
       memoryId: settings.memory.id,
       brief,
+      imageUrl,
       delayMs: settings.generation.delayMs,
       failureRatePct: settings.generation.failureRatePct,
       onUpdate: (job) => {
@@ -165,7 +179,6 @@ export default function Page() {
   }
 
   function handleSeeArtwork(job: GenerationJob) {
-    closeJuni();
     setShowResult(job);
   }
 
@@ -182,6 +195,7 @@ export default function Page() {
       title: job.result.title,
       subtitle: "Made by Juni",
       thumbColor: job.result.thumbGradient,
+      imageUrl: job.imageUrl,
       createdAt: new Date(job.completedAt ?? Date.now()).toISOString(),
     };
     addExistingArt(art);

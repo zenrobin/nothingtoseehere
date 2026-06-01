@@ -76,6 +76,7 @@ export interface ExistingArt {
   subtitle?: string;
   thumbColor: string; // tailwind gradient classes
   iconHint?: string;
+  imageUrl?: string;
   createdAt: string;
 }
 
@@ -151,6 +152,7 @@ export interface GenerationJob {
   status: GenerationStatus;
   startedAt: number;
   completedAt?: number;
+  imageUrl?: string;
   result?: {
     title: string;
     explanation: string;

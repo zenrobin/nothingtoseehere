@@ -203,6 +203,7 @@ export interface AppSettings {
     lastRequest?: unknown;
     lastResponse?: unknown;
     lastBrief?: CreativeBrief;
+    devPersist?: boolean;
   };
 }
 

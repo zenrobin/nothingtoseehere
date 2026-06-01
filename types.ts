@@ -102,6 +102,7 @@ export interface JuniRecommendation {
   description: string;
   why: string;
   suggestedTemplateId: string | null;
+  photoId?: number | null;
   followupQuestion: JuniFollowupQuestion;
 }
 
@@ -203,6 +204,7 @@ export interface AppSettings {
     lastRequest?: unknown;
     lastResponse?: unknown;
     lastBrief?: CreativeBrief;
+    devPersist?: boolean;
   };
 }
 

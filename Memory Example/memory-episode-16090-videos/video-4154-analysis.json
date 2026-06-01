@@ -1,0 +1,62 @@
+{
+  "description": "A man stands on a rocky coastline, looking out at the deep blue sea. Waves crash against the shore. The sun is shining brightly, indicating a clear day. The man is wearing a casual outfit of a t-shirt, shorts, and a cap. The camera captures the vastness of the ocean and the ruggedness of the landscape.",
+  "scores": {
+    "aesthetic": 7,
+    "emotional": 6,
+    "memory_value": 7
+  },
+  "key_elements": {
+    "people": [
+      "man"
+    ],
+    "locations": [
+      "coastline",
+      "sea",
+      "rocks"
+    ],
+    "objects": [
+      "t-shirt",
+      "shorts",
+      "cap"
+    ],
+    "activities": [
+      "standing",
+      "looking at the sea",
+      "waves crashing"
+    ]
+  },
+  "location_context": {
+    "name": "",
+    "area": "Malta"
+  },
+  "time_context": "Daytime",
+  "clips": [
+    {
+      "start": "0:00",
+      "end": "0:04",
+      "name": "Coastal Stroll",
+      "description": "The video opens with a shot of a man from behind, walking along a sandy, rocky path near the edge of a cliff. The deep blue sea with white-capped waves is visible in the background, under a clear blue sky. The camera follows him briefly.",
+      "score": 7,
+      "transcription": "",
+      "audio_events": [
+        "Ocean waves crashing",
+        "Ambient wind"
+      ],
+      "id": "e2b4a2c8-61cf-45b0-b1b0-74797a71fa09"
+    },
+    {
+      "start": "0:04",
+      "end": "0:13",
+      "name": "Ocean View",
+      "description": "The man stops walking and turns to face the camera, standing on the cliff edge. He is looking out towards the sea, with dramatic rock formations visible in the distance. The waves continue to crash, creating a powerful and serene scene.",
+      "score": 8,
+      "transcription": "",
+      "audio_events": [
+        "Ocean waves crashing",
+        "Ambient wind"
+      ],
+      "id": "f452355a-caa9-4eb7-9a1e-8e87d321b755"
+    }
+  ],
+  "mood_significance": "The video captures a moment of peaceful contemplation on a beautiful, rugged coastline, highlighting the grandeur of nature and a sense of serene solitude."
+}

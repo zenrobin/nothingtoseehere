@@ -61,7 +61,9 @@ export const DEFAULT_SETTINGS: AppSettings = {
   memory: DEFAULT_MEMORY,
   photoAnalyses: DEFAULT_PHOTO_ANALYSES,
   existingArt: DEFAULT_EXISTING_ART,
-  debug: {},
+  debug: {
+    devPersist: false,
+  },
 };
 
 interface AppState {
@@ -188,22 +190,25 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: "juni-cfs-prototype",
-      partialize: (state) => ({
-        // Every refresh resets the prototype to the Setup screen, so we
-        // intentionally don't persist the active memory, photos, in-flight
-        // recommendations, brief, jobs, or onboarding flags. Only the
-        // admin-configurable bits in /settings stick — LLM provider/key,
-        // prompts, style sliders, capabilities, generation knobs, and the
-        // ArtForm catalog.
-        settings: {
-          llm: state.settings.llm,
-          prompts: state.settings.prompts,
-          style: state.settings.style,
-          capabilities: state.settings.capabilities,
-          generation: state.settings.generation,
-          artForms: state.settings.artForms,
-        },
-      }),
+      partialize: (state) => {
+        const isDevPersist = !!state.settings.debug.devPersist;
+        return {
+          hasOnboarded: isDevPersist ? state.hasOnboarded : false,
+          settings: {
+            llm: state.settings.llm,
+            prompts: state.settings.prompts,
+            style: state.settings.style,
+            capabilities: state.settings.capabilities,
+            generation: state.settings.generation,
+            artForms: state.settings.artForms,
+            debug: state.settings.debug,
+            // Conditionally persist memory session fields for local development
+            memory: isDevPersist ? state.settings.memory : undefined,
+            photoAnalyses: isDevPersist ? state.settings.photoAnalyses : undefined,
+            existingArt: isDevPersist ? state.settings.existingArt : undefined,
+          },
+        };
+      },
       // Merge the (partial) persisted settings onto the defaults so memory /
       // photoAnalyses / existingArt / debug come back fresh on every load.
       merge: (persisted, current) => {

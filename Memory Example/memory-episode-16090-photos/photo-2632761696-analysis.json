@@ -1,0 +1,19 @@
+{
+  "description": "A white Toyota Yaris is parked on asphalt, angled slightly towards the viewer's left. The car's front passenger side is prominently displayed. In the background, a multi-story building with balconies adorned with potted plants and a sign that reads 'SANTANA' is visible. The building has large glass windows on the ground floor and a light-colored facade. A red car is parked behind the white Toyota, and a dark-colored car is parked to the right of the white car. The ground is paved with asphalt and concrete curbs, with sunlight casting distinct shadows, indicating a bright, sunny day. The license plate of the white car is partially visible, showing 'Z-064' and a Maltese domain 'toyota.com.mt'. A metal pole stands in the foreground to the right.",
+  "scores": {
+    "aesthetic": 6,
+    "emotional": 3,
+    "memory_value": 4
+  },
+  "key_elements": [
+    "object: white Toyota Yaris",
+    "location: parking lot",
+    "building: hotel 'Santana'",
+    "object: red car",
+    "object: dark car",
+    "object: metal pole",
+    "location: Malta (implied by license plate)"
+  ],
+  "location_context": "This image appears to be taken in a parking area in front of a hotel or a similar establishment, likely in Malta, given the license plate details.",
+  "time_context": "Mid-afternoon, indicated by the angle and intensity of the sunlight and the shadows cast."
+}

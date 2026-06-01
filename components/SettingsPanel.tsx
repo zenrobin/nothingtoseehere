@@ -399,6 +399,17 @@ export function SettingsPanel() {
           />
 
           <Section title="Debug">
+            <Toggle
+              label="Keep memory on reload (Dev)"
+              value={!!settings.debug.devPersist}
+              onChange={(v) =>
+                setSettings((s) => ({
+                  ...s,
+                  debug: { ...s.debug, devPersist: v },
+                }))
+              }
+            />
+            <div className="h-px bg-ink-100/70 my-2" />
             <DebugLine label="Last context" value={settings.debug.lastContext} />
             <DebugLine label="Last request" value={settings.debug.lastRequest} />
             <DebugLine label="Last response" value={settings.debug.lastResponse} />

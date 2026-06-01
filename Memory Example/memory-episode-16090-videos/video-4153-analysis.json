@@ -1,0 +1,80 @@
+{
+  "description": "A woman in a black swimsuit with a blue and white tropical print is performing a series of swimming strokes on what appears to be a pool deck or a similar tiled surface. She moves her arms as if swimming freestyle, then transitions to other strokes, demonstrating technique. The video is shot from a side angle and is slightly tilted.",
+  "scores": {
+    "aesthetic": 6,
+    "emotional": 5,
+    "memory_value": 7
+  },
+  "key_elements": {
+    "people": [
+      "woman"
+    ],
+    "locations": [
+      "pool deck"
+    ],
+    "objects": [
+      "swimsuit",
+      "tiled floor"
+    ],
+    "activities": [
+      "swimming strokes",
+      "exercise"
+    ]
+  },
+  "location_context": {
+    "name": "pool deck",
+    "area": "Malta"
+  },
+  "time_context": "Morning",
+  "clips": [
+    {
+      "start": "0:00",
+      "end": "0:05",
+      "name": "Freestyle Warm-up",
+      "description": "The woman begins by demonstrating a freestyle swimming stroke on a flat surface, her arms moving in a fluid motion. She is wearing a black swimsuit with a tropical pattern.",
+      "score": 7,
+      "transcription": "",
+      "audio_events": [
+        "ambient sounds"
+      ],
+      "id": "64778131-1087-4e68-906a-2301de42d31e"
+    },
+    {
+      "start": "0:05",
+      "end": "0:12",
+      "name": "Stroke Transition",
+      "description": "She transitions to practicing different swimming strokes, adjusting her arm and body movements. The focus is on the form and technique of each stroke.",
+      "score": 6,
+      "transcription": "",
+      "audio_events": [
+        "ambient sounds"
+      ],
+      "id": "68a83c70-57dd-48c2-9279-25bac9971242"
+    },
+    {
+      "start": "0:12",
+      "end": "0:22",
+      "name": "Focused Practice",
+      "description": "The woman continues her practice, appearing focused on her movements. She demonstrates control and precision in her simulated swimming actions.",
+      "score": 6,
+      "transcription": "N/A",
+      "audio_events": [
+        "ambient sounds"
+      ],
+      "id": "054c3f29-992c-417e-b819-c9cf92a47694"
+    },
+    {
+      "start": "0:22",
+      "end": "0:28",
+      "name": "Smiling Reflection",
+      "description": "The woman pauses her movements and looks towards the camera with a slight smile, showing a moment of acknowledgment or enjoyment of her workout.",
+      "score": 8,
+      "transcription": "N/A",
+      "audio_events": [
+        "ambient sounds"
+      ],
+      "id": "868620bd-140d-44a4-ac7b-3593c3c2126a"
+    }
+  ],
+  "mood_significance": "This video captures a moment of dedicated physical activity and personal fitness, possibly during a training session or a workout routine. The woman's focus and subsequent smile suggest a sense of accomplishment and well-being."
+}

@@ -31,6 +31,7 @@ Return JSON with:
       "description": "string",
       "why": "string",
       "suggestedTemplateId": "string or null",
+      "photoId": "number or null (choose the most relevant photo_id from PHOTO ANALYSES for this recommendation, or null if none fit)",
       "followupQuestion": {
         "question": "string",
         "chips": ["string"]

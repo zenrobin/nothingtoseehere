@@ -1,0 +1,17 @@
+{
+  "description": "A man in a blue t-shirt and blue cap is sitting on the edge of a pool, interacting affectionately with a large sea lion. The man is leaning in, and the sea lion has its head raised, appearing to be kissing or nuzzling the man. The man has his arm around the sea lion. The pool has blue tiles and clear water. The background features a bright blue wall and a metal fence in the foreground. A blue cooler box is visible next to the man. The scene suggests a training or animal encounter setting.",
+  "scores": {
+    "aesthetic": 7,
+    "emotional": 9,
+    "memory_value": 8
+  },
+  "key_elements": [
+    "person: man",
+    "animal: sea lion",
+    "location: pool",
+    "object: cooler box",
+    "object: fence"
+  ],
+  "location_context": "This appears to be an animal enclosure at a zoo or marine park, possibly Malta National Aquarium based on coordinates.",
+  "time_context": "Daytime, likely morning or afternoon given the bright lighting."
+}

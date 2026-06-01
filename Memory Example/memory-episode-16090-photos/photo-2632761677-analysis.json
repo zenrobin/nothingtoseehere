@@ -1,0 +1,17 @@
+{
+  "description": "A smiling woman in a blue and green patterned swimsuit and black shorts stands barefoot on a tiled floor in a locker room or changing area. She is pulling on the waistband of her shorts, looking to her left. Her long, dark hair is down. A pair of pink and white flip-flops are on the floor to her right. The room has a row of individual changing stalls with white doors, a blue ceiling, and yellow accents. A red chair is visible to the far left.",
+  "scores": {
+    "aesthetic": 7,
+    "emotional": 8,
+    "memory_value": 7
+  },
+  "key_elements": [
+    "person: woman",
+    "clothing: swimsuit, shorts",
+    "location: locker room",
+    "object: flip-flops",
+    "object: changing stalls"
+  ],
+  "location_context": "Indoors, likely a public facility such as a swimming pool or gym changing room.",
+  "time_context": "Daytime, indoor artificial lighting."
+}

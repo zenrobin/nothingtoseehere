@@ -1,0 +1,18 @@
+{
+  "description": "A young woman with long, wavy brown hair is standing in front of shelves filled with colorful glassware and decorative items. She is wearing a coral-colored dress with a white geometric pattern and a black crossbody bag. Her back is to the camera as she looks intently at the display. The shelves are made of dark wood, and the items include various glasses, vases, and bowls, many of which are illuminated by embedded lighting, creating a vibrant display. The selection includes blue, purple, and multi-colored glassware. This looks like a shop specializing in crystal or decorative home goods.",
+  "scores": {
+    "aesthetic": 8,
+    "emotional": 6,
+    "memory_value": 6
+  },
+  "key_elements": [
+    "person: woman",
+    "location: shop",
+    "object: glassware",
+    "object: shelves",
+    "object: vases",
+    "object: decorative items"
+  ],
+  "location_context": "Inside a store that sells glassware and decorative items, possibly in Malta based on coordinates.",
+  "time_context": "Daytime, indoors with artificial lighting."
+}

@@ -38,6 +38,9 @@ export async function POST(req: NextRequest) {
     }
   );
 
+  // Enforce photoId instruction to handle stale prompts in local storage
+  userMessage += `\n\n[CRITICAL INSTRUCTION]\nFor each recommendation in the "recommendations" array, you MUST pick the most relevant "photo_id" from the "PHOTO ANALYSES" list and include it as the "photoId" field (as a number, or null if none fit) in the JSON object. This is extremely important so that the selected photo matches the creative concept!`;
+
   // Layer conversation context onto the base prompt so the LLM can react.
   if (conversation?.userMessage?.trim()) {
     userMessage += `\n\n[USER MESSAGE]\nThe user just wrote: "${conversation.userMessage.trim()}"\n\nRespond to what they actually want. In the openingMessage, acknowledge their request specifically. Then provide 1-4 recommendations tailored to it (still grounded in this memory's specifics, but shifted in the direction they asked for). If they asked for a specific artform like "card", "movie", "print", or "book", make sure recommendations match that artform.`;

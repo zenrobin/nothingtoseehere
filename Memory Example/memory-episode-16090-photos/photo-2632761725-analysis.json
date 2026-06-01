@@ -1,0 +1,17 @@
+{
+  "description": "A lone figure stands on a rocky coastline, gazing out at the deep blue, choppy sea under a clear sky. The waves crash against the rugged, sun-drenched cliffs. The woman is wearing a light-colored dress and is facing away from the camera.",
+  "scores": {
+    "aesthetic": 8,
+    "emotional": 6,
+    "memory_value": 7
+  },
+  "key_elements": [
+    "person: woman",
+    "location: coastline",
+    "natural feature: sea",
+    "natural feature: cliffs",
+    "weather: clear sky"
+  ],
+  "location_context": "Coastal area with rocky cliffs and ocean.",
+  "time_context": "Mid-day, clear weather"
+}

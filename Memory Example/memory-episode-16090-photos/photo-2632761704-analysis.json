@@ -1,0 +1,19 @@
+{
+  "description": "A panoramic view of a harbor city from a high vantage point. In the foreground, there is a decorative metal railing with geometric patterns and some cannons. The harbor itself is filled with boats of various sizes, including a large cruise ship. Across the water, a densely populated city with historic buildings and fortifications lines the coast. The sky is clear and blue.",
+  "scores": {
+    "aesthetic": 9,
+    "emotional": 8,
+    "memory_value": 9
+  },
+  "key_elements": [
+    "location: harbor city",
+    "element: cruise ship",
+    "element: boats",
+    "element: historic buildings",
+    "element: fortifications",
+    "element: metal railing",
+    "element: cannons"
+  ],
+  "location_context": "This image is a view of a major harbor, likely in a historic European city such as Valletta, Malta, given the architecture and waterways.",
+  "time_context": "Daytime, under a clear blue sky, suggesting fair weather for boating and sightseeing."
+}

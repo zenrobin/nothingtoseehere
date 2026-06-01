@@ -1,0 +1,17 @@
+{
+  "description": "A person stands on a rocky, sun-drenched cliff overlooking a vast, deep blue sea. The waves are crashing against the shore, creating white foam. The coastline is rugged and appears to be made of layered rock. The sky is a clear, vibrant blue. A small green shrub is visible in the foreground.",
+  "scores": {
+    "aesthetic": 8,
+    "emotional": 7,
+    "memory_value": 8
+  },
+  "key_elements": [
+    "person: standing",
+    "location: rocky cliff",
+    "location: sea",
+    "element: crashing waves",
+    "element: rugged coastline"
+  ],
+  "location_context": "This image appears to be taken at a coastal location with dramatic cliffs and a deep blue sea, likely a Mediterranean island or coastal region.",
+  "time_context": "Daytime, likely mid-morning or early afternoon, with clear, bright sunlight."
+}

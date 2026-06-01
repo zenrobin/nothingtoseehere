@@ -1,0 +1,77 @@
+{
+  "description": "A young woman sits at an outdoor cafe table with a slice of chocolate cake and a candle. She is dressed in a green and white polka dot dress. The video captures her excitement and anticipation before blowing out the candle and enjoying her cake. The cafe appears to be in a European-style setting with architecture visible through a glass window. The overall mood is celebratory and joyful.",
+  "scores": {
+    "aesthetic": 7,
+    "emotional": 8,
+    "memory_value": 8
+  },
+  "key_elements": {
+    "people": [
+      "young woman"
+    ],
+    "locations": [
+      "outdoor cafe"
+    ],
+    "objects": [
+      "chocolate cake",
+      "candle",
+      "plate",
+      "fork",
+      "table",
+      "chair",
+      "umbrella"
+    ],
+    "activities": [
+      "sitting at a cafe",
+      "blowing out a candle",
+      "eating cake"
+    ]
+  },
+  "location_context": {
+    "name": "",
+    "area": "Malta"
+  },
+  "time_context": "Daytime",
+  "clips": [
+    {
+      "start": "0:00",
+      "end": "0:04",
+      "name": "Cake Moment",
+      "description": "The video opens with a close-up of a young woman sitting at an outdoor cafe table, looking at a chocolate cake with a lit candle. Her hands are clasped in front of her, and she has an expectant expression.",
+      "score": 8,
+      "transcription": "",
+      "audio_events": [
+        "Ambient cafe sounds"
+      ],
+      "id": "e94e0c13-84f3-4c85-b37d-1c15a63837ab"
+    },
+    {
+      "start": "0:05",
+      "end": "0:07",
+      "name": "Ready to Blow",
+      "description": "The woman smiles broadly and looks directly at the camera, her anticipation building as she prepares to blow out the candle.",
+      "score": 9,
+      "transcription": "Igen",
+      "audio_events": [
+        "Ambient cafe sounds",
+        "Light chatter"
+      ],
+      "id": "a06c8fca-44fb-49a5-bbd6-e001f5a758e4"
+    },
+    {
+      "start": "0:08",
+      "end": "0:11",
+      "name": "Happy Birthday",
+      "description": "She takes a deep breath and blows out the candle. The camera then briefly shows her taking a bite of the cake.",
+      "score": 9,
+      "transcription": "Let's go!",
+      "audio_events": [
+        "Ambient cafe sounds",
+        "Sound of blowing",
+        "Exclamation"
+      ],
+      "id": "e80bb7a8-2aae-4856-9e44-f6f359205fea"
+    }
+  ],
+  "mood_significance": "This video captures a happy, celebratory moment of someone enjoying their birthday at a cafe. The focus on the cake and the woman's joyful reaction makes it a sweet and memorable clip."
+}

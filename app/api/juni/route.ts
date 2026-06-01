@@ -58,10 +58,12 @@ export async function POST(req: NextRequest) {
       result = await callOpenAI(systemPrompt, userMessage, settings);
     } else if (provider === "anthropic") {
       result = await callAnthropic(systemPrompt, userMessage, settings);
+    } else if (provider === "gemini") {
+      result = await callGemini(systemPrompt, userMessage, settings);
     } else {
       return NextResponse.json(
         {
-          error: `Unsupported LLM provider "${provider}". Choose anthropic or openai in Settings.`,
+          error: `Unsupported LLM provider "${provider}". Choose anthropic, openai, or gemini in Settings.`,
         },
         { status: 400 }
       );
@@ -164,5 +166,66 @@ async function callAnthropic(
   const text = resp.content
     .map((c: any) => (c.type === "text" ? c.text : ""))
     .join("");
+  return { text, request };
+}
+
+async function callGemini(
+  systemPrompt: string,
+  userMessage: string,
+  settings: Pick<AppSettings, "llm">
+): Promise<{ text: string; request: unknown }> {
+  const apiKey = settings.llm.apiKey || process.env.GEMINI_API_KEY || "";
+  if (!apiKey) {
+    throw new Error(
+      "Gemini API key not set. Add GEMINI_API_KEY to env or paste a key in Settings."
+    );
+  }
+
+  const model = settings.llm.model || "gemini-3.5-flash";
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+  const request = {
+    contents: [
+      {
+        role: "user",
+        parts: [{ text: userMessage }],
+      },
+    ],
+    systemInstruction: {
+      parts: [{ text: systemPrompt }],
+    },
+    generationConfig: {
+      temperature: settings.llm.temperature,
+      maxOutputTokens: Math.max(settings.llm.maxTokens || 1500, 8000),
+      responseMimeType: "application/json",
+      thinkingConfig: {
+        thinkingLevel: (settings.llm.thinkingLevel || "medium").toUpperCase(),
+      },
+    },
+  };
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Gemini API Error: ${response.status} - ${errText}`);
+  }
+
+  const resData = await response.json();
+  const parts = resData.candidates?.[0]?.content?.parts ?? [];
+  
+  console.log("GEMINI RAW PARTS:", JSON.stringify(parts, null, 2));
+
+  // Filter out any reasoning/thought parts to extract only the final JSON output
+  const textParts = parts.filter((part: any) => !part.thought);
+  const text = textParts.map((part: any) => part.text || "").join("") || 
+               parts.map((part: any) => part.text || "").join("");
+
+  console.log("GEMINI EXTRACTED TEXT:", text);
+
   return { text, request };
 }

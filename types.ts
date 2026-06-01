@@ -158,7 +158,7 @@ export interface GenerationJob {
   };
 }
 
-export type LLMProvider = "anthropic" | "openai";
+export type LLMProvider = "anthropic" | "openai" | "gemini";
 
 export interface AppSettings {
   llm: {
@@ -168,6 +168,7 @@ export interface AppSettings {
     temperature: number;
     maxTokens: number;
     streaming: boolean;
+    thinkingLevel?: "minimal" | "low" | "medium" | "high";
   };
   prompts: {
     system: string;

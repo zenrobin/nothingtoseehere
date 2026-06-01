@@ -31,6 +31,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     temperature: 0.7,
     maxTokens: 1500,
     streaming: false,
+    thinkingLevel: "medium",
   },
   prompts: {
     system: DEFAULT_SYSTEM_PROMPT,

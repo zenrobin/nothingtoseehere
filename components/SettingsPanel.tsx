@@ -14,6 +14,7 @@ export function SettingsPanel() {
   const [serverKeys, setServerKeys] = useState<{
     hasAnthropicKey: boolean;
     hasOpenAIKey: boolean;
+    hasGeminiKey: boolean;
   } | null>(null);
 
   useEffect(() => {
@@ -54,16 +55,22 @@ export function SettingsPanel() {
             <Field label="Provider">
               <select
                 value={settings.llm.provider}
-                onChange={(e) =>
+                onChange={(e) => {
+                  const val = e.target.value as LLMProvider;
                   setSettings((s) => ({
                     ...s,
-                    llm: { ...s.llm, provider: e.target.value as LLMProvider },
-                  }))
-                }
+                    llm: {
+                      ...s.llm,
+                      provider: val,
+                      model: val === "gemini" ? "gemini-3.5-flash" : val === "openai" ? "gpt-4o-mini" : "claude-haiku-4-5-20251001",
+                    },
+                  }));
+                }}
                 className="w-full bg-white border border-ink-100 rounded-lg px-3 py-2 text-[13px]"
               >
                 <option value="anthropic">Anthropic</option>
                 <option value="openai">OpenAI</option>
+                <option value="gemini">Gemini</option>
               </select>
             </Field>
             <Field label="Model">
@@ -75,10 +82,38 @@ export function SettingsPanel() {
                     llm: { ...s.llm, model: e.target.value },
                   }))
                 }
-                placeholder="e.g. claude-haiku-4-5-20251001"
+                placeholder={
+                  settings.llm.provider === "gemini"
+                    ? "e.g. gemini-3.5-flash"
+                    : settings.llm.provider === "openai"
+                    ? "e.g. gpt-4o-mini"
+                    : "e.g. claude-haiku-4-5-20251001"
+                }
                 className="w-full bg-white border border-ink-100 rounded-lg px-3 py-2 text-[13px]"
               />
             </Field>
+            {settings.llm.provider === "gemini" && (
+              <Field label="Thinking Level">
+                <select
+                  value={settings.llm.thinkingLevel || "medium"}
+                  onChange={(e) =>
+                    setSettings((s) => ({
+                      ...s,
+                      llm: {
+                        ...s.llm,
+                        thinkingLevel: e.target.value as any,
+                      },
+                    }))
+                  }
+                  className="w-full bg-white border border-ink-100 rounded-lg px-3 py-2 text-[13px]"
+                >
+                  <option value="minimal">Minimal (Low Latency)</option>
+                  <option value="low">Low (Economical / Coding)</option>
+                  <option value="medium">Medium (Balanced)</option>
+                  <option value="high">High (Deep reasoning)</option>
+                </select>
+              </Field>
+            )}
             <Field
               label="API Key"
               hint={
@@ -86,9 +121,13 @@ export function SettingsPanel() {
                   ? "Server has ANTHROPIC_API_KEY set — leave blank to use it. Anything you paste here overrides it locally."
                   : settings.llm.provider === "openai" && serverKeys?.hasOpenAIKey
                   ? "Server has OPENAI_API_KEY set — leave blank to use it."
+                  : settings.llm.provider === "gemini" && serverKeys?.hasGeminiKey
+                  ? "Server has GEMINI_API_KEY set — leave blank to use it."
                   : settings.llm.provider === "anthropic"
                   ? "Set ANTHROPIC_API_KEY in Vercel env, or paste a key here (stored locally only)."
-                  : "Set OPENAI_API_KEY in env, or paste a key here (stored locally only)."
+                  : settings.llm.provider === "openai"
+                  ? "Set OPENAI_API_KEY in env, or paste a key here (stored locally only)."
+                  : "Set GEMINI_API_KEY in env, or paste a key here (stored locally only)."
               }
             >
               <input
@@ -104,9 +143,12 @@ export function SettingsPanel() {
                   serverKeys &&
                   ((settings.llm.provider === "anthropic" &&
                     serverKeys.hasAnthropicKey) ||
-                    (settings.llm.provider === "openai" && serverKeys.hasOpenAIKey))
+                    (settings.llm.provider === "openai" &&
+                      serverKeys.hasOpenAIKey) ||
+                    (settings.llm.provider === "gemini" &&
+                      serverKeys.hasGeminiKey))
                     ? "Using server env var"
-                    : "sk-..."
+                    : "Key or API token..."
                 }
                 className="w-full bg-white border border-ink-100 rounded-lg px-3 py-2 text-[13px]"
               />

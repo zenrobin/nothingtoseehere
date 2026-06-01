@@ -82,6 +82,9 @@ export function RecommendationCards({
     lastDragEndAt: 0,
   });
 
+  const isScrollingProgrammatically = useRef(false);
+  const scrollingTimeoutRef = useRef<any>(null);
+
   // Synchronize index when selectedId is set (for history state)
   const selectedIndex = useMemo(() => {
     if (!selectedId) return 0;
@@ -97,11 +100,18 @@ export function RecommendationCards({
     const cards = container.children;
     const card = cards[index] as HTMLElement;
     if (card) {
+      if (scrollingTimeoutRef.current) {
+        clearTimeout(scrollingTimeoutRef.current);
+      }
+      isScrollingProgrammatically.current = true;
       container.scrollTo({
         left: card.offsetLeft - container.offsetWidth / 2 + card.offsetWidth / 2,
         behavior: "smooth",
       });
       setActiveIndex(index);
+      scrollingTimeoutRef.current = setTimeout(() => {
+        isScrollingProgrammatically.current = false;
+      }, 300);
     }
   };
 
@@ -140,6 +150,14 @@ export function RecommendationCards({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (scrollingTimeoutRef.current) {
+        clearTimeout(scrollingTimeoutRef.current);
+      }
+    };
   }, []);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -230,6 +248,7 @@ export function RecommendationCards({
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     if (dragInfo.current.isDown) return; // Ignore scroll updates during custom dragging
+    if (isScrollingProgrammatically.current) return; // Ignore scroll updates during programmatic snapping
     const container = e.currentTarget;
     const center = container.scrollLeft + container.offsetWidth / 2;
     const cards = container.children;

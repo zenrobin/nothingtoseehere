@@ -478,6 +478,7 @@ function JuniBody(props: {
   } = props;
 
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const prevHeightRef = React.useRef(0);
   const activeJob = useAppStore((s) => s.activeJob);
   const jobs = useAppStore((s) => s.jobs);
   const completedJobForRec = selectedRec
@@ -522,20 +523,34 @@ function JuniBody(props: {
     const parent = el.parentElement;
     if (!parent) return;
 
-    // Force scroll to bottom once on state transitions (e.g. creative brief / job success loaded)
+    // Force scroll to bottom once on state transitions or key layout reveals
     parent.scrollTop = parent.scrollHeight;
     requestAnimationFrame(() => {
       parent.scrollTop = parent.scrollHeight;
     });
 
-    const observer = new ResizeObserver(() => {
-      // Only scroll if the user was already near the bottom of the container (within 65px threshold)
-      // so we do not disrupt active horizontal swiping or manual card browsing.
-      const threshold = 65;
-      const isNearBottom =
-        parent.scrollHeight - parent.clientHeight - parent.scrollTop < threshold;
+    // Record initial height
+    prevHeightRef.current = el.offsetHeight;
 
-      if (isNearBottom) {
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (!entry) return;
+
+      const newHeight = entry.contentRect.height;
+      const oldHeight = prevHeightRef.current;
+      prevHeightRef.current = newHeight;
+
+      // If container did not grow, do not trigger auto-scroll
+      if (newHeight <= oldHeight) return;
+
+      const delta = newHeight - oldHeight;
+
+      // Determine if the user was near the bottom BEFORE the height increased
+      const threshold = 65;
+      const wasNearBottom =
+        (parent.scrollHeight - delta) - parent.clientHeight - parent.scrollTop < threshold;
+
+      if (wasNearBottom) {
         parent.scrollTop = parent.scrollHeight;
         requestAnimationFrame(() => {
           parent.scrollTop = parent.scrollHeight;
@@ -547,7 +562,15 @@ function JuniBody(props: {
     return () => {
       observer.disconnect();
     };
-  }, [state, selectedRec?.id, followupAnswer, recs]);
+  }, [
+    state,
+    followupAnswer,
+    successMessageTyped,
+    statusTyped,
+    carouselRevealed,
+    activeJob?.status,
+    recs
+  ]);
 
   const userSaidNode = _userSaid ? (
     <UserBubble>{_userSaid}</UserBubble>
@@ -781,7 +804,10 @@ function JuniBody(props: {
           {/* 8. Success Follow-up Message and CTA Button (Appended BELOW the recommendations carousel when completed) */}
           {state === "generated" && finishedJob && selectedRec && finishedJob.brief.conceptId === selectedRec.id && (
             <div className="space-y-3 animate-slide-up">
-              <JuniBubble image={finishedJob.imageUrl || getCardImage(selectedRec, settings.photoAnalyses, pickCoverPhoto(settings))}>
+              <JuniBubble
+                image={finishedJob.imageUrl || getCardImage(selectedRec, settings.photoAnalyses, pickCoverPhoto(settings))}
+                onImageClick={() => onSeeArtwork && onSeeArtwork(finishedJob)}
+              >
                 <div className="space-y-3">
                   <p className="text-[14px] leading-relaxed text-ink-900">
                     {successMessageTyped ? (
@@ -947,7 +973,15 @@ function JuniAvatar({ pulse }: { pulse?: boolean }) {
   );
 }
 
-function JuniBubble({ children, image }: { children: React.ReactNode; image?: string }) {
+function JuniBubble({
+  children,
+  image,
+  onImageClick,
+}: {
+  children: React.ReactNode;
+  image?: string;
+  onImageClick?: () => void;
+}) {
   return (
     <div className={`flex items-start gap-2.5 animate-fade-in py-1 ${image ? "pr-4" : "pr-10"}`}>
       <JuniAvatar />
@@ -960,11 +994,25 @@ function JuniBubble({ children, image }: { children: React.ReactNode; image?: st
             {children}
           </div>
           {image && (
-            <img
-              src={image}
-              alt=""
-              className="w-[68px] h-[90px] object-cover rounded-xl shadow-md border border-white/80 shrink-0 select-none animate-fade-in animate-duration-300"
-            />
+            onImageClick ? (
+              <button
+                onClick={onImageClick}
+                className="shrink-0 rounded-xl overflow-hidden shadow-md border border-white/80 select-none animate-fade-in animate-duration-300 hover:scale-[1.03] active:scale-[0.98] transition cursor-pointer"
+                title="See artwork"
+              >
+                <img
+                  src={image}
+                  alt=""
+                  className="w-[68px] h-[90px] object-cover"
+                />
+              </button>
+            ) : (
+              <img
+                src={image}
+                alt=""
+                className="w-[68px] h-[90px] object-cover rounded-xl shadow-md border border-white/80 shrink-0 select-none animate-fade-in animate-duration-300"
+              />
+            )
           )}
         </div>
       </div>

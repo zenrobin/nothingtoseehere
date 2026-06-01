@@ -102,6 +102,7 @@ export function generateMockRecommendations(
       description: `An 8×10 editorial print of the front entrance — centered on the door, evergreens framing it, overcast light kept soft.`,
       why: `Your existing 'Threshold' is warm and small. A clean architectural portrait is the thing that's missing — the one you'd hang in the entryway.`,
       suggestedTemplateId: pickTemplate(artForms, "house-portrait"),
+      photoId: photoAnalyses[0]?.photo_id ?? null,
       followupQuestion: {
         question:
           "Crop tight on the door, or pull back to include the steps and shrubs?",
@@ -123,6 +124,7 @@ export function generateMockRecommendations(
       }${hasPackage ? ", the little brown box waiting" : ""}. Soft edges, visible brush.`,
       why: "The bike and box are the most ordinary, most specific details — and the ones most likely to be gone in two years. Watercolor freezes them without making them precious.",
       suggestedTemplateId: pickTemplate(artForms, "warm-watercolor"),
+      photoId: photoAnalyses[0]?.photo_id ?? null,
       followupQuestion: {
         question: "How loose should the painting feel?",
         chips: [
@@ -142,6 +144,7 @@ export function generateMockRecommendations(
         description: `A 5×7 letterpress card — 'TWENTY 4' set in heavy serifs across cream stock, the porch architecture as a faint underlayer.`,
         why: `The silver numbers are the strongest character in this photo. Building the piece around them turns "the house" into "this house" — yours, specifically.`,
         suggestedTemplateId: pickTemplate(artForms, "address-keepsake"),
+        photoId: photoAnalyses[0]?.photo_id ?? null,
         followupQuestion: {
           question: "Which typographic mood?",
           chips: [
@@ -163,6 +166,7 @@ export function generateMockRecommendations(
       }. Reads like a feature opener.`,
       why: "Your 'Threshold' keepsake honors the feeling. This honors the place — same memory, different register, sits well next to it on a wall.",
       suggestedTemplateId: pickTemplate(artForms, "everyday-editorial"),
+      photoId: photoAnalyses[0]?.photo_id ?? null,
       followupQuestion: {
         question: "Where should the eye land?",
         chips: [
@@ -184,6 +188,7 @@ export function generateMockRecommendations(
         "A 30-second movie — three details, three title cards: the steps, the bike, the package. Solo piano under it.",
       why: "Your 'Front Steps' movie is the wide shot. This is the close-up — same memory, but it slows the moment down instead of summarizing it.",
       suggestedTemplateId: pickTemplate(artForms, "quiet-movie"),
+      photoId: photoAnalyses[0]?.photo_id ?? null,
       followupQuestion: {
         question: "Tighter and warmer, or longer and more elegant?",
         chips: [

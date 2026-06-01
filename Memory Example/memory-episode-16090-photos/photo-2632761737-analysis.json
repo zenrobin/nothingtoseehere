@@ -1,0 +1,17 @@
+{
+  "description": "A young woman in a blue bikini sits on a rocky outcrop overlooking a secluded cove. The sun is shining brightly, casting harsh shadows. The water in the cove is a murky green and appears shallow with some waves crashing against the shore. The surrounding cliffs are rugged and covered in sparse vegetation. The woman is sitting with her legs crossed, looking out towards the water.",
+  "scores": {
+    "aesthetic": 7,
+    "emotional": 5,
+    "memory_value": 7
+  },
+  "key_elements": [
+    "person: woman",
+    "clothing: bikini",
+    "location: rocky coast",
+    "natural feature: cove",
+    "weather: sunny"
+  ],
+  "location_context": "A rugged, coastal environment with rocky cliffs and a small cove.",
+  "time_context": "Midday, under bright sunlight."
+}

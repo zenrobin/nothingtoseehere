@@ -1,0 +1,17 @@
+{
+  "description": "A young woman stands on a rocky coastline, shielding her eyes from the sun with her hand. She is wearing a teal patterned dress and blue sneakers. Behind her, the deep blue sea churns with white waves crashing against the shore. The sky is a vibrant, cloudless blue. The rocks are uneven and textured, suggesting a natural, rugged environment. She appears happy and is looking towards the camera.",
+  "scores": {
+    "aesthetic": 8,
+    "emotional": 8,
+    "memory_value": 8
+  },
+  "key_elements": [
+    "person: woman",
+    "location: rocky coastline",
+    "nature: sea",
+    "nature: waves",
+    "weather: sunny"
+  ],
+  "location_context": "This image appears to be taken at a coastal area with rocky terrain, possibly a seaside cliff.",
+  "time_context": "Daytime, likely midday given the bright sunlight and clear blue sky."
+}

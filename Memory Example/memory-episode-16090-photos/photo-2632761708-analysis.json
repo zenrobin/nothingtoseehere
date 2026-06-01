@@ -1,0 +1,17 @@
+{
+  "description": "A woman stands on top of a stone structure, looking out over a landscape. She is wearing a short, teal-colored dress with a pattern and white sneakers. Her hair is tied back. The structure she is standing on is made of large, weathered sandstone blocks, with some inscriptions visible on the walls. The background reveals a vista of rolling hills, scattered buildings, and a clear blue sky. The sun is bright, casting shadows and highlighting the texture of the stone. The woman is leaning against the stone wall, her arms crossed, gazing into the distance.",
+  "scores": {
+    "aesthetic": 8,
+    "emotional": 6,
+    "memory_value": 7
+  },
+  "key_elements": [
+    "person: woman",
+    "clothing: dress, sneakers",
+    "location: stone fortification, historic site, landscape",
+    "architecture: stone walls",
+    "activity: looking out over landscape"
+  ],
+  "location_context": "This image appears to be taken from a high vantage point of a historic stone structure, possibly a castle or fortress, overlooking a rural or semi-urban landscape.",
+  "time_context": "Midday, with bright sunlight"
+}

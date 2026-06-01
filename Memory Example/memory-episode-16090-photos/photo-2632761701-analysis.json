@@ -1,0 +1,17 @@
+{
+  "description": "A white Toyota Aygo is parked on a paved street. The car has a license plate that reads 'EQZ 064'. In the background, there are buildings, palm trees, and other parked cars. The sun is casting a shadow from the car onto the street. The sky is blue and clear.",
+  "scores": {
+    "aesthetic": 5,
+    "emotional": 3,
+    "memory_value": 4
+  },
+  "key_elements": [
+    "object: white Toyota Aygo",
+    "location: street",
+    "element: license plate 'EQZ 064'",
+    "element: buildings",
+    "element: palm trees"
+  ],
+  "location_context": "This image appears to be taken in a European urban or suburban environment, possibly a coastal town given the palm trees.",
+  "time_context": "Midday, with bright sunlight casting sharp shadows."
+}

@@ -1,0 +1,17 @@
+{
+  "description": "A woman in a coral pink patterned dress stands in an aisle of a shop filled with an extensive collection of glassware and crystalware. The shelves are dark wood and packed with items such as vases, bowls, decanters, and decorative pieces in various colors, including clear, blue, purple, and iridescent hues. The woman is looking to the left with a slight smile. The lighting is artificial and warm, illuminating the shop's interior.",
+  "scores": {
+    "aesthetic": 7,
+    "emotional": 6,
+    "memory_value": 6
+  },
+  "key_elements": [
+    "person: woman",
+    "clothing: dress",
+    "location: shop",
+    "objects: glassware, crystalware",
+    "interior: shelves"
+  ],
+  "location_context": "An indoor retail environment specializing in decorative glassware.",
+  "time_context": "Daytime."
+}

@@ -1,0 +1,17 @@
+{
+  "description": "The image shows the rear three-quarter view of a white Toyota Aygo X crossover car parked in an outdoor parking lot. The car has a distinctive black rear section with red taillights, black cladding on the wheel arches and sides, and alloy wheels. The license plate reads 'EQZ-064' with a blue EU flag and 'M' sticker, and 'Michael Debono Ltd' importer sticker below the Toyota logo. The car is positioned at an angle, with its right rear wheel prominent, fuel filler cap visible on the right rear quarter panel. Surrounding the car are several other parked vehicles including white cars and a van. The environment features tall palm trees with lush green fronds swaying under a clear bright blue sky, a construction crane in the background, street lamps with ornate designs, a utility pole with a sign, tiled pavement, and asphalt ground. Bright sunlight casts shadows, indicating midday conditions. Coordinates point to near Msida or Sliema area in Malta.",
+  "scores": {
+    "aesthetic": 8,
+    "emotional": 5,
+    "memory_value": 6
+  },
+  "key_elements": [
+    "vehicle: white Toyota Aygo X",
+    "license plate: EQZ-064",
+    "location: outdoor parking lot",
+    "objects: palm trees, street lamps, other cars",
+    "construction crane"
+  ],
+  "location_context": "Street parking lot near palm-lined urban area in Malta based on palm trees, architecture, and coordinates (35.953612, 14.42098).",
+  "time_context": "Mid-afternoon around 15:41 based on bright sunlight and long shadows"
+}

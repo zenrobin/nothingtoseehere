@@ -1,0 +1,19 @@
+{
+  "description": "A smiling couple, a man and a woman, are taking a selfie while sitting on a bench outdoors. The woman is in the foreground on the left, with long dark hair and a colorful patterned dress, looking directly at the camera. The man is to her right, wearing a grey baseball cap and a dark t-shirt, also smiling at the camera. They are seated in a park-like setting with trees and manicured bushes in the background. Sunlight filters through the leaves, creating a warm and pleasant atmosphere. In the distance, there are hints of buildings and a landscape, suggesting an urban or semi-urban environment.",
+  "scores": {
+    "aesthetic": 7,
+    "emotional": 8,
+    "memory_value": 9
+  },
+  "key_elements": [
+    "couple",
+    "selfie",
+    "park",
+    "bench",
+    "trees",
+    "sunny weather",
+    "outdoor seating"
+  ],
+  "location_context": "Outdoor park or garden area with distant buildings visible.",
+  "time_context": "Daytime, sunny weather."
+}

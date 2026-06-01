@@ -1,0 +1,19 @@
+{
+  "description": "A man in a blue t-shirt and black shorts sits on the edge of a pool with his legs dangling in the water. He is wearing a blue baseball cap and sunglasses. He is reaching out his hand towards a seal that is partially submerged in the turquoise water. The pool area has a light blue concrete edge and bright blue walls. There is a metal railing in the foreground. The seal appears to be interacting with the man's hand, with water splashing around it. The scene suggests an animal encounter or show at a zoo or marine park.",
+  "scores": {
+    "aesthetic": 6,
+    "emotional": 8,
+    "memory_value": 8
+  },
+  "key_elements": [
+    "person: man",
+    "animal: seal",
+    "location: pool",
+    "activity: interacting with animal",
+    "object: railing",
+    "object: baseball cap",
+    "object: sunglasses"
+  ],
+  "location_context": "An enclosure with a pool, possibly a zoo or marine park, with blue walls.",
+  "time_context": "Daytime, suggested by bright lighting and clear water."
+}

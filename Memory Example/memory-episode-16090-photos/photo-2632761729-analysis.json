@@ -1,0 +1,18 @@
+{
+  "description": "A man stands in a narrow, sunlit alleyway paved with stone steps. He is wearing a grey baseball cap, a blue t-shirt, and light-colored shorts. The tall, old stone buildings on either side are adorned with plants in pots and balconies. The man is smiling at the camera.",
+  "scores": {
+    "aesthetic": 8,
+    "emotional": 7,
+    "memory_value": 8
+  },
+  "key_elements": [
+    "person: man",
+    "location: alleyway",
+    "structure: old buildings",
+    "plant: potted plants",
+    "object: stone steps",
+    "object: baseball cap"
+  ],
+  "location_context": "Narrow street or alley in an old European-style town.",
+  "time_context": "Daytime, sunny"
+}

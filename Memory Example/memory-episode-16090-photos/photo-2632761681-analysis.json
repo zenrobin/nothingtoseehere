@@ -1,0 +1,17 @@
+{
+  "description": "A woman in a teal bikini smiles at the camera, taking a selfie by the sea. Her hair is pulled back in a ponytail. Behind her, waves are crashing against a rocky shore. The water is a murky green, and small pebbles and shells are visible on the beach in the foreground. Sunlight illuminates her face and the water spray.",
+  "scores": {
+    "aesthetic": 8,
+    "emotional": 9,
+    "memory_value": 9
+  },
+  "key_elements": [
+    "person: woman",
+    "clothing: bikini",
+    "location: beach, sea",
+    "activity: swimming/beach day",
+    "natural feature: rocks, waves"
+  ],
+  "location_context": "Coastal area, likely a beach with rocky formations.",
+  "time_context": "Sunny daytime, likely midday given the bright light."
+}

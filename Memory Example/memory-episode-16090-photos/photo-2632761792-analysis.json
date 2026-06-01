@@ -1,0 +1,17 @@
+{
+  "description": "A young man stands on a rocky, sandy cliff overlooking a turbulent blue ocean. The man is wearing a dark t-shirt, light denim shorts, a black belt, and athletic shoes. He has a white baseball cap on backwards and is looking towards the camera with a slight smile. The background features dramatic waves crashing against rocky outcrops and the vast expanse of the deep blue sea under a clear sky. The foreground consists of textured, light-colored rock formations and sand, suggesting a coastal environment.",
+  "scores": {
+    "aesthetic": 7,
+    "emotional": 6,
+    "memory_value": 7
+  },
+  "key_elements": [
+    "person: man",
+    "clothing: t-shirt, shorts, cap",
+    "location: rocky coast",
+    "environment: ocean, waves, cliffs",
+    "time: daytime"
+  ],
+  "location_context": "The visual cues of rugged cliffs, turquoise water, and a bright, sunny sky strongly suggest a Mediterranean coastal location, possibly an island, given the type of rock formations and the clear, deep blue of the sea.",
+  "time_context": "Midday, indicated by the bright sunlight and distinct shadows."
+}

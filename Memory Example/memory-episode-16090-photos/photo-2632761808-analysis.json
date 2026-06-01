@@ -1,0 +1,19 @@
+{
+  "description": "A selfie of a smiling woman with long wavy dark hair and green eyes, wearing a colorful abstract-patterned sleeveless zip-up top with blue, green, purple, and orange hues, standing in a lush green park. Behind her are tall palm trees, manicured hedges, white street lamps, a low fence, paved walkways, a bench, and blurred background figures including a man in dark clothing taking the photo. The setting features vibrant greenery, blue sky with scattered white clouds, and bright natural sunlight filtering through leaves, creating a joyful outdoor atmosphere.",
+  "scores": {
+    "aesthetic": 8,
+    "emotional": 9,
+    "memory_value": 7
+  },
+  "key_elements": [
+    "woman with long dark hair",
+    "colorful abstract top",
+    "palm trees",
+    "hedges",
+    "street lamps",
+    "fence",
+    "bench"
+  ],
+  "location_context": "This image appears to be taken in a landscaped urban park in Malta near 35.897422, 14.517167.",
+  "time_context": "Morning under bright sunny sky with some clouds, around 09:40 local time."
+}

@@ -1,0 +1,16 @@
+{
+  "description": "A woman with long brown hair wearing a short-sleeved pink floral print dress and white Nike sneakers stands profile view, examining glassware on wooden shelves in a well-lit shop. She faces right, right hand touching an item, left arm relaxed. The shelves are filled with an extensive collection of colorful crystal and glass items including vases, bowls, decanters, glasses in blue, purple, red, green, gold, and multicolored patterns, many sparkling under warm LED spotlights. Shelves are dark wood with glass doors on some sections, tiled floor, beige walls. The shop appears luxurious, specializing in high-end glassware like Bohemia crystal. No other people visible. Indoor setting with artificial lighting.",
+  "scores": {
+    "aesthetic": 9,
+    "emotional": 7,
+    "memory_value": 8
+  },
+  "key_elements": [
+    "person: woman in pink dress and white sneakers",
+    "activity: shopping/examining glassware",
+    "objects: crystal vases, glasses, bowls in various colors",
+    "location: glassware shop interior"
+  ],
+  "location_context": "Interior of a crystal and glassware retail store based on extensive display of luxury glass items and shelving.",
+  "time_context": "Daytime indoor, artificial lighting, around late morning per timestamp."
+}

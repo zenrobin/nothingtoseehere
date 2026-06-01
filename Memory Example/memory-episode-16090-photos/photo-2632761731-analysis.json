@@ -1,0 +1,18 @@
+{
+  "description": "A young woman in a pink patterned dress walks towards the camera on a stone bridge leading to an ornate historical gate. She is smiling and looking directly at the camera. Behind her, a crowd of tourists walk in the same direction, many wearing sun hats. The gate is made of weathered stone with flags flying above it. The sky is clear and blue, indicating a sunny day. The overall scene suggests a popular tourist destination with historical architecture.",
+  "scores": {
+    "aesthetic": 7,
+    "emotional": 6,
+    "memory_value": 7
+  },
+  "key_elements": [
+    "person: woman",
+    "location: stone bridge",
+    "architecture: historical gate",
+    "activity: walking",
+    "people: tourists",
+    "object: flags"
+  ],
+  "location_context": "This image appears to be taken at an entrance to a historic walled city or fortress, likely a tourist attraction.",
+  "time_context": "Daytime, likely late morning or early afternoon due to bright sunlight and clear skies."
+}

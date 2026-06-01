@@ -1,0 +1,16 @@
+{
+  "description": "A close-up selfie of a man and a woman, taken outdoors in what appears to be a park or garden setting. The man, wearing a grey baseball cap and a dark grey t-shirt, is leaning in towards the camera, smiling. The woman, with long, dark brown hair and blue eyes, is wearing a colorful, patterned dress and is looking at the camera with a gentle smile. Her head is resting on the man's shoulder. In the background, there are green bushes and trees, and another person is visible walking on a paved path. The lighting suggests it is daytime.",
+  "scores": {
+    "aesthetic": 7,
+    "emotional": 8,
+    "memory_value": 9
+  },
+  "key_elements": [
+    "people: man, woman",
+    "clothing: baseball cap, t-shirt, patterned dress",
+    "location: park, garden",
+    "activity: taking selfie"
+  ],
+  "location_context": "This image appears to be taken in a park or garden area with lush greenery and paved walkways.",
+  "time_context": "Daytime"
+}

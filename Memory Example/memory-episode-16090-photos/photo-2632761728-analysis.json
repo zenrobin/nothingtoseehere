@@ -1,0 +1,19 @@
+{
+  "description": "A couple takes a selfie with a scenic harbor in the background. The man in the foreground is wearing a grey baseball cap and smiling, while the woman kisses his cheek. Behind them, a vibrant city with historic architecture overlooks a bustling harbor filled with boats, ships, and industrial cranes. The sky is bright blue.",
+  "scores": {
+    "aesthetic": 7,
+    "emotional": 9,
+    "memory_value": 9
+  },
+  "key_elements": [
+    "people: couple",
+    "activity: taking selfie",
+    "location: harbor",
+    "structure: city skyline",
+    "structure: boats",
+    "structure: cranes",
+    "object: baseball cap"
+  ],
+  "location_context": "Overlooking a large harbor and cityscape.",
+  "time_context": "Daytime, sunny weather"
+}

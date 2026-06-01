@@ -102,6 +102,7 @@ export interface JuniRecommendation {
   description: string;
   why: string;
   suggestedTemplateId: string | null;
+  photoId?: number | null;
   followupQuestion: JuniFollowupQuestion;
 }
 

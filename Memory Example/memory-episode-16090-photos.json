@@ -1,0 +1,702 @@
+[
+  {
+    "id": 2632761647,
+    "url": "https://media.mixbook.com/64/photos/2026/2632761647_8Eo1jbFxQsm6HevXV4Gd.jpg",
+    "thumbnail_url": "https://media.mixbook.com/64/photos/2026/2632761647_1400_A3rpE4aUsq3kEnUFfV6M.jpg",
+    "width": 2316,
+    "height": 3088,
+    "latitude": 35.89742,
+    "longitude": 14.51717,
+    "parsed_location": {
+      "city": "Valletta",
+      "country": "Malta",
+      "point_of_interest": "Lower Barakka Kiosk"
+    }
+  },
+  {
+    "id": 2632761655,
+    "url": "https://media.mixbook.com/22/photos/2026/2632761655_LOZI6var4ZKlSkjuKHO2.jpg",
+    "thumbnail_url": "https://media.mixbook.com/22/photos/2026/2632761655_1400_Rwo8hrWFsLIf3gJhAAwq.jpg",
+    "width": 2316,
+    "height": 3088,
+    "latitude": 35.884562,
+    "longitude": 14.403338,
+    "parsed_location": {
+      "city": "Mdina",
+      "country": "Malta",
+      "point_of_interest": null
+    }
+  },
+  {
+    "id": 2632761664,
+    "url": "https://media.mixbook.com/89/photos/2026/2632761664_EMhomwXhoATYiXxqE4Sz.jpg",
+    "thumbnail_url": "https://media.mixbook.com/89/photos/2026/2632761664_1400_yX8R99wlWaZtLwLfnH7H.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 35.953572,
+    "longitude": 14.420942,
+    "parsed_location": {
+      "city": "Saint Paul's Bay",
+      "country": "Malta",
+      "point_of_interest": "Hotel Santana"
+    }
+  },
+  {
+    "id": 2632761668,
+    "url": "https://media.mixbook.com/31/photos/2026/2632761668_qrr44DylYuG2kWZwYTzR.jpg",
+    "thumbnail_url": "https://media.mixbook.com/31/photos/2026/2632761668_1400_NRj31OWlkQMjMK6Al4P2.jpg",
+    "width": 5712,
+    "height": 4284,
+    "latitude": 35.901612,
+    "longitude": 14.514483,
+    "parsed_location": {
+      "city": "Valletta",
+      "country": "Malta",
+      "point_of_interest": "Gendus"
+    }
+  },
+  {
+    "id": 2632761670,
+    "url": "https://media.mixbook.com/98/photos/2026/2632761670_lvmRmN3ayrld8FtaOXma.jpg",
+    "thumbnail_url": "https://media.mixbook.com/98/photos/2026/2632761670_1400_b8eesRNB7usoJMKVqOCP.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 36.04675,
+    "longitude": 14.240303,
+    "parsed_location": {
+      "city": "Victoria",
+      "country": "Malta",
+      "point_of_interest": "Citadel"
+    }
+  },
+  {
+    "id": 2632761674,
+    "url": "https://media.mixbook.com/83/photos/2026/2632761674_KnGWb9BIqVbeASClg9uw.jpg",
+    "thumbnail_url": "https://media.mixbook.com/83/photos/2026/2632761674_1400_ts8eRPWApCu6xCvNoPpx.jpg",
+    "width": 2316,
+    "height": 3088,
+    "latitude": 35.894662,
+    "longitude": 14.51228,
+    "parsed_location": {
+      "city": "Valletta",
+      "country": "Malta",
+      "point_of_interest": "Upper Barracca Gardens"
+    }
+  },
+  {
+    "id": 2632761677,
+    "url": "https://media.mixbook.com/62/photos/2026/2632761677_6zxBsQvN6flCnIUSmxqs.jpg",
+    "thumbnail_url": "https://media.mixbook.com/62/photos/2026/2632761677_1400_CusYNJdc1y9tfPnKAI4o.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 35.939237,
+    "longitude": 14.457712,
+    "parsed_location": {
+      "city": "Naxxar",
+      "country": "Malta",
+      "point_of_interest": "Malta Marine Park"
+    }
+  },
+  {
+    "id": 2632761681,
+    "url": "https://media.mixbook.com/24/photos/2026/2632761681_651MosOEYmMaKKMYX1tp.jpg",
+    "thumbnail_url": "https://media.mixbook.com/24/photos/2026/2632761681_1400_LUNp74nRbUVGBP5BfZDN.jpg",
+    "width": 2316,
+    "height": 3088,
+    "latitude": 36.078725,
+    "longitude": 14.228405,
+    "parsed_location": {
+      "city": "Għasri",
+      "country": "Malta",
+      "point_of_interest": "Weid il-Ghasri Beach"
+    }
+  },
+  {
+    "id": 2632761692,
+    "url": "https://media.mixbook.com/31/photos/2026/2632761692_cCnr53NyIAKH5pniEmkR.jpg",
+    "thumbnail_url": "https://media.mixbook.com/31/photos/2026/2632761692_1400_I1Vpe1DZTWsLN99DFjH8.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 35.90063,
+    "longitude": 14.514338,
+    "parsed_location": {
+      "city": "Valletta",
+      "country": "Malta",
+      "point_of_interest": "Triq l-Ajkla"
+    }
+  },
+  {
+    "id": 2632761696,
+    "url": "https://media.mixbook.com/04/photos/2026/2632761696_mScuF1DhxUjxP9tfAVge.jpg",
+    "thumbnail_url": "https://media.mixbook.com/04/photos/2026/2632761696_1400_c4VY5qP4p3rc7DW7KMXN.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 35.953578,
+    "longitude": 14.420962,
+    "parsed_location": {
+      "city": "Saint Paul's Bay",
+      "country": "Malta",
+      "point_of_interest": "Hotel Santana"
+    }
+  },
+  {
+    "id": 2632761701,
+    "url": "https://media.mixbook.com/83/photos/2026/2632761701_O8O2jHagsC8A2W2YVWuh.jpg",
+    "thumbnail_url": "https://media.mixbook.com/83/photos/2026/2632761701_1400_NvmP48YChesJOVyepKsP.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 35.953597,
+    "longitude": 14.420953,
+    "parsed_location": {
+      "city": "Saint Paul's Bay",
+      "country": "Malta",
+      "point_of_interest": "Hotel Santana"
+    }
+  },
+  {
+    "id": 2632761702,
+    "url": "https://media.mixbook.com/02/photos/2026/2632761702_RDofhG4gchusZDpbBi4e.jpg",
+    "thumbnail_url": "https://media.mixbook.com/02/photos/2026/2632761702_1400_7gJuQ6lfcKRtN13kKyo5.jpg",
+    "width": 5712,
+    "height": 4284,
+    "latitude": 36.049795,
+    "longitude": 14.19062,
+    "parsed_location": {
+      "city": null,
+      "country": "Malta",
+      "point_of_interest": "Torri tal-Qawra"
+    }
+  },
+  {
+    "id": 2632761704,
+    "url": "https://media.mixbook.com/62/photos/2026/2632761704_ffT1mRcVeIOLSNNtZGYJ.jpg",
+    "thumbnail_url": "https://media.mixbook.com/62/photos/2026/2632761704_1400_sIf8Md3lNehtAUnsNn5S.jpg",
+    "width": 5712,
+    "height": 4284,
+    "latitude": 35.894628,
+    "longitude": 14.512333,
+    "parsed_location": {
+      "city": "Valletta",
+      "country": "Malta",
+      "point_of_interest": "Upper Barracca Gardens"
+    }
+  },
+  {
+    "id": 2632761707,
+    "url": "https://media.mixbook.com/82/photos/2026/2632761707_4ytNZCPqxVdlAJeBldYA.jpg",
+    "thumbnail_url": "https://media.mixbook.com/82/photos/2026/2632761707_1400_yGDN1n7Qq9cTboJYPPGR.jpg",
+    "width": 2316,
+    "height": 3088,
+    "latitude": 35.897362,
+    "longitude": 14.517153,
+    "parsed_location": {
+      "city": "Valletta",
+      "country": "Malta",
+      "point_of_interest": "Lower Barakka Kiosk"
+    }
+  },
+  {
+    "id": 2632761708,
+    "url": "https://media.mixbook.com/75/photos/2026/2632761708_7A5V8fHyH43HKbHgNJXx.jpg",
+    "thumbnail_url": "https://media.mixbook.com/75/photos/2026/2632761708_1400_fDzXmSmWtFbHTGBGMzmR.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 36.046986,
+    "longitude": 14.238905,
+    "parsed_location": {
+      "city": "Victoria",
+      "country": "Malta",
+      "point_of_interest": "Citadel"
+    }
+  },
+  {
+    "id": 2632761715,
+    "url": "https://media.mixbook.com/26/photos/2026/2632761715_YYhSZjYXms9VizYfUzAR.jpg",
+    "thumbnail_url": "https://media.mixbook.com/26/photos/2026/2632761715_1400_5FWYEtI9Onngz5ITKOQs.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 35.953637,
+    "longitude": 14.42098,
+    "parsed_location": {
+      "city": "Saint Paul's Bay",
+      "country": "Malta",
+      "point_of_interest": "Hotel Santana"
+    }
+  },
+  {
+    "id": 2632761720,
+    "url": "https://media.mixbook.com/23/photos/2026/2632761720_9cel4vdvjS1m9W7Z97Qz.jpg",
+    "thumbnail_url": "https://media.mixbook.com/23/photos/2026/2632761720_1400_h7GzuUI6l1NK1HsxTTZf.jpg",
+    "width": 3024,
+    "height": 4032,
+    "latitude": 35.90063,
+    "longitude": 14.514338,
+    "parsed_location": {
+      "city": "Valletta",
+      "country": "Malta",
+      "point_of_interest": "Triq l-Ajkla"
+    }
+  },
+  {
+    "id": 2632761721,
+    "url": "https://media.mixbook.com/11/photos/2026/2632761721_VcZuvVciEl72NH8nQBKS.jpg",
+    "thumbnail_url": "https://media.mixbook.com/11/photos/2026/2632761721_1400_HWTWEbq3tQ3RAynME4MR.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 35.9856,
+    "longitude": 14.344092,
+    "parsed_location": {
+      "city": "Mellieħa",
+      "country": "Malta",
+      "point_of_interest": null
+    }
+  },
+  {
+    "id": 2632761723,
+    "url": "https://media.mixbook.com/01/photos/2026/2632761723_3YZ1948LcukvyykLdwZa.jpg",
+    "thumbnail_url": "https://media.mixbook.com/01/photos/2026/2632761723_1400_NgVLQIX6XheHVELH1dqO.jpg",
+    "width": 3024,
+    "height": 4032,
+    "latitude": 35.939312,
+    "longitude": 14.45708,
+    "parsed_location": {
+      "city": "Naxxar",
+      "country": "Malta",
+      "point_of_interest": "Sea Lions Show"
+    }
+  },
+  {
+    "id": 2632761725,
+    "url": "https://media.mixbook.com/85/photos/2026/2632761725_uD3pVZXjiQZr4kaVPmba.jpg",
+    "thumbnail_url": "https://media.mixbook.com/85/photos/2026/2632761725_1400_noIbiYeDUeM2PUKY2vcF.jpg",
+    "width": 5712,
+    "height": 4284,
+    "latitude": 36.049795,
+    "longitude": 14.19062,
+    "parsed_location": {
+      "city": null,
+      "country": "Malta",
+      "point_of_interest": "Torri tal-Qawra"
+    }
+  },
+  {
+    "id": 2632761728,
+    "url": "https://media.mixbook.com/92/photos/2026/2632761728_by5JBafLCyibUWFc7p5k.jpg",
+    "thumbnail_url": "https://media.mixbook.com/92/photos/2026/2632761728_1400_4A7bxhyU52fEWBtlUqkK.jpg",
+    "width": 2316,
+    "height": 3088,
+    "latitude": 35.894662,
+    "longitude": 14.512287,
+    "parsed_location": {
+      "city": "Valletta",
+      "country": "Malta",
+      "point_of_interest": "Upper Barracca Gardens"
+    }
+  },
+  {
+    "id": 2632761729,
+    "url": "https://media.mixbook.com/75/photos/2026/2632761729_YelrrSdSZaL7KgfthJKI.jpg",
+    "thumbnail_url": "https://media.mixbook.com/75/photos/2026/2632761729_1400_y3Cjh6Q44AtubnQatwEm.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 35.900545,
+    "longitude": 14.514422,
+    "parsed_location": {
+      "city": "Valletta",
+      "country": "Malta",
+      "point_of_interest": "Triq San Duminku"
+    }
+  },
+  {
+    "id": 2632761731,
+    "url": "https://media.mixbook.com/06/photos/2026/2632761731_H3DlE54EV3blK1KpSn1k.jpg",
+    "thumbnail_url": "https://media.mixbook.com/06/photos/2026/2632761731_1400_UGMhKkz5UxM6Yyus76IH.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 35.884483,
+    "longitude": 14.403263,
+    "parsed_location": {
+      "city": "Mdina",
+      "country": "Malta",
+      "point_of_interest": null
+    }
+  },
+  {
+    "id": 2632761735,
+    "url": "https://media.mixbook.com/90/photos/2026/2632761735_6mOQ1qu5Cl9E1KGZW6iY.jpg",
+    "thumbnail_url": "https://media.mixbook.com/90/photos/2026/2632761735_1400_Vpni5hlk9DtSfCtNvkMo.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 36.05097,
+    "longitude": 14.189978,
+    "parsed_location": {
+      "city": "Saint Lawrence",
+      "country": "Malta",
+      "point_of_interest": "1"
+    }
+  },
+  {
+    "id": 2632761736,
+    "url": "https://media.mixbook.com/27/photos/2026/2632761736_xvGA3e3oPAF4TrcSk7GQ.jpg",
+    "thumbnail_url": "https://media.mixbook.com/27/photos/2026/2632761736_1400_qaqLDvJwTprmYpYHKDDX.jpg",
+    "width": 3024,
+    "height": 4032,
+    "latitude": 36.050892,
+    "longitude": 14.189988,
+    "parsed_location": {
+      "city": "Saint Lawrence",
+      "country": "Malta",
+      "point_of_interest": "1"
+    }
+  },
+  {
+    "id": 2632761737,
+    "url": "https://media.mixbook.com/36/photos/2026/2632761737_KTqxtz81acHmGKEXeLdI.jpg",
+    "thumbnail_url": "https://media.mixbook.com/36/photos/2026/2632761737_1400_zD1nPJ7XNE7wsfb7hNC2.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 36.078689,
+    "longitude": 14.228403,
+    "parsed_location": {
+      "city": "Għasri",
+      "country": "Malta",
+      "point_of_interest": "Weid il-Ghasri Beach"
+    }
+  },
+  {
+    "id": 2632761739,
+    "url": "https://media.mixbook.com/84/photos/2026/2632761739_6fRWqjUqfKD3xo6G8UuK.jpg",
+    "thumbnail_url": "https://media.mixbook.com/84/photos/2026/2632761739_1400_paKduduCzrjWvt3GopLf.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 36.048186,
+    "longitude": 14.189588,
+    "parsed_location": {
+      "city": null,
+      "country": null,
+      "point_of_interest": "North Point"
+    }
+  },
+  {
+    "id": 2632761740,
+    "url": "https://media.mixbook.com/50/photos/2026/2632761740_9VQGqOxFVV1RnXisWac6.jpg",
+    "thumbnail_url": "https://media.mixbook.com/50/photos/2026/2632761740_1400_PjRV64knIKLQgGHAYTKR.jpg",
+    "width": 5712,
+    "height": 4284,
+    "latitude": 35.884995,
+    "longitude": 14.403547,
+    "parsed_location": {
+      "city": "Mdina",
+      "country": "Malta",
+      "point_of_interest": "Mdina"
+    }
+  },
+  {
+    "id": 2632761752,
+    "url": "https://media.mixbook.com/78/photos/2026/2632761752_KL7vEfJlp6Em4J9JdJGS.jpg",
+    "thumbnail_url": "https://media.mixbook.com/78/photos/2026/2632761752_1400_13nBcmIoUgaNMVbolWFu.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 35.901608,
+    "longitude": 14.514488,
+    "parsed_location": {
+      "city": "Valletta",
+      "country": "Malta",
+      "point_of_interest": "Gendus"
+    }
+  },
+  {
+    "id": 2632761756,
+    "url": "https://media.mixbook.com/05/photos/2026/2632761756_z4BnJ8nK4a3zYDRTISyb.jpg",
+    "thumbnail_url": "https://media.mixbook.com/05/photos/2026/2632761756_1400_tRaWacgFOAyphQoNboNb.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 36.048195,
+    "longitude": 14.18958,
+    "parsed_location": {
+      "city": null,
+      "country": null,
+      "point_of_interest": "North Point"
+    }
+  },
+  {
+    "id": 2632761759,
+    "url": "https://media.mixbook.com/49/photos/2026/2632761759_s6UhLa6P2s73h2Fmzfgt.jpg",
+    "thumbnail_url": "https://media.mixbook.com/49/photos/2026/2632761759_1400_vX3vZGooGdkxzQR1IEWs.jpg",
+    "width": 5712,
+    "height": 4284,
+    "latitude": 35.894672,
+    "longitude": 14.512287,
+    "parsed_location": {
+      "city": "Valletta",
+      "country": "Malta",
+      "point_of_interest": "Upper Barracca Gardens"
+    }
+  },
+  {
+    "id": 2632761761,
+    "url": "https://media.mixbook.com/43/photos/2026/2632761761_Go5kSUMSFzucow8URRxc.jpg",
+    "thumbnail_url": "https://media.mixbook.com/43/photos/2026/2632761761_1400_6ftcTMdDO6xjOgD281cb.jpg",
+    "width": 5712,
+    "height": 4284,
+    "latitude": 35.894678,
+    "longitude": 14.512287,
+    "parsed_location": {
+      "city": "Valletta",
+      "country": "Malta",
+      "point_of_interest": "Upper Barracca Gardens"
+    }
+  },
+  {
+    "id": 2632761764,
+    "url": "https://media.mixbook.com/50/photos/2026/2632761764_tzGqwZPerQiprhVsAUtD.jpg",
+    "thumbnail_url": "https://media.mixbook.com/50/photos/2026/2632761764_1400_BS4OTPpvzQVViQiVvm1e.jpg",
+    "width": 3024,
+    "height": 4032,
+    "latitude": 35.939297,
+    "longitude": 14.457072,
+    "parsed_location": {
+      "city": "Naxxar",
+      "country": "Malta",
+      "point_of_interest": "Sea Lions Show"
+    }
+  },
+  {
+    "id": 2632761768,
+    "url": "https://media.mixbook.com/09/photos/2026/2632761768_mXUo21jzRtGdVLv97n77.jpg",
+    "thumbnail_url": "https://media.mixbook.com/09/photos/2026/2632761768_1400_oz6XKuS7CqX7sssGIDNP.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 35.885012,
+    "longitude": 14.403522,
+    "parsed_location": {
+      "city": "Mdina",
+      "country": "Malta",
+      "point_of_interest": "Mdina"
+    }
+  },
+  {
+    "id": 2632761771,
+    "url": "https://media.mixbook.com/16/photos/2026/2632761771_Dwp4dlQdQejo5vPL3Mfc.jpg",
+    "thumbnail_url": "https://media.mixbook.com/16/photos/2026/2632761771_1400_KrSWfhyH1qhZEnvtTFbQ.jpg",
+    "width": 3024,
+    "height": 4032,
+    "latitude": 36.050881,
+    "longitude": 14.190003,
+    "parsed_location": {
+      "city": "Saint Lawrence",
+      "country": "Malta",
+      "point_of_interest": "1"
+    }
+  },
+  {
+    "id": 2632761773,
+    "url": "https://media.mixbook.com/00/photos/2026/2632761773_DLDqnXUtfAfunrNmMz75.jpg",
+    "thumbnail_url": "https://media.mixbook.com/00/photos/2026/2632761773_1400_yK9OTIv5EGY9ul3FcEOy.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 35.884487,
+    "longitude": 14.403283,
+    "parsed_location": {
+      "city": "Mdina",
+      "country": "Malta",
+      "point_of_interest": null
+    }
+  },
+  {
+    "id": 2632761776,
+    "url": "https://media.mixbook.com/34/photos/2026/2632761776_eIZEzdlz2w94vDq4TfW4.jpg",
+    "thumbnail_url": "https://media.mixbook.com/34/photos/2026/2632761776_1400_1afAzOocGozaIwbBxkkc.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 36.050992,
+    "longitude": 14.189995,
+    "parsed_location": {
+      "city": "Saint Lawrence",
+      "country": "Malta",
+      "point_of_interest": "1"
+    }
+  },
+  {
+    "id": 2632761780,
+    "url": "https://media.mixbook.com/62/photos/2026/2632761780_Fp76wiA1ux4zPhdhQ7Pz.jpg",
+    "thumbnail_url": "https://media.mixbook.com/62/photos/2026/2632761780_1400_2syuA7b8nmbeeKEEsCZm.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 35.953612,
+    "longitude": 14.42098,
+    "parsed_location": {
+      "city": "Saint Paul's Bay",
+      "country": "Malta",
+      "point_of_interest": "Hotel Santana"
+    }
+  },
+  {
+    "id": 2632761781,
+    "url": "https://media.mixbook.com/10/photos/2026/2632761781_D4KVs3cMa8Dzpw6bJMRA.jpg",
+    "thumbnail_url": "https://media.mixbook.com/10/photos/2026/2632761781_1400_dEGRzeVwn5GCavqSMJsM.jpg",
+    "width": 5712,
+    "height": 4284,
+    "latitude": 35.885003,
+    "longitude": 14.403553,
+    "parsed_location": {
+      "city": "Mdina",
+      "country": "Malta",
+      "point_of_interest": "Mdina"
+    }
+  },
+  {
+    "id": 2632761790,
+    "url": "https://media.mixbook.com/41/photos/2026/2632761790_gDG6hKRy79I5qK2lb8Rb.jpg",
+    "thumbnail_url": "https://media.mixbook.com/41/photos/2026/2632761790_1400_wXoG4rRTmFPCTU3Mc5rs.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 35.897863,
+    "longitude": 14.511897,
+    "parsed_location": {
+      "city": "Valletta",
+      "country": "Malta",
+      "point_of_interest": "Malta Law Courts"
+    }
+  },
+  {
+    "id": 2632761792,
+    "url": "https://media.mixbook.com/51/photos/2026/2632761792_hYM7fmixTh1LmJwsZt32.jpg",
+    "thumbnail_url": "https://media.mixbook.com/51/photos/2026/2632761792_1400_uigTQ4yAoC7hrvFkTmfV.jpg",
+    "width": 4032,
+    "height": 3024,
+    "latitude": 36.050461,
+    "longitude": 14.190547,
+    "parsed_location": {
+      "city": "Saint Lawrence",
+      "country": "Malta",
+      "point_of_interest": "Triq id-Dwejra"
+    }
+  },
+  {
+    "id": 2632761799,
+    "url": "https://media.mixbook.com/05/photos/2026/2632761799_t8L1xGBUFjYmyVSaFPl1.jpg",
+    "thumbnail_url": "https://media.mixbook.com/05/photos/2026/2632761799_1400_qga9KAIrcXGSZsRZhadB.jpg",
+    "width": 2316,
+    "height": 3088,
+    "latitude": 36.050922,
+    "longitude": 14.18997,
+    "parsed_location": {
+      "city": "Saint Lawrence",
+      "country": "Malta",
+      "point_of_interest": "1"
+    }
+  },
+  {
+    "id": 2632761800,
+    "url": "https://media.mixbook.com/09/photos/2026/2632761800_PwLF9XfEdQJRzkAvk739.jpg",
+    "thumbnail_url": "https://media.mixbook.com/09/photos/2026/2632761800_1400_aBLxgt7HwOzlVBfckHeA.jpg",
+    "width": 3024,
+    "height": 4032,
+    "latitude": 35.990333,
+    "longitude": 14.330812,
+    "parsed_location": {
+      "city": "Mellieħa",
+      "country": "Malta",
+      "point_of_interest": "Ċirkewwa Ferry Terminal"
+    }
+  },
+  {
+    "id": 2632761804,
+    "url": "https://media.mixbook.com/23/photos/2026/2632761804_DygflM48H6OCth64D1CR.jpg",
+    "thumbnail_url": "https://media.mixbook.com/23/photos/2026/2632761804_1400_oE1OZnppckRLnvB5exhi.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 36.048175,
+    "longitude": 14.189592,
+    "parsed_location": {
+      "city": null,
+      "country": null,
+      "point_of_interest": "North Point"
+    }
+  },
+  {
+    "id": 2632761807,
+    "url": "https://media.mixbook.com/36/photos/2026/2632761807_TorPoAgAc63tjzZdTzoA.jpg",
+    "thumbnail_url": "https://media.mixbook.com/36/photos/2026/2632761807_1400_Bfi7Jh9Sh3O95wbIQTQU.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 36.078689,
+    "longitude": 14.228403,
+    "parsed_location": {
+      "city": "Għasri",
+      "country": "Malta",
+      "point_of_interest": "Weid il-Ghasri Beach"
+    }
+  },
+  {
+    "id": 2632761808,
+    "url": "https://media.mixbook.com/24/photos/2026/2632761808_dbjMOL7cxEcR4fyAptYH.jpg",
+    "thumbnail_url": "https://media.mixbook.com/24/photos/2026/2632761808_1400_jnZOKTX2wHHaqsmWDBZm.jpg",
+    "width": 3024,
+    "height": 4032,
+    "latitude": 35.897422,
+    "longitude": 14.517167,
+    "parsed_location": {
+      "city": "Valletta",
+      "country": "Malta",
+      "point_of_interest": "Lower Barakka Kiosk"
+    }
+  },
+  {
+    "id": 2632761810,
+    "url": "https://media.mixbook.com/23/photos/2026/2632761810_M7lGF3bTP4sC2jB1dJx4.jpg",
+    "thumbnail_url": "https://media.mixbook.com/23/photos/2026/2632761810_1400_SIJR84daBPYeLGF9x72T.jpg",
+    "width": 5712,
+    "height": 4284,
+    "latitude": 36.046739,
+    "longitude": 14.240297,
+    "parsed_location": {
+      "city": "Victoria",
+      "country": "Malta",
+      "point_of_interest": "Citadel"
+    }
+  },
+  {
+    "id": 2632761813,
+    "url": "https://media.mixbook.com/46/photos/2026/2632761813_xvFS5jD8a89NRyoKtooP.jpg",
+    "thumbnail_url": "https://media.mixbook.com/46/photos/2026/2632761813_1400_Z1mnNLejwTwkpDw1ToBS.jpg",
+    "width": 2316,
+    "height": 3088,
+    "latitude": 35.887512,
+    "longitude": 14.40303,
+    "parsed_location": {
+      "city": "Mdina",
+      "country": "Malta",
+      "point_of_interest": "Mdina"
+    }
+  },
+  {
+    "id": 2632761817,
+    "url": "https://media.mixbook.com/27/photos/2026/2632761817_eE8TPV5GrrCORMCcNsRD.jpg",
+    "thumbnail_url": "https://media.mixbook.com/27/photos/2026/2632761817_1400_PXsmbnzQ6FU4bUWdG1S7.jpg",
+    "width": 3024,
+    "height": 4032,
+    "latitude": 35.886017,
+    "longitude": 14.403262,
+    "parsed_location": {
+      "city": "Mdina",
+      "country": "Malta",
+      "point_of_interest": "Mdina"
+    }
+  },
+  {
+    "id": 2632761825,
+    "url": "https://media.mixbook.com/68/photos/2026/2632761825_qHW19KwsX2GMYbk3i792.jpg",
+    "thumbnail_url": "https://media.mixbook.com/68/photos/2026/2632761825_1400_gwOlAfkZAAU8g214WNNN.jpg",
+    "width": 4284,
+    "height": 5712,
+    "latitude": 36.046981,
+    "longitude": 14.238912,
+    "parsed_location": {
+      "city": "Victoria",
+      "country": "Malta",
+      "point_of_interest": "Citadel"
+    }
+  }
+]

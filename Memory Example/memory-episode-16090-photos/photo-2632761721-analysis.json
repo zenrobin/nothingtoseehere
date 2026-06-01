@@ -1,0 +1,16 @@
+{
+  "description": "A close-up, partial view of the side of a white car. The image focuses on the rear passenger door and wheel area. The car's white paint shows reflections, some appearing smudged or scratched. A black plastic trim piece runs along the lower part of the car, encompassing the wheel arch. The car is parked on a surface covered with small light-colored gravel or sand. The rear wheel has a silver multi-spoke rim with a black tire.",
+  "scores": {
+    "aesthetic": 3,
+    "emotional": 1,
+    "memory_value": 2
+  },
+  "key_elements": [
+    "object: car",
+    "object: wheel",
+    "object: door",
+    "surface: gravel"
+  ],
+  "location_context": "An outdoor area with a gravel or sandy surface where a car is parked.",
+  "time_context": "Daytime, indicated by clear lighting and reflections on the car's surface."
+}

@@ -546,7 +546,7 @@ function JuniBody(props: {
 
       {/* 2. User Bubble showing selected concept */}
       {selectedRec && (
-        <UserBubble image={getCardImage(selectedRec, pickCoverPhoto(settings))}>
+        <UserBubble image={getCardImage(selectedRec, settings.photoAnalyses, pickCoverPhoto(settings))}>
           Let's go with the <span className="font-semibold">"{selectedRec.title}"</span> concept.
         </UserBubble>
       )}
@@ -712,6 +712,7 @@ function RecommendationsView({
             artForms={settings.artForms}
             selectedId={null}
             onSelect={onPickRec}
+            photoAnalyses={settings.photoAnalyses}
             coverPhotoDataUrl={pickCoverPhoto(settings)}
             onMoreIdeas={onMoreIdeas}
           />

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo, useState, useEffect, useRef } from "react";
-import type { ArtFormTemplate, JuniRecommendation } from "@/types";
+import type { ArtFormTemplate, JuniRecommendation, PhotoAnalysis } from "@/types";
 import { useDragScroll } from "@/lib/useDragScroll";
 import { placeholderStyle, placeholderTintStyle } from "@/lib/placeholder";
 
@@ -10,6 +10,7 @@ interface Props {
   artForms: ArtFormTemplate[];
   selectedId: string | null;
   onSelect: (id: string) => void;
+  photoAnalyses?: PhotoAnalysis[];
   /** Optional cover photo (user's uploaded image) used as a subtle backdrop. */
   coverPhotoDataUrl?: string | null;
   onMoreIdeas?: () => void;
@@ -17,8 +18,16 @@ interface Props {
 
 export function getCardImage(
   rec: JuniRecommendation,
+  photoAnalyses?: PhotoAnalysis[],
   userPhoto?: string | null
 ): string {
+  if (rec.photoId && photoAnalyses) {
+    const matchedPhoto = photoAnalyses.find((p) => String(p.photo_id) === String(rec.photoId));
+    if (matchedPhoto?.imageDataUrl) {
+      return matchedPhoto.imageDataUrl;
+    }
+  }
+
   if (userPhoto && (userPhoto.startsWith("data:") || userPhoto.startsWith("blob:") || !userPhoto.includes("unsplash.com"))) {
     return userPhoto;
   }
@@ -60,6 +69,7 @@ export function RecommendationCards({
   artForms,
   selectedId,
   onSelect,
+  photoAnalyses,
   coverPhotoDataUrl,
   onMoreIdeas,
 }: Props) {
@@ -264,7 +274,7 @@ export function RecommendationCards({
         {recs.map((r, i) => {
           const isFocused = activeIndex === i;
           const isMovie = r.artform === "movie";
-          const imgSrc = getCardImage(r, coverPhotoDataUrl);
+          const imgSrc = getCardImage(r, photoAnalyses, coverPhotoDataUrl);
 
           return (
             <button
@@ -350,31 +360,6 @@ export function RecommendationCards({
           const cta = isMovie ? "Make this movie" : "Make this artwork";
           return (
             <div className="relative z-10 mx-auto max-w-[325px] bg-[#F8F7F3] rounded-[24px] p-5 text-center shadow-sm animate-fade-in my-1">
-              <div className="flex justify-center mb-2">
-                <span
-                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold ${
-                    isMovie
-                      ? "bg-slate-900 text-white"
-                      : "bg-orange-950 text-white"
-                  }`}
-                >
-                  {isMovie ? (
-                    <>
-                      <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor">
-                        <polygon points="5 3 19 12 5 21 5 3" />
-                      </svg>
-                      <span>Movie</span>
-                    </>
-                  ) : (
-                    <>
-                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                      </svg>
-                      <span>GenArt</span>
-                    </>
-                  )}
-                </span>
-              </div>
               <h4 className="font-bold text-ink-900 text-[15px] mb-1.5 leading-tight">
                 {focused.title}
               </h4>

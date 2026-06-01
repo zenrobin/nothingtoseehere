@@ -1,0 +1,17 @@
+{
+  "description": "A close-up selfie of a smiling man and woman standing close together against a backdrop of rugged limestone cliffs and a clear blue sky. The man, in his 30s with fair skin, blue eyes, short light brown hair, wearing a gray baseball cap, dark gray t-shirt, and backpack straps visible, smiles broadly with teeth showing, his head tilted slightly. The woman, also in her 30s with olive skin, large expressive eyes, dark brown wavy hair flowing over her shoulders, wearing a colorful floral-patterned red off-shoulder dress and small earrings, smiles warmly with a subtle lip purse. In the background, another person wearing a black hat, light green shirt, and backpack is visible from behind, slightly out of focus, standing on the rocky terrain. The lighting is bright natural sunlight, casting soft shadows on the golden-beige limestone formations with textured surfaces and sparse vegetation. The composition centers the couple's faces prominently, with the cliffs framing them from the sides.",
+  "scores": {
+    "aesthetic": 9,
+    "emotional": 9,
+    "memory_value": 10
+  },
+  "key_elements": [
+    "people: smiling man in gray cap and t-shirt",
+    "people: smiling woman in red floral dress",
+    "location: limestone cliffs",
+    "objects: backpack",
+    "activity: taking selfie"
+  ],
+  "location_context": "This image appears to be taken at rocky limestone cliffs near Valletta, Malta, based on the distinctive geology and coordinates.",
+  "time_context": "Midday around 11:52 AM in late July, indicated by bright sunlight and clear blue sky."
+}

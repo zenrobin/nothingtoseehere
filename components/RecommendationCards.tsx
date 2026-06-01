@@ -319,7 +319,7 @@ export function RecommendationCards({
               {isMovie && (
                 <div className="absolute inset-0 grid place-items-center">
                   <div
-                    className={`rounded-full bg-white/90 grid place-items-center text-slate-900 shadow-md transition-all duration-300 ${
+                    className={`rounded-full bg-black/30 grid place-items-center text-white shadow-md transition-all duration-300 ${
                       isFocused ? "w-11 h-11 text-[13px] shadow-lg" : "w-8 h-8 text-[10px]"
                     }`}
                   >

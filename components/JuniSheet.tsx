@@ -501,16 +501,11 @@ function JuniBody(props: {
     setSuccessMessageTyped(isAlreadyComplete);
   }, [createdRecIds.length, selectedRec?.id]);
 
-  useEffect(() => {
-    if (!statusTyped) return;
-    const t = setTimeout(() => setCarouselRevealed(true), 400);
-    return () => clearTimeout(t);
-  }, [statusTyped]);
+
 
   useEffect(() => {
     if (selectedRec && createdRecIds.includes(selectedRec.id) && state === "generated") {
       setStatusTyped(true);
-      setCarouselRevealed(true);
     }
   }, [state, selectedRec, createdRecIds]);
 
@@ -761,17 +756,34 @@ function JuniBody(props: {
 
           {/* Combined Status & Hook bubble (keeps static/typewritten) */}
           <JuniBubble>
-            {state === "generation_failed" ? (
-              <span>⚠️ Hmm, something went wrong while creating your artwork. Please try again!</span>
-            ) : statusTyped ? (
-              <span>Creating your "{selectedRec.title}" artwork now! 🎨 I'll let you know the second it's ready. In the meantime, what else should we try with this memory?</span>
-            ) : (
-              <TypewriterText
-                text={`Creating your "${selectedRec.title}" artwork now! 🎨 I'll let you know the second it's ready. In the meantime, what else should we try with this memory?`}
-                speedMs={10}
-                onDone={() => setStatusTyped(true)}
-              />
-            )}
+            <div className="space-y-3">
+              <p className="text-[14px] leading-relaxed text-ink-900">
+                {state === "generation_failed" ? (
+                  <span>⚠️ Hmm, something went wrong while creating your artwork. Please try again!</span>
+                ) : statusTyped ? (
+                  <span>Creating your "{selectedRec.title}" artwork now! 🎨 I'll let you know the second it's ready. In the meantime, what else should we try with this memory?</span>
+                ) : (
+                  <TypewriterText
+                    text={`Creating your "${selectedRec.title}" artwork now! 🎨 I'll let you know the second it's ready. In the meantime, what else should we try with this memory?`}
+                    speedMs={10}
+                    onDone={() => setStatusTyped(true)}
+                  />
+                )}
+              </p>
+              {statusTyped && !carouselRevealed && state !== "generation_failed" && (
+                <div className="animate-fade-in flex justify-start pt-1">
+                  <button
+                    onClick={() => setCarouselRevealed(true)}
+                    className="px-5 py-2 rounded-full bg-juni text-white font-semibold text-[12px] active:scale-[0.98] transition shadow-md flex items-center gap-1.5 hover:bg-juni-dark animate-fade-in animate-duration-300"
+                  >
+                    <span>More Art Ideas</span>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                  </button>
+                </div>
+              )}
+            </div>
           </JuniBubble>
 
           {/* Secondary Carousel with remaining options */}

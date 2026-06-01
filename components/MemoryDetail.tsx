@@ -151,7 +151,7 @@ export function MemoryDetail(props: Props) {
           style={{ boxShadow: "0 10px 18px rgba(91, 79, 233, 0.12)" }}
         >
           <span className="text-[14px] font-semibold">Create Artwork</span>
-          <span className="text-[17px] font-bold leading-none">+</span>
+          <span className="w-[18px] h-[18px] text-[18px] font-bold leading-none flex items-center justify-center">+</span>
         </button>
       </div>
     </div>

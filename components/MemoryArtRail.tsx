@@ -3,7 +3,7 @@
 import React from "react";
 import type { ExistingArt, GenerationJob } from "@/types";
 import { useDragScroll } from "@/lib/useDragScroll";
-import { placeholderStyle, placeholderTintStyle } from "@/lib/placeholder";
+import { placeholderStyle } from "@/lib/placeholder";
 
 interface Props {
   art: ExistingArt[];
@@ -58,17 +58,11 @@ function ArtCard({ art, onClick }: { art: ExistingArt; onClick?: () => void }) {
         style={placeholderStyle(art.kind)}
       >
         {art.imageUrl && (
-          <>
-            <img
-              src={art.imageUrl}
-              alt={art.title}
-              className="absolute inset-0 w-full h-full object-cover animate-fade-in animate-duration-300"
-            />
-            <div
-              className="absolute inset-0 opacity-40 mix-blend-multiply"
-              style={placeholderTintStyle(art.kind)}
-            />
-          </>
+          <img
+            src={art.imageUrl}
+            alt={art.title}
+            className="absolute inset-0 w-full h-full object-cover animate-fade-in animate-duration-300"
+          />
         )}
         <div className="absolute inset-0 juni-grain opacity-40" />
         <div className="absolute top-2 left-2">
@@ -82,7 +76,7 @@ function ArtCard({ art, onClick }: { art: ExistingArt; onClick?: () => void }) {
         </div>
         {isMovie && (
           <div className="absolute inset-0 grid place-items-center">
-            <div className="w-9 h-9 rounded-full bg-white/85 grid place-items-center text-slate-900 text-[14px] leading-none">
+            <div className="w-9 h-9 rounded-full bg-black/30 grid place-items-center text-white text-[14px] leading-none">
               ▶
             </div>
           </div>
@@ -149,17 +143,11 @@ function ResultCard({
         style={placeholderStyle(kind as any)}
       >
         {imageUrl && (
-          <>
-            <img
-              src={imageUrl}
-              alt={title}
-              className="absolute inset-0 w-full h-full object-cover animate-fade-in animate-duration-300"
-            />
-            <div
-              className="absolute inset-0 opacity-40 mix-blend-multiply"
-              style={placeholderTintStyle(kind as any)}
-            />
-          </>
+          <img
+            src={imageUrl}
+            alt={title}
+            className="absolute inset-0 w-full h-full object-cover animate-fade-in animate-duration-300"
+          />
         )}
         <div className="absolute inset-0 juni-grain opacity-40" />
         {isNew && (
@@ -178,7 +166,7 @@ function ResultCard({
         </div>
         {isMovie && (
           <div className="absolute inset-0 grid place-items-center">
-            <div className="w-9 h-9 rounded-full bg-white/85 grid place-items-center text-slate-900 text-[14px] leading-none">
+            <div className="w-9 h-9 rounded-full bg-black/30 grid place-items-center text-white text-[14px] leading-none">
               ▶
             </div>
           </div>

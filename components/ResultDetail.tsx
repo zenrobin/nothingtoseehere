@@ -23,7 +23,7 @@ export function ResultDetail({
   if (!job.result) return null;
   const { result } = job;
   return (
-    <div className="absolute inset-0 z-30 flex flex-col bg-paper">
+    <div className="absolute inset-0 z-30 flex flex-col bg-white">
       <div className="flex items-center justify-between px-4 pt-3 pb-2">
         <button
           onClick={onClose}

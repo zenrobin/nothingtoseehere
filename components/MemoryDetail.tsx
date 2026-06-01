@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import type { GenerationJob, Memory, PhotoAnalysis, ExistingArt } from "@/types";
 import { MemoryArtRail } from "./MemoryArtRail";
 import { MemoryMedia } from "./MemoryMedia";
@@ -21,77 +21,67 @@ interface Props {
 
 export function MemoryDetail(props: Props) {
   const { memory, photoAnalyses, existingArt, pendingJob, completedJob } = props;
+  const [summaryExpanded, setSummaryExpanded] = useState(false);
+  const hasOverflow = memory.memory_summary.length > 180;
 
   return (
-    <div className="h-full flex flex-col relative bg-paper">
-      {/* Top nav */}
-      <div className="flex items-center justify-between px-4 pt-2 pb-2">
-        {/* Gallery hamburger is hidden until that flow has something to show. */}
-        <div className="w-9 h-9" aria-hidden="true" />
-        <div className="text-[11px] text-ink-500 uppercase tracking-widest">
-          Memory
-        </div>
-        <div className="flex items-center gap-1">
-          <button
-            onClick={props.onChangeMemory}
-            className="w-9 h-9 rounded-full grid place-items-center text-ink-700 hover:bg-black/5"
-            aria-label="Change memory or photos"
-            title="Change memory or photos"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M12 16V4M12 4l-5 5m5-5l5 5M4 20h16"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-          <button
-            onClick={props.onSettings}
-            className="w-9 h-9 rounded-full grid place-items-center text-ink-700 hover:bg-black/5"
-            aria-label="Settings"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M12 8a4 4 0 100 8 4 4 0 000-8z M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1A2 2 0 113.3 17l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H2a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1A2 2 0 117 4.3l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
-
+    <div className="h-full flex flex-col relative bg-white">
       {/* Scroll content */}
       <div className="flex-1 scroll-area pb-32">
-        {/* Hero */}
-        <div className="px-5 pt-2">
-          <div className="text-[11px] uppercase tracking-widest text-juni font-medium">
-            {memory.categories[0]?.main ?? "Memory"}
-            {memory.timeline[0]?.location
-              ? ` · ${memory.timeline[0].location}`
-              : ""}
-          </div>
-          <h1 className="mt-1 font-serif text-[34px] leading-[1.05] tracking-tight text-red-600">
-            {memory.snappy_title}
-          </h1>
-          <div className="mt-1 text-[13px] text-ink-500">
-            {memory.descriptive_title}
-          </div>
-        </div>
+        {/* Hero cover image (pinned to top, full width) */}
+        <div className="relative w-full aspect-[4/5] bg-paper-warm overflow-hidden select-none">
+          <HeroVisual memory={memory} photo={photoAnalyses[0]} />
 
-        {/* Hero image */}
-        <div className="px-5 mt-4">
-          <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-card bg-paper-warm">
-            <HeroVisual memory={memory} photo={photoAnalyses[0]} />
-            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/55 via-black/20 to-transparent">
-              <p className="text-white text-[13px] leading-snug">
-                {memory.editorial_intro}
-              </p>
+          {/* Floating Actions Over the Image (42x42 circles with 40% black transparent blur backdrop) */}
+          <div className="absolute top-4 right-4 flex items-center gap-2.5 z-10">
+            {/* Upload Button */}
+            <button
+              onClick={props.onChangeMemory}
+              className="w-[42px] h-[42px] rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white hover:bg-black/50 active:scale-95 transition"
+              aria-label="Change memory or photos"
+              title="Change memory or photos"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 16V4M12 4l-5 5m5-5l5 5M4 20h16"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+            {/* Settings Button */}
+            <button
+              onClick={props.onSettings}
+              className="w-[42px] h-[42px] rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white hover:bg-black/50 active:scale-95 transition"
+              aria-label="Settings"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 8a4 4 0 100 8 4 4 0 000-8z M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1A2 2 0 113.3 17l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H2a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1A2 2 0 117 4.3l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+
+          {/* Premium Bottom Darkening Gradient Overlay with White Text */}
+          <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/85 via-black/35 to-transparent flex flex-col justify-end pt-28 select-none">
+            <div className="text-[11px] uppercase tracking-widest text-white/75 font-medium">
+              {memory.categories[0]?.main ?? "Memory"}
+              {memory.timeline[0]?.location
+                ? ` · ${memory.timeline[0].location}`
+                : ""}
+            </div>
+            <h1 className="mt-1 font-serif text-[34px] leading-[1.05] tracking-tight text-white">
+              {memory.snappy_title}
+            </h1>
+            <div className="mt-1.5 text-[13px] text-white/80">
+              {memory.descriptive_title}
             </div>
           </div>
         </div>
@@ -99,19 +89,50 @@ export function MemoryDetail(props: Props) {
         {/* Summary */}
         <div className="px-5 mt-5">
           <p className="text-[13px] leading-relaxed text-ink-700">
-            {memory.memory_summary}
+            {summaryExpanded ? (
+              <>
+                {memory.memory_summary}
+                {hasOverflow && (
+                  <button
+                    onClick={() => setSummaryExpanded(false)}
+                    className="text-[12px] font-semibold text-juni ml-1.5 hover:underline inline-block select-none"
+                  >
+                    Read less
+                  </button>
+                )}
+              </>
+            ) : (
+              <>
+                {hasOverflow
+                  ? getTruncatedText(memory.memory_summary, 200)
+                  : memory.memory_summary}
+                {hasOverflow && (
+                  <>
+                    <span className="text-ink-500">... </span>
+                    <button
+                      onClick={() => setSummaryExpanded(true)}
+                      className="text-[12px] font-semibold text-juni hover:underline inline-block select-none"
+                    >
+                      Read more
+                    </button>
+                  </>
+                )}
+              </>
+            )}
           </p>
         </div>
 
         {/* Existing art rail */}
-        <div className="mt-7">
-          <MemoryArtRail
-            art={existingArt}
-            pendingJob={pendingJob}
-            completedJob={completedJob}
-            onResultTap={props.onResultTap}
-          />
-        </div>
+        {(existingArt.length > 0 || pendingJob || completedJob) && (
+          <div className="mt-7">
+            <MemoryArtRail
+              art={existingArt}
+              pendingJob={pendingJob}
+              completedJob={completedJob}
+              onResultTap={props.onResultTap}
+            />
+          </div>
+        )}
 
         {/* Memory media */}
         <div className="mt-7">
@@ -126,16 +147,12 @@ export function MemoryDetail(props: Props) {
       <div className="absolute bottom-5 right-5 z-20">
         <button
           onClick={props.onCreate}
-          className="group flex items-center gap-2 pl-4 pr-5 py-3.5 rounded-full bg-juni text-white shadow-card shadow-juni/30 active:scale-[0.98] transition"
+          className="group flex items-center gap-1.5 pl-5 pr-5 py-3.5 rounded-full bg-juni text-white active:scale-[0.98] transition"
+          style={{ boxShadow: "0 10px 18px rgba(91, 79, 233, 0.12)" }}
         >
           <span className="text-[14px] font-semibold">Create Artwork</span>
-          <span className="w-6 h-6 rounded-full bg-white/20 grid place-items-center text-[15px] leading-none">
-            +
-          </span>
+          <span className="text-[17px] font-bold leading-none">+</span>
         </button>
-        <div className="text-[10px] text-ink-500 mt-1 text-right pr-2">
-          {props.creationsLeft} creations left
-        </div>
       </div>
     </div>
   );
@@ -217,4 +234,14 @@ function HeroVisual({
       </div>
     </div>
   );
+}
+
+function getTruncatedText(text: string, maxLength: number) {
+  if (text.length <= maxLength) return text;
+  let trimmed = text.slice(0, maxLength);
+  const lastSpace = trimmed.lastIndexOf(" ");
+  if (lastSpace > 0) {
+    trimmed = trimmed.slice(0, lastSpace);
+  }
+  return trimmed;
 }

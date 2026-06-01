@@ -21,7 +21,7 @@ body {
   width: 100%;
   max-width: 393px;
   height: 100dvh;
-  background: #F7F5F1;
+  background: #ffffff;
   position: relative;
   overflow: hidden;
 }
@@ -30,7 +30,7 @@ body {
   height: 100%;
   width: 100%;
   position: relative;
-  background: #F7F5F1;
+  background: #ffffff;
   overflow: hidden;
 }
 
@@ -51,15 +51,12 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
 .scroll-area::-webkit-scrollbar {
-  width: 4px;
-}
-.scroll-area::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
+  display: none; /* Chrome, Safari and Opera */
 }
 
 .shimmer {

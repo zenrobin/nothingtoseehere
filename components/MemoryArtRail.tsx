@@ -15,8 +15,8 @@ interface Props {
 export function MemoryArtRail({ art, pendingJob, completedJob, onResultTap }: Props) {
   const ref = useDragScroll<HTMLDivElement>();
   return (
-    <div className="px-5">
-      <div className="flex items-baseline justify-between">
+    <div>
+      <div className="flex items-baseline justify-between px-5">
         <h2 className="text-[15px] font-semibold tracking-tight text-ink-900">
           Memory Art
         </h2>
@@ -26,7 +26,7 @@ export function MemoryArtRail({ art, pendingJob, completedJob, onResultTap }: Pr
       </div>
       <div
         ref={ref}
-        className="mt-3 flex gap-3 overflow-x-auto no-scrollbar pb-1 select-none"
+        className="mt-3 flex gap-3 overflow-x-auto no-scrollbar px-5 pb-1 select-none"
       >
         {pendingJob && pendingJob.status === "pending" && (
           <PendingCard brief={pendingJob.brief.summary} />

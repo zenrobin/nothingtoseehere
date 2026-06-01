@@ -28,6 +28,7 @@ export function SetupScreen({ onDone }: Props) {
     photoAnalyses: PhotoAnalysis[];
   } | null>(null);
   const [preparing, setPreparing] = useState(false);
+  const hasExistingMemory = !!settings.memory;
 
   async function handleZip(file: File | undefined) {
     if (!file) return;
@@ -118,14 +119,26 @@ export function SetupScreen({ onDone }: Props) {
     : "Use the sample memory";
 
   return (
-    <div className="absolute inset-0 z-50 bg-paper flex flex-col">
+    <div className="absolute inset-0 z-50 bg-white flex flex-col">
+      {/* Floating Close Button */}
+      {hasExistingMemory && (
+        <button
+          onClick={onDone}
+          className="absolute top-4 right-4 z-50 w-9 h-9 rounded-full bg-black/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-black/30 active:scale-95 transition"
+          aria-label="Close"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      )}
       {/* Decorative orb header */}
       <div className="relative h-44 overflow-hidden shrink-0">
         <div
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(60% 80% at 50% 30%, rgba(91,79,233,0.25), transparent 70%), radial-gradient(40% 60% at 70% 80%, rgba(245,198,165,0.4), transparent 70%), #F7F5F1",
+              "radial-gradient(60% 80% at 50% 30%, rgba(91,79,233,0.25), transparent 70%), radial-gradient(40% 60% at 70% 80%, rgba(245,198,165,0.4), transparent 70%), #ffffff",
           }}
         />
         <div
@@ -139,7 +152,7 @@ export function SetupScreen({ onDone }: Props) {
         />
       </div>
 
-      <div className="flex-1 px-6 pb-6 flex flex-col scroll-area">
+      <div className="flex-1 px-6 pt-8 pb-6 flex flex-col scroll-area">
         <div className="text-[11px] uppercase tracking-widest text-juni font-semibold">
           Prototype
         </div>

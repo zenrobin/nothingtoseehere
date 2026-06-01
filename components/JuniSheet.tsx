@@ -782,29 +782,33 @@ function JuniBody(props: {
           {state === "generated" && finishedJob && selectedRec && finishedJob.brief.conceptId === selectedRec.id && (
             <div className="space-y-3 animate-slide-up">
               <JuniBubble image={finishedJob.imageUrl || getCardImage(selectedRec, settings.photoAnalyses, pickCoverPhoto(settings))}>
-                {successMessageTyped ? (
-                  <span>Good news! I've finished your <strong>"{selectedRec.title}"</strong> artwork! Do you want to check it out?</span>
-                ) : (
-                  <TypewriterText
-                    text={`Good news! I've finished your "${selectedRec.title}" artwork! Do you want to check it out?`}
-                    speedMs={12}
-                    onDone={() => setSuccessMessageTyped(true)}
-                  />
-                )}
-              </JuniBubble>
-              {successMessageTyped && (
-                <div className="pl-10.5 animate-fade-in flex justify-start">
-                  <button
-                    onClick={() => onSeeArtwork && onSeeArtwork(finishedJob)}
-                    className="px-6 py-2.5 rounded-full bg-juni text-white font-semibold text-[13px] active:scale-[0.98] transition shadow-md flex items-center gap-1.5 hover:bg-juni-dark animate-fade-in"
-                  >
-                    <span>See artwork</span>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M5 12h14M12 5l7 7-7 7" />
-                    </svg>
-                  </button>
+                <div className="space-y-3">
+                  <p className="text-[14px] leading-relaxed text-ink-900">
+                    {successMessageTyped ? (
+                      <span>Good news! I've finished your <strong>"{selectedRec.title}"</strong> artwork! Do you want to check it out?</span>
+                    ) : (
+                      <TypewriterText
+                        text={`Good news! I've finished your "${selectedRec.title}" artwork! Do you want to check it out?`}
+                        speedMs={12}
+                        onDone={() => setSuccessMessageTyped(true)}
+                      />
+                    )}
+                  </p>
+                  {successMessageTyped && (
+                    <div className="animate-fade-in flex justify-start pt-1">
+                      <button
+                        onClick={() => onSeeArtwork && onSeeArtwork(finishedJob)}
+                        className="px-5 py-2 rounded-full bg-juni text-white font-semibold text-[12px] active:scale-[0.98] transition shadow-md flex items-center gap-1.5 hover:bg-juni-dark animate-fade-in animate-duration-300"
+                      >
+                        <span>See artwork</span>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
+              </JuniBubble>
             </div>
           )}
         </div>
@@ -867,12 +871,6 @@ function RecommendationsView({
             />
           )}
         </p>
-        {openingTyped && recs.memoryRead.alreadyCovered.length > 0 && (
-          <div className="mt-3 text-[11px] text-ink-500 animate-fade-in">
-            <span className="font-semibold text-ink-700">Already covered:</span>{" "}
-            {recs.memoryRead.alreadyCovered.join(", ")}
-          </div>
-        )}
       </JuniBubble>
 
       {showCards && (
@@ -951,7 +949,7 @@ function JuniAvatar({ pulse }: { pulse?: boolean }) {
 
 function JuniBubble({ children, image }: { children: React.ReactNode; image?: string }) {
   return (
-    <div className="flex items-start gap-2.5 animate-fade-in py-1 pr-10">
+    <div className={`flex items-start gap-2.5 animate-fade-in py-1 ${image ? "pr-4" : "pr-10"}`}>
       <JuniAvatar />
       <div className="flex-1 min-w-0">
         <div className="text-[10px] uppercase tracking-widest text-juni font-semibold mb-1">
@@ -965,7 +963,7 @@ function JuniBubble({ children, image }: { children: React.ReactNode; image?: st
             <img
               src={image}
               alt=""
-              className="w-12 h-16 object-cover rounded-lg shadow-md border border-white/80 shrink-0 select-none animate-fade-in animate-duration-300"
+              className="w-[68px] h-[90px] object-cover rounded-xl shadow-md border border-white/80 shrink-0 select-none animate-fade-in animate-duration-300"
             />
           )}
         </div>

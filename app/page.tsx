@@ -142,39 +142,62 @@ export default function Page() {
 
   function handleConfirmBrief(brief: CreativeBrief) {
     if (!settings.memory) return;
-    closeJuni();
     decrementCreations();
-    setToast({
-      title: "Your art is on the way",
-      subtitle: "Usually it takes up to 30 sec to finish.",
-    });
+    if (!juniOpen) {
+      setToast({
+        title: "Your art is on the way",
+        subtitle: "Usually it takes up to 30 sec to finish.",
+      });
+    }
     movedToArtRef.current = null;
+
+    // Resolve the chosen photo imageUrl from recommendation
+    let imageUrl: string | undefined;
+    const rec = recs?.recommendations.find((r) => r.id === brief.conceptId);
+    if (rec?.photoId) {
+      const matched = settings.photoAnalyses.find(
+        (p) => String(p.photo_id) === String(rec.photoId)
+      );
+      if (matched?.imageDataUrl) {
+        imageUrl = matched.imageDataUrl;
+      }
+    }
+
     startGenerationJob({
       memoryId: settings.memory.id,
       brief,
+      imageUrl,
       delayMs: settings.generation.delayMs,
       failureRatePct: settings.generation.failureRatePct,
       onUpdate: (job) => {
         upsertJob(job);
         if (job.status === "complete") {
           setJuniState("generated");
-          setToast({
-            title: "Your art is ready",
-            subtitle: `Tap "${job.brief.conceptTitle}" to view`,
-          });
-          setTimeout(() => setToast(null), 3200);
+          if (!useAppStore.getState().juniOpen) {
+            setToast({
+              title: "Your art is ready",
+              subtitle: `Tap "${job.brief.conceptTitle}" to view`,
+            });
+            setTimeout(() => setToast(null), 3200);
+          }
         } else if (job.status === "failed") {
           setJuniState("generation_failed");
-          setToast({
-            title: "Generation failed",
-            subtitle: "Try again — Juni will pick a slightly different path.",
-          });
-          setTimeout(() => setToast(null), 3200);
+          if (!useAppStore.getState().juniOpen) {
+            setToast({
+              title: "Generation failed",
+              subtitle: "Try again — Juni will pick a slightly different path.",
+            });
+            setTimeout(() => setToast(null), 3200);
+          }
         } else {
           setJuniState("generating");
         }
       },
     });
+  }
+
+  function handleSeeArtwork(job: GenerationJob) {
+    setShowResult(job);
   }
 
   // When a completed job is acknowledged via tapping, move it into existing art
@@ -190,6 +213,7 @@ export default function Page() {
       title: job.result.title,
       subtitle: "Made by Juni",
       thumbColor: job.result.thumbGradient,
+      imageUrl: job.imageUrl,
       createdAt: new Date(job.completedAt ?? Date.now()).toISOString(),
     };
     addExistingArt(art);
@@ -226,6 +250,7 @@ export default function Page() {
         {juniOpen && (
           <JuniSheet
             onConfirmBrief={handleConfirmBrief}
+            onSeeArtwork={handleSeeArtwork}
             onClose={closeJuni}
           />
         )}

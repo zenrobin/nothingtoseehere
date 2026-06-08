@@ -16,9 +16,9 @@ const config: Config = {
           100: "#E8EAEF",
         },
         paper: {
-          DEFAULT: "#F7F5F1",
+          DEFAULT: "#ffffff",
           warm: "#EFEBE4",
-          cream: "#FBF8F3",
+          cream: "#ffffff",
         },
         juni: {
           DEFAULT: "#5B4FE9",

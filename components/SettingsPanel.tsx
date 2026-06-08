@@ -29,7 +29,7 @@ export function SettingsPanel() {
 
   return (
     <DeviceFrame>
-      <div className="h-full flex flex-col bg-paper">
+      <div className="h-full flex flex-col bg-white">
         <div className="flex items-center justify-between px-4 pt-3 pb-2">
           <Link
             href="/"

@@ -117,8 +117,8 @@ function trimMemory(memory: any): any {
 /**
  * Cap how many photos we send to the LLM. A memory with 167 photos blows
  * through Anthropic's per-minute rate limit and costs ~20s per call. We
- * rank by memory_value + emotional and take the top N — Juni doesn't need
- * to see every selfie to recommend an artwork direction.
+ * rank by memory_value + emotional + aesthetic and take the top N — Juni
+ * doesn't need to see every selfie to recommend an artwork direction.
  */
 const MAX_PHOTOS_TO_LLM = 30;
 

@@ -82,6 +82,9 @@ export function RecommendationCards({
     lastDragEndAt: 0,
   });
 
+  const isScrollingProgrammatically = useRef(false);
+  const scrollingTimeoutRef = useRef<any>(null);
+
   // Synchronize index when selectedId is set (for history state)
   const selectedIndex = useMemo(() => {
     if (!selectedId) return 0;
@@ -97,11 +100,18 @@ export function RecommendationCards({
     const cards = container.children;
     const card = cards[index] as HTMLElement;
     if (card) {
+      if (scrollingTimeoutRef.current) {
+        clearTimeout(scrollingTimeoutRef.current);
+      }
+      isScrollingProgrammatically.current = true;
       container.scrollTo({
         left: card.offsetLeft - container.offsetWidth / 2 + card.offsetWidth / 2,
         behavior: "smooth",
       });
       setActiveIndex(index);
+      scrollingTimeoutRef.current = setTimeout(() => {
+        isScrollingProgrammatically.current = false;
+      }, 300);
     }
   };
 
@@ -140,6 +150,14 @@ export function RecommendationCards({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (scrollingTimeoutRef.current) {
+        clearTimeout(scrollingTimeoutRef.current);
+      }
+    };
   }, []);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -230,6 +248,7 @@ export function RecommendationCards({
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     if (dragInfo.current.isDown) return; // Ignore scroll updates during custom dragging
+    if (isScrollingProgrammatically.current) return; // Ignore scroll updates during programmatic snapping
     const container = e.currentTarget;
     const center = container.scrollLeft + container.offsetWidth / 2;
     const cards = container.children;
@@ -300,7 +319,7 @@ export function RecommendationCards({
               {isMovie && (
                 <div className="absolute inset-0 grid place-items-center">
                   <div
-                    className={`rounded-full bg-white/90 grid place-items-center text-slate-900 shadow-md transition-all duration-300 ${
+                    className={`rounded-full bg-black/30 grid place-items-center text-white shadow-md transition-all duration-300 ${
                       isFocused ? "w-11 h-11 text-[13px] shadow-lg" : "w-8 h-8 text-[10px]"
                     }`}
                   >

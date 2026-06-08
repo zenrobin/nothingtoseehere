@@ -13,8 +13,8 @@ interface Props {
 export function ArtFormCarousel({ templates, highlightedId, onSelect }: Props) {
   const ref = useDragScroll<HTMLDivElement>();
   return (
-    <div className="-mx-5 px-5">
-      <div className="flex items-baseline justify-between mb-2">
+    <div>
+      <div className="flex items-baseline justify-between mb-2 px-5">
         <h3 className="text-[12px] uppercase tracking-widest text-ink-500 font-semibold">
           ArtForms
         </h3>
@@ -24,7 +24,7 @@ export function ArtFormCarousel({ templates, highlightedId, onSelect }: Props) {
       </div>
       <div
         ref={ref}
-        className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 select-none"
+        className="flex gap-2.5 overflow-x-auto no-scrollbar px-5 pb-1 select-none"
       >
         {templates.map((t) => {
           const isHi = highlightedId === t.id;

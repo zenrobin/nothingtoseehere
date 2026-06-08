@@ -22,10 +22,9 @@ export function MemoryMedia({ photos }: { photos: PhotoAnalysis[] }) {
 }
 
 function PhotoCard({ photo }: { photo: PhotoAnalysis }) {
-  const firstWords = photo.description.split(/[.,]/)[0] ?? "";
   return (
-    <div className="rounded-2xl overflow-hidden bg-white shadow-card">
-      <div className="relative aspect-square">
+    <div className="flex flex-col">
+      <div className="relative aspect-square rounded-2xl overflow-hidden shadow-sm">
         {photo.imageDataUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -37,12 +36,9 @@ function PhotoCard({ photo }: { photo: PhotoAnalysis }) {
           <PlaceholderTile description={photo.description} />
         )}
       </div>
-      <div className="px-2.5 py-2">
-        <div className="text-[10px] text-ink-500 uppercase tracking-wider">
-          #{photo.photo_id}
-        </div>
-        <div className="text-[11px] text-ink-700 line-clamp-2 leading-snug mt-0.5">
-          {firstWords}
+      <div className="px-0.5 py-1.5">
+        <div className="text-[12px] font-medium text-ink-800 line-clamp-2 leading-snug">
+          {photo.description}
         </div>
       </div>
     </div>

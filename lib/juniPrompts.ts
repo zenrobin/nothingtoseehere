@@ -86,6 +86,66 @@ export interface RecommendationContextInput {
   capabilities: unknown;
 }
 
+/**
+ * Strip the memory payload down to fields the LLM actually needs.
+ * The raw memory ZIP can carry a 50KB narrative-prompt.txt plus a `map`
+ * field with route coordinates that just bloat the request — both blow
+ * past Anthropic's 50K input-tokens-per-minute Tier-1 limit fast.
+ */
+function trimMemory(memory: any): any {
+  if (!memory || typeof memory !== "object") return memory;
+  const {
+    narrativePrompt: _np,
+    map: _m,
+    context_captured_at: _cc,
+    ...rest
+  } = memory;
+  return rest;
+}
+
+/**
+ * Strip photo analyses to the fields that inform creative recommendations.
+ * Drops image data URLs, hosted URLs, dimensions, and raw coordinates;
+ * keeps the description + key elements that the LLM reads.
+ */
+function trimPhotoAnalyses(analyses: any): any {
+  if (!Array.isArray(analyses)) return analyses;
+  return analyses.map((p) => {
+    if (!p || typeof p !== "object") return p;
+    const loc = p.parsedLocation
+      ? [p.parsedLocation.point_of_interest, p.parsedLocation.city, p.parsedLocation.country]
+          .filter(Boolean)
+          .join(", ")
+      : undefined;
+    return {
+      photo_id: p.photo_id,
+      description: typeof p.description === "string" ? p.description.slice(0, 400) : p.description,
+      scores: p.scores,
+      key_elements: p.key_elements,
+      location_context: p.location_context || loc,
+      time_context: p.time_context,
+    };
+  });
+}
+
+/**
+ * Strip ArtForm templates to just what the LLM needs to pick one — name,
+ * artform kind, bestFor, style. Drops gradients, tags, long rationales.
+ */
+function trimArtForms(forms: any): any {
+  if (!Array.isArray(forms)) return forms;
+  return forms.map((f) => {
+    if (!f || typeof f !== "object") return f;
+    return {
+      id: f.id,
+      name: f.name,
+      artform: f.artform,
+      bestFor: f.bestFor,
+      style: f.style,
+    };
+  });
+}
+
 export function buildRecommendationUserMessage(
   recoPrompt: string,
   ctx: RecommendationContextInput
@@ -93,16 +153,16 @@ export function buildRecommendationUserMessage(
   return `${recoPrompt}
 
 MEMORY:
-${JSON.stringify(ctx.memory, null, 2)}
+${JSON.stringify(trimMemory(ctx.memory), null, 2)}
 
 PHOTO ANALYSES:
-${JSON.stringify(ctx.photoAnalyses, null, 2)}
+${JSON.stringify(trimPhotoAnalyses(ctx.photoAnalyses), null, 2)}
 
 EXISTING ART:
 ${JSON.stringify(ctx.existingArt, null, 2)}
 
 AVAILABLE ARTFORMS:
-${JSON.stringify(ctx.artForms, null, 2)}
+${JSON.stringify(trimArtForms(ctx.artForms), null, 2)}
 
 CAPABILITIES:
 ${JSON.stringify(ctx.capabilities, null, 2)}

@@ -52,24 +52,18 @@ export function SetupScreen({ onDone }: Props) {
   }
 
   async function commitAndContinue() {
+    if (!parsedMemory) return; // require a ZIP — no sample fallback
     setPreparing(true);
     setError(null);
 
     // Land the chosen memory in the store so the recommendation request
     // builds against it, even before we move on to the Memory Detail screen.
-    let activeMemory: Memory;
-    let activePhotoAnalyses: PhotoAnalysis[];
-    if (parsedMemory) {
-      loadFromZip({
-        memory: parsedMemory.memory,
-        photoAnalyses: parsedMemory.photoAnalyses,
-      });
-      activeMemory = parsedMemory.memory as Memory;
-      activePhotoAnalyses = parsedMemory.photoAnalyses;
-    } else {
-      activeMemory = settings.memory!;
-      activePhotoAnalyses = settings.photoAnalyses;
-    }
+    loadFromZip({
+      memory: parsedMemory.memory,
+      photoAnalyses: parsedMemory.photoAnalyses,
+    });
+    const activeMemory: Memory = parsedMemory.memory as Memory;
+    const activePhotoAnalyses: PhotoAnalysis[] = parsedMemory.photoAnalyses;
 
     // Pre-read while still on the Setup screen so the chat itself feels
     // close to instant once the user opens it.
@@ -123,7 +117,9 @@ export function SetupScreen({ onDone }: Props) {
     ? "Juni is reading your memory…"
     : parsedMemory
     ? `Continue with "${parsedMemoryTitle}"`
-    : "Use the sample memory";
+    : "Choose a memory ZIP to continue";
+
+  const canContinue = !!parsedMemory && !preparing && !parsing;
 
   return (
     <div className="absolute inset-0 z-50 bg-white flex flex-col">
@@ -227,25 +223,17 @@ export function SetupScreen({ onDone }: Props) {
             <div className="mt-2 text-[12px] text-red-500 px-1">{error}</div>
           )}
 
-          <Changelog />
-        </div>
-
-        <div className="mt-auto pt-6 space-y-2">
-          <button
-            onClick={commitAndContinue}
-            disabled={parsing || preparing}
-            className="w-full py-3.5 rounded-full bg-juni text-white text-[14px] font-semibold shadow-card disabled:opacity-50 active:scale-[0.99]"
-          >
-            {primaryLabel}
-          </button>
-          {parsedMemory && (
+          <div className="mt-6">
             <button
-              onClick={onDone}
-              className="w-full py-2.5 rounded-full text-[12px] font-medium text-ink-500"
+              onClick={commitAndContinue}
+              disabled={!canContinue}
+              className="w-full py-3.5 rounded-full bg-juni text-white text-[14px] font-semibold shadow-card disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.99]"
             >
-              Skip and use the sample memory
+              {primaryLabel}
             </button>
-          )}
+          </div>
+
+          <Changelog />
         </div>
       </div>
     </div>

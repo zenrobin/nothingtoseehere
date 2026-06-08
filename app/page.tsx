@@ -300,7 +300,7 @@ export default function Page() {
         {showGallery && (
           <Gallery
             onClose={() => setShowGallery(false)}
-            onStartCreate={() => {
+            onSelectCurrentMemory={() => {
               setShowGallery(false);
               startCreate();
             }}

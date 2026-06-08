@@ -14,6 +14,11 @@ export interface ChangelogEntry {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     who: "Robin",
+    what: "Fixed Photos sub-flow: Juni now centers ideas on what the photos actually show (a starfish, a doorway) instead of leaking in the memory's trip narrative.",
+    when: "2026-06-08T18:45:00Z",
+  },
+  {
+    who: "Robin",
     what: "Photos sub-flow now opens a native-style camera roll picker over your loaded memory's photos, and Idea-chat plus photo suggestions are wired to the real LLM end-to-end into the brief.",
     when: "2026-06-08T18:30:00Z",
   },

@@ -269,8 +269,28 @@ function PhotosFlow({
     setThinking(true);
     setError(null);
     try {
+      // CRITICAL: do not pass the loaded memory's narrative / title / sections —
+      // the user picked photos out of context and wants ideas centered on the
+      // photos themselves, not on the trip the photos came from.
+      const stubMemory = {
+        id: "photo-first",
+        one_word_title: "",
+        snappy_title: "",
+        medium_title: "",
+        detailed_title: "",
+        descriptive_title: "",
+        memory_summary: "",
+        memory_narrative: "",
+        editorial_intro: "",
+        score: 0,
+        emotional_tone: "",
+        cover_photo_id: picks[0]?.photo_id ?? 0,
+        categories: [],
+        timeline: [],
+      } as any;
+
       const ctx = {
-        memory: settings.memory!,
+        memory: stubMemory,
         photoAnalyses: picks,
         existingArt: [],
         artForms: settings.artForms,

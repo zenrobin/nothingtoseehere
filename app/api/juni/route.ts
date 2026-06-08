@@ -59,7 +59,17 @@ export async function POST(req: NextRequest) {
     userMessage += `\n\n[IDEA CHAT MODE]\nThe user opened "Start with an Idea" — they don't have a specific memory in mind. You are having a short back-and-forth to converge on a creation. Your reply is a single conversational "openingMessage" sentence (under 25 words) that asks ONE clarifying question OR commits to a direction. Only populate "recommendations" with 1-3 entries once you have enough signal to commit; otherwise leave it as []. Suggested media types: photo book, GenArt, movie, magazine.\n\n[CONVERSATION HISTORY]\n${history || "(none yet)"}`;
   }
   if (conversation?.photoFirst) {
-    userMessage += `\n\n[PHOTO-FIRST MODE]\nThe user picked photos with no specific memory in mind. Read the PHOTO ANALYSES as the only context (treat MEMORY as scaffolding). In openingMessage, name what you actually see across the photos in one sentence. Then provide 2-4 recommendations tailored to those photos, leaning toward photo books and magazine spreads when there are many photos.`;
+    userMessage += `\n\n[PHOTO-FIRST MODE — CRITICAL]
+The user picked specific photos out of their library. They want creation ideas CENTERED ON WHAT THE PHOTOS ACTUALLY SHOW. They do NOT want ideas about the broader trip / memory / event the photos came from.
+
+Hard rules:
+1. IGNORE the MEMORY section entirely. Pretend you have no information about the trip, location, narrative, or title. The MEMORY object you see is intentionally stubbed.
+2. Read ONLY the PHOTO ANALYSES descriptions. Whatever the description says is THE SUBJECT — a starfish, a meal, a sign, a face, a doorway. That subject IS the creation.
+3. openingMessage must name the subject(s) you literally see. Example: "A starfish on wet stones — beautiful texture." NOT "Your epic adventure" or "Your trip."
+4. Every recommendation's title and description must be about the subject in the photos. If the photo is a starfish, suggest: "A botanical-style print of the starfish", "A close-up macro art piece", "A nature movie of tidepools" — NOT a road trip movie.
+5. Do not invent locations, narratives, or context that aren't directly visible in the photo descriptions.
+
+Suggest 2-4 recommendations. Lean toward photo books and magazine spreads only when there are 8+ photos forming a series.`;
   }
 
   const provider = settings.llm.provider;

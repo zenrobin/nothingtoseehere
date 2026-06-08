@@ -582,18 +582,37 @@ function JuniBody(props: {
   }
 
   if (error) {
+    const isRateLimit =
+      /rate[_ -]?limit|429|tokens per minute/i.test(error);
     return (
       <div ref={containerRef}>
         {userSaidNode}
         <JuniBubble>
-          <p className="text-[14px] text-ink-900">
-            Hmm — I can't reach my brain right now. Check that
-            <code className="mx-1 px-1 py-0.5 rounded bg-ink-100 text-[12px]">
-              ANTHROPIC_API_KEY
-            </code>
-            is set in your environment, then try again.
-          </p>
-          <div className="mt-2 text-[11px] text-ink-500 leading-snug">
+          {isRateLimit ? (
+            <p className="text-[14px] text-ink-900">
+              I&apos;ve hit the Anthropic per-minute token limit on this account.
+              Wait about a minute and try again, or bump the plan&apos;s
+              tier at{" "}
+              <a
+                href="https://console.anthropic.com/settings/limits"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline font-semibold text-juni"
+              >
+                console.anthropic.com/settings/limits
+              </a>
+              .
+            </p>
+          ) : (
+            <p className="text-[14px] text-ink-900">
+              Hmm — I can&apos;t reach my brain right now. Check that
+              <code className="mx-1 px-1 py-0.5 rounded bg-ink-100 text-[12px]">
+                ANTHROPIC_API_KEY
+              </code>
+              is set in your environment, then try again.
+            </p>
+          )}
+          <div className="mt-2 text-[11px] text-ink-500 leading-snug break-words">
             {error}
           </div>
         </JuniBubble>

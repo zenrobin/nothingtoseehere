@@ -33,6 +33,23 @@ export interface JuniConversationContext {
    * should be conversational ("Sure — here's a different angle…").
    */
   moreIdeas?: boolean;
+  /**
+   * Gallery-first "Start with an Idea" flow. The user came in without a
+   * specific memory and Juni should chat, ask clarifying questions, and
+   * gradually converge on a media type + concrete idea.
+   */
+  ideaChat?: boolean;
+  /**
+   * Gallery-first "Start with Photos" flow. The user picked a subset of
+   * photos and wants Juni to look at them and suggest creations.
+   */
+  photoFirst?: boolean;
+  /**
+   * Ordered chat history for multi-turn idea-chat flows. Each message is
+   * { role, content }. Juni sees the full transcript and continues from
+   * the most recent user turn.
+   */
+  messageHistory?: { role: "user" | "juni"; content: string }[];
 }
 
 export interface JuniRequestPayload {

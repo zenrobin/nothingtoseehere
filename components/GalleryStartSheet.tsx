@@ -4,13 +4,27 @@ import React, { useEffect, useRef, useState } from "react";
 import { useAppStore } from "@/lib/store";
 import { TypewriterText } from "./TypewriterText";
 import { ThinkingDots } from "./ThinkingDots";
+import { CameraRollPicker } from "./CameraRollPicker";
 import { FAKE_MEMORIES } from "@/data/fakeMemories";
+import { loggedFetchRecommendations } from "@/lib/llmCalls";
+import type {
+  CreativeBrief,
+  JuniRecommendation,
+  JuniRecommendationsResponse,
+  PhotoAnalysis,
+} from "@/types";
 
 type Step = "welcome" | "photos" | "memory" | "idea";
 
 interface Props {
   onClose: () => void;
   onSelectCurrentMemory: () => void;
+  /**
+   * Hand the chosen creative brief back to the page so it can decrement
+   * creations, start a generation job, and close the gallery. Mirrors
+   * the JuniSheet brief flow.
+   */
+  onConfirmBrief: (brief: CreativeBrief) => void;
 }
 
 const USER_NAME = "Robin";
@@ -47,14 +61,16 @@ function currentClock(): string {
   return `${h}:${m} ${suffix}`;
 }
 
-export function GalleryStartSheet({ onClose, onSelectCurrentMemory }: Props) {
+export function GalleryStartSheet({
+  onClose,
+  onSelectCurrentMemory,
+  onConfirmBrief,
+}: Props) {
   const [step, setStep] = useState<Step>("welcome");
   const [welcome, setWelcome] = useState<string | null>(null);
   const [welcomeTyped, setWelcomeTyped] = useState(false);
   const [optionsRevealed, setOptionsRevealed] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Fetch the LLM-driven greeting on mount.
   useEffect(() => {
     let cancelled = false;
     const t0 = Date.now();
@@ -66,22 +82,26 @@ export function GalleryStartSheet({ onClose, onSelectCurrentMemory }: Props) {
       .then((r) => r.json())
       .then((data) => {
         if (cancelled) return;
-        const elapsed = Date.now() - t0;
-        const remaining = Math.max(0, 700 - elapsed);
+        const remaining = Math.max(0, 700 - (Date.now() - t0));
         setTimeout(() => {
-          if (!cancelled) setWelcome(data?.message || `${currentClock()} — ${USER_NAME}, it's time to create. Choose your starting point.`);
+          if (!cancelled)
+            setWelcome(
+              data?.message ||
+                `${currentClock()} — ${USER_NAME}, it's time to create. Choose your starting point.`
+            );
         }, remaining);
       })
       .catch(() => {
         if (cancelled) return;
-        setWelcome(`${currentClock()} — ${USER_NAME}, it's time to create. Choose your starting point.`);
+        setWelcome(
+          `${currentClock()} — ${USER_NAME}, it's time to create. Choose your starting point.`
+        );
       });
     return () => {
       cancelled = true;
     };
   }, []);
 
-  // After welcome types in, fade options in.
   useEffect(() => {
     if (!welcomeTyped) return;
     const t = setTimeout(() => setOptionsRevealed(true), 200);
@@ -118,49 +138,51 @@ export function GalleryStartSheet({ onClose, onSelectCurrentMemory }: Props) {
               </div>
             </div>
           </div>
-          {step !== "welcome" && (
+          <div className="flex items-center gap-1.5">
+            {step !== "welcome" && (
+              <button
+                onClick={() => setStep("welcome")}
+                className="text-[11px] text-ink-500 font-medium px-3 py-1.5 rounded-full bg-white border border-ink-100"
+              >
+                Back
+              </button>
+            )}
             <button
-              onClick={() => setStep("welcome")}
-              className="text-[11px] text-ink-500 font-medium px-3 py-1.5 rounded-full bg-white border border-ink-100"
+              onClick={onClose}
+              className="w-8 h-8 rounded-full bg-ink-100/60 hover:bg-ink-100 grid place-items-center text-ink-700"
+              aria-label="Close"
             >
-              Back
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M18 6L6 18M6 6l12 12"
+                  stroke="currentColor"
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                />
+              </svg>
             </button>
-          )}
-          <button
-            onClick={onClose}
-            className="w-8 h-8 ml-1 rounded-full bg-ink-100/60 hover:bg-ink-100 grid place-items-center text-ink-700"
-            aria-label="Close"
-          >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M18 6L6 18M6 6l12 12"
-                stroke="currentColor"
-                strokeWidth="2.4"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
+          </div>
         </div>
 
         {/* Body */}
-        <div
-          ref={containerRef}
-          className="flex-1 scroll-area no-scrollbar px-4 py-4"
-        >
+        <div className="flex-1 scroll-area no-scrollbar px-4 py-4">
           {step === "welcome" && (
             <WelcomeBody
               welcome={welcome}
-              welcomeTyped={welcomeTyped}
               setWelcomeTyped={setWelcomeTyped}
               optionsRevealed={optionsRevealed}
               onPickOption={(id) => setStep(id)}
             />
           )}
-          {step === "photos" && <PhotosFlow onClose={onClose} />}
+          {step === "photos" && (
+            <PhotosFlow onConfirmBrief={onConfirmBrief} />
+          )}
           {step === "memory" && (
             <MemoryListFlow onSelectCurrent={onSelectCurrentMemory} />
           )}
-          {step === "idea" && <IdeaChatFlow onClose={onClose} />}
+          {step === "idea" && (
+            <IdeaChatFlow onConfirmBrief={onConfirmBrief} />
+          )}
         </div>
       </div>
     </div>
@@ -171,13 +193,11 @@ export function GalleryStartSheet({ onClose, onSelectCurrentMemory }: Props) {
 
 function WelcomeBody({
   welcome,
-  welcomeTyped,
   setWelcomeTyped,
   optionsRevealed,
   onPickOption,
 }: {
   welcome: string | null;
-  welcomeTyped: boolean;
   setWelcomeTyped: (v: boolean) => void;
   optionsRevealed: boolean;
   onPickOption: (id: "photos" | "memory" | "idea") => void;
@@ -225,109 +245,135 @@ function WelcomeBody({
 
 // ===== Photos sub-flow =====
 
-function PhotosFlow({ onClose }: { onClose: () => void }) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [photos, setPhotos] = useState<{ name: string; dataUrl: string }[]>([]);
-  const [reviewing, setReviewing] = useState(false);
-  const [reviewed, setReviewed] = useState(false);
+function PhotosFlow({
+  onConfirmBrief,
+}: {
+  onConfirmBrief: (brief: CreativeBrief) => void;
+}) {
+  const settings = useAppStore((s) => s.settings);
+  const setRecs = useAppStore((s) => s.setRecommendations);
+  const setDebug = useAppStore((s) => s.setDebug);
 
-  async function handleFiles(files: FileList | null) {
-    if (!files) return;
-    const next: { name: string; dataUrl: string }[] = [];
-    for (const f of Array.from(files)) {
-      const url = await new Promise<string>((resolve) => {
-        const r = new FileReader();
-        r.onload = () => resolve(String(r.result));
-        r.readAsDataURL(f);
+  const [pickerOpen, setPickerOpen] = useState(true);
+  const [selected, setSelected] = useState<PhotoAnalysis[]>([]);
+  const [recs, setRecsLocal] = useState<JuniRecommendationsResponse | null>(
+    null
+  );
+  const [thinking, setThinking] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function reviewPhotos(picks: PhotoAnalysis[]) {
+    setSelected(picks);
+    setPickerOpen(false);
+    setRecsLocal(null);
+    setThinking(true);
+    setError(null);
+    try {
+      const ctx = {
+        memory: settings.memory!,
+        photoAnalyses: picks,
+        existingArt: [],
+        artForms: settings.artForms,
+        capabilities: settings.capabilities,
+      };
+      const resp = await loggedFetchRecommendations("freeform", {
+        settings: {
+          llm: settings.llm,
+          prompts: settings.prompts,
+          style: settings.style,
+          capabilities: settings.capabilities,
+        },
+        context: ctx,
+        conversation: { photoFirst: true },
       });
-      next.push({ name: f.name, dataUrl: url });
+      if (!resp) {
+        setError("No response from Juni.");
+        return;
+      }
+      setRecsLocal(resp.data);
+      setRecs(resp.data);
+      setDebug({
+        lastContext: ctx,
+        lastRequest: resp.debug.request,
+        lastResponse: resp.debug.response,
+      });
+    } catch (e: any) {
+      setError(e?.message ?? "Couldn't reach Juni.");
+    } finally {
+      setThinking(false);
     }
-    setPhotos((prev) => [...prev, ...next]);
-    setReviewing(true);
-    setReviewed(false);
-    setTimeout(() => {
-      setReviewing(false);
-      setReviewed(true);
-    }, 1400);
+  }
+
+  if (pickerOpen) {
+    return (
+      <CameraRollPicker
+        photos={settings.photoAnalyses}
+        onConfirm={reviewPhotos}
+        onCancel={() => setPickerOpen(false)}
+      />
+    );
   }
 
   return (
     <div className="space-y-4">
-      <JuniBubble>
-        <p className="text-[14px] leading-relaxed text-ink-900">
-          Drop in one or more photos. I&apos;ll look at what&apos;s in them and
-          suggest a few things we could make.
-        </p>
-      </JuniBubble>
-
-      <div className="pl-[42px]">
-        <label
-          htmlFor="gallery-photo-input"
-          className="block w-full rounded-2xl bg-white shadow-card px-4 py-6 text-center cursor-pointer border-2 border-dashed border-ink-100 hover:border-juni/40 transition active:scale-[0.99]"
-        >
-          <div className="text-[14px] font-semibold text-ink-900">
-            {photos.length === 0 ? "Choose photos" : "Add more photos"}
-          </div>
-          <div className="text-[11px] text-ink-500 mt-1">
-            JPG / PNG / HEIC · pick as many as you like
-          </div>
-        </label>
-        <input
-          id="gallery-photo-input"
-          ref={fileInputRef}
-          type="file"
-          accept="image/*,.heic,.heif"
-          multiple
-          className="sr-only"
-          onChange={(e) => {
-            handleFiles(e.target.files);
-            e.currentTarget.value = "";
-          }}
-        />
-      </div>
-
-      {photos.length > 0 && (
-        <div className="pl-[42px]">
-          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-            {photos.map((p, i) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                key={i}
-                src={p.dataUrl}
-                alt={p.name}
-                className="w-16 h-16 object-cover rounded-lg shadow-card shrink-0"
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {reviewing && (
+      {selected.length === 0 ? (
         <JuniBubble>
-          <ThinkingDots label={`Looking at ${photos.length} photo${photos.length > 1 ? "s" : ""}…`} />
-        </JuniBubble>
-      )}
-
-      {reviewed && (
-        <JuniBubble>
-          <p className="text-[14px] leading-relaxed text-ink-900 mb-2">
-            Good set. From these, I&apos;d try one of:
+          <p className="text-[14px] text-ink-900 mb-3">
+            Pick some photos and I&apos;ll take a look.
           </p>
-          <div className="flex flex-col gap-1.5">
-            {["A printed photo book", "A single GenArt print", "A short movie", "A magazine spread"].map((label) => (
+          <button
+            onClick={() => setPickerOpen(true)}
+            className="text-[13px] font-semibold text-juni"
+          >
+            Choose photos
+          </button>
+        </JuniBubble>
+      ) : (
+        <>
+          <div className="pl-[42px]">
+            <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
+              {selected.map((p, i) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={p.photo_id}
+                  src={p.imageDataUrl}
+                  alt=""
+                  className="w-14 h-14 object-cover rounded-lg shadow-card shrink-0"
+                />
+              ))}
               <button
-                key={label}
-                onClick={onClose}
-                className="text-left text-[13px] font-medium text-juni-ink bg-juni-soft hover:bg-juni-soft/80 rounded-xl px-3 py-2 transition"
+                onClick={() => setPickerOpen(true)}
+                className="w-14 h-14 rounded-lg border-2 border-dashed border-ink-200 text-[10px] font-semibold text-ink-500 hover:border-juni/40"
               >
-                {label}
+                Edit
               </button>
-            ))}
+            </div>
           </div>
-          <p className="mt-3 text-[12px] text-ink-500">
-            Or describe what you want and I&apos;ll build from that.
-          </p>
-        </JuniBubble>
+
+          {thinking && (
+            <JuniBubble>
+              <ThinkingDots
+                label={`Looking at ${selected.length} photo${
+                  selected.length > 1 ? "s" : ""
+                }…`}
+              />
+            </JuniBubble>
+          )}
+          {error && (
+            <JuniBubble>
+              <p className="text-[13px] text-red-600">{error}</p>
+            </JuniBubble>
+          )}
+          {recs && (
+            <RecommendationsList
+              recs={recs}
+              selected={selected}
+              onPick={(rec) =>
+                onConfirmBrief(buildBriefFromRecommendation(rec, selected))
+              }
+            />
+          )}
+        </>
       )}
     </div>
   );
@@ -335,7 +381,11 @@ function PhotosFlow({ onClose }: { onClose: () => void }) {
 
 // ===== Memory list sub-flow =====
 
-function MemoryListFlow({ onSelectCurrent }: { onSelectCurrent: () => void }) {
+function MemoryListFlow({
+  onSelectCurrent,
+}: {
+  onSelectCurrent: () => void;
+}) {
   const settings = useAppStore((s) => s.settings);
   const memory = settings.memory;
 
@@ -405,56 +455,139 @@ function MemoryListFlow({ onSelectCurrent }: { onSelectCurrent: () => void }) {
 
 // ===== Idea sub-flow =====
 
-function IdeaChatFlow({ onClose }: { onClose: () => void }) {
-  const [messages, setMessages] = useState<
-    { role: "user" | "juni"; text: string }[]
-  >([
+interface ChatMsg {
+  role: "user" | "juni";
+  content: string;
+  recs?: JuniRecommendation[];
+}
+
+function IdeaChatFlow({
+  onConfirmBrief,
+}: {
+  onConfirmBrief: (brief: CreativeBrief) => void;
+}) {
+  const settings = useAppStore((s) => s.settings);
+  const [messages, setMessages] = useState<ChatMsg[]>([
     {
       role: "juni",
-      text:
+      content:
         "Tell me what you're imagining. I can build a photo book, a piece of art, a movie, or a magazine — what's the moment we're capturing?",
     },
   ]);
   const [input, setInput] = useState("");
   const [thinking, setThinking] = useState(false);
+  const scrollerRef = useRef<HTMLDivElement>(null);
 
-  function send() {
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [messages, thinking]);
+
+  async function send() {
     const text = input.trim();
-    if (!text) return;
-    setMessages((m) => [...m, { role: "user", text }]);
+    if (!text || thinking) return;
     setInput("");
+    const history: ChatMsg[] = [...messages, { role: "user", content: text }];
+    setMessages(history);
     setThinking(true);
-    // Placeholder mock response — wire up to /api/juni with conversation
-    // context type "idea-chat" later.
-    setTimeout(() => {
+    try {
+      const ctx = {
+        memory: settings.memory!,
+        photoAnalyses: settings.photoAnalyses,
+        existingArt: [],
+        artForms: settings.artForms,
+        capabilities: settings.capabilities,
+      };
+      const resp = await loggedFetchRecommendations("freeform", {
+        settings: {
+          llm: settings.llm,
+          prompts: settings.prompts,
+          style: settings.style,
+          capabilities: settings.capabilities,
+        },
+        context: ctx,
+        conversation: {
+          userMessage: text,
+          ideaChat: true,
+          messageHistory: history.map((m) => ({
+            role: m.role,
+            content: m.content,
+          })),
+        },
+      });
+      if (!resp) throw new Error("No response");
       setMessages((m) => [
         ...m,
         {
           role: "juni",
-          text: `"${text}" — got it. Sounds like a ${
-            /book|magaz/i.test(text)
-              ? "magazine spread"
-              : /movie|video|clip/i.test(text)
-              ? "movie"
-              : /art|print|paint/i.test(text)
-              ? "GenArt print"
-              : "photo book"
-          } would land that. Want to keep refining, or jump in?`,
+          content: resp.data.openingMessage,
+          recs:
+            resp.data.recommendations && resp.data.recommendations.length > 0
+              ? resp.data.recommendations
+              : undefined,
         },
       ]);
+    } catch (e: any) {
+      setMessages((m) => [
+        ...m,
+        {
+          role: "juni",
+          content:
+            "I couldn't reach my brain just now — say that again in a moment?",
+        },
+      ]);
+    } finally {
       setThinking(false);
-    }, 900);
+    }
   }
 
   return (
-    <div className="space-y-3">
+    <div ref={scrollerRef} className="space-y-3">
       {messages.map((m, i) =>
         m.role === "juni" ? (
-          <JuniBubble key={i}>
-            <p className="text-[14px] leading-relaxed text-ink-900">{m.text}</p>
-          </JuniBubble>
+          <div key={i} className="space-y-2">
+            <JuniBubble>
+              <p className="text-[14px] leading-relaxed text-ink-900">
+                {m.content}
+              </p>
+            </JuniBubble>
+            {m.recs && m.recs.length > 0 && (
+              <div className="pl-[42px] space-y-1.5">
+                {m.recs.map((r) => (
+                  <button
+                    key={r.id}
+                    onClick={() =>
+                      onConfirmBrief(buildBriefFromRecommendation(r))
+                    }
+                    className="w-full text-left rounded-2xl bg-white shadow-card px-4 py-3 active:scale-[0.99]"
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <span
+                        className={`text-[9px] uppercase tracking-widest font-bold px-1.5 py-0.5 rounded-full text-white ${
+                          r.artform === "movie"
+                            ? "bg-slate-900"
+                            : "bg-orange-950"
+                        }`}
+                      >
+                        {r.artform === "movie" ? "Movie" : "GenArt"}
+                      </span>
+                      <span className="text-[13.5px] font-semibold text-ink-900">
+                        {r.title}
+                      </span>
+                    </div>
+                    <p className="text-[11.5px] text-ink-600 leading-snug">
+                      {r.why}
+                    </p>
+                    <div className="mt-2 text-[11px] font-semibold text-juni">
+                      Make this {r.artform === "movie" ? "movie" : "artwork"} →
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         ) : (
-          <UserBubble key={i}>{m.text}</UserBubble>
+          <UserBubble key={i}>{m.content}</UserBubble>
         )
       )}
       {thinking && (
@@ -476,7 +609,7 @@ function IdeaChatFlow({ onClose }: { onClose: () => void }) {
           />
           <button
             onClick={send}
-            disabled={!input.trim()}
+            disabled={!input.trim() || thinking}
             className="w-9 h-9 rounded-full bg-juni text-white grid place-items-center disabled:opacity-40 active:scale-95"
             aria-label="Send"
           >
@@ -494,6 +627,83 @@ function IdeaChatFlow({ onClose }: { onClose: () => void }) {
       </div>
     </div>
   );
+}
+
+// ===== Recommendations rendering used by Photos flow =====
+
+function RecommendationsList({
+  recs,
+  selected,
+  onPick,
+}: {
+  recs: JuniRecommendationsResponse;
+  selected: PhotoAnalysis[];
+  onPick: (rec: JuniRecommendation) => void;
+}) {
+  return (
+    <div className="space-y-3">
+      <JuniBubble>
+        <p className="text-[14px] leading-relaxed text-ink-900">
+          {recs.openingMessage}
+        </p>
+      </JuniBubble>
+      <div className="pl-[42px] space-y-2">
+        {recs.recommendations.map((r) => {
+          const isMovie = r.artform === "movie";
+          return (
+            <button
+              key={r.id}
+              onClick={() => onPick(r)}
+              className="w-full text-left rounded-2xl bg-white shadow-card px-4 py-3 active:scale-[0.99]"
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <span
+                  className={`text-[9px] uppercase tracking-widest font-bold px-1.5 py-0.5 rounded-full text-white ${
+                    isMovie ? "bg-slate-900" : "bg-orange-950"
+                  }`}
+                >
+                  {isMovie ? "Movie" : "GenArt"}
+                </span>
+                <span className="text-[13.5px] font-semibold text-ink-900">
+                  {r.title}
+                </span>
+              </div>
+              <p className="text-[11.5px] text-ink-600 leading-snug">
+                {r.description}
+              </p>
+              <div className="mt-2 flex items-center justify-between">
+                <span className="text-[10.5px] text-ink-400">
+                  From {selected.length} photo
+                  {selected.length === 1 ? "" : "s"}
+                </span>
+                <span className="text-[11px] font-semibold text-juni">
+                  Make this {isMovie ? "movie" : "artwork"} →
+                </span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function buildBriefFromRecommendation(
+  rec: JuniRecommendation,
+  photos?: PhotoAnalysis[]
+): CreativeBrief {
+  return {
+    artform: rec.artform,
+    sourceMemoryId: "gallery-first",
+    conceptId: rec.id,
+    conceptTitle: rec.title,
+    templateId: rec.suggestedTemplateId,
+    templateName: null,
+    tone: "personal and warm",
+    keyDetails: photos?.slice(0, 4).map((p) => p.description.slice(0, 60)) ?? [],
+    differentiator: rec.why,
+    summary: rec.description,
+  };
 }
 
 // ===== Shared bubble visuals =====

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import type { ExistingArt, GenerationJob } from "@/types";
+import type { CreativeBrief, ExistingArt, GenerationJob } from "@/types";
 import { useAppStore } from "@/lib/store";
 import { placeholderStyle } from "@/lib/placeholder";
 import { GalleryStartSheet } from "./GalleryStartSheet";
@@ -12,9 +12,16 @@ interface Props {
   /** Called when the user picks the currently-loaded memory from the
    *  "Start with a Memory" sub-flow inside the new gallery start sheet. */
   onSelectCurrentMemory: () => void;
+  /** Called when a gallery sub-flow (Photos / Idea) produces a brief
+   *  that should kick off a generation job. */
+  onConfirmBrief: (brief: CreativeBrief) => void;
 }
 
-export function Gallery({ onClose, onSelectCurrentMemory }: Props) {
+export function Gallery({
+  onClose,
+  onSelectCurrentMemory,
+  onConfirmBrief,
+}: Props) {
   const settings = useAppStore((s) => s.settings);
   const jobs = useAppStore((s) => s.jobs);
   const [picking, setPicking] = useState(false);
@@ -147,6 +154,10 @@ export function Gallery({ onClose, onSelectCurrentMemory }: Props) {
           onSelectCurrentMemory={() => {
             setPicking(false);
             onSelectCurrentMemory();
+          }}
+          onConfirmBrief={(brief) => {
+            setPicking(false);
+            onConfirmBrief(brief);
           }}
         />
       )}

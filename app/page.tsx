@@ -304,6 +304,10 @@ export default function Page() {
               setShowGallery(false);
               startCreate();
             }}
+            onConfirmBrief={(brief) => {
+              setShowGallery(false);
+              handleConfirmBrief(brief);
+            }}
           />
         )}
 

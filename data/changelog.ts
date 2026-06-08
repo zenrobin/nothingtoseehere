@@ -5,12 +5,23 @@ export interface ChangelogEntry {
 }
 
 /**
- * Hand-maintained changelog displayed on the Setup screen, just below the
- * Memory ZIP picker. Most-recent-first.
+ * Hand-maintained changelog displayed on the Setup screen, below the
+ * primary CTA. Most-recent-first.
  *
- * To add an entry, prepend to the array. Keep the `what` line one sentence.
+ * RULE FOR THE AGENT: prepend an entry here every time you ship a change.
+ * Keep `what` to one sentence. Use a near-current ISO `when`.
  */
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    who: "Robin",
+    what: "Photos sub-flow now opens a native-style camera roll picker over your loaded memory's photos, and Idea-chat plus photo suggestions are wired to the real LLM end-to-end into the brief.",
+    when: "2026-06-08T18:30:00Z",
+  },
+  {
+    who: "Robin",
+    what: "Built the gallery-first create flow: a Juni-led welcome bubble, three starting points (Photos / Memory / Idea), a creations-left chip, and the $9.99 paywall on tap or when out.",
+    when: "2026-06-08T18:15:00Z",
+  },
   {
     who: "Robin",
     what: "Added a hamburger menu (Home / Memories / Memory Art / Themes / Projects / Account / Help) and wired the gallery back in.",

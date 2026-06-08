@@ -54,49 +54,42 @@ export function JuniSheet({ onConfirmBrief, onSeeArtwork, onClose }: Props) {
     [recs, selectedRecId]
   );
 
-  // Load recommendations on open. If a prefetch already filled them in,
-  // we still hold the "Juni is reading your memory…" beat for a moment so
-  // the conversation feels considered rather than instantaneous.
+  // Load recommendations on open. If a prefetch (either on Setup commit
+  // or by the page-level effect) already filled them in, transition
+  // straight to ready — no fetch, no artificial beat. Only fall back to
+  // a real fetch (and a real thinking bubble) when nothing is cached.
   useEffect(() => {
+    if (recs) {
+      setJuniState("recommendations_ready");
+      return;
+    }
     let cancelled = false;
-    // Recs are typically already prefetched (either on Setup commit, or by
-    // the page-level effect). Hold a short, polite beat anyway so the
-    // chat doesn't snap open without any sense of Juni thinking.
-    const READING_BEAT_MS = 600;
     async function load() {
-      const start = Date.now();
       setJuniState("recommendations_loading");
       try {
-        if (!recs) {
-          const ctx = {
-            memory,
-            photoAnalyses: settings.photoAnalyses,
-            existingArt: settings.existingArt,
-            artForms: settings.artForms,
+        const ctx = {
+          memory,
+          photoAnalyses: settings.photoAnalyses,
+          existingArt: settings.existingArt,
+          artForms: settings.artForms,
+          capabilities: settings.capabilities,
+        };
+        const resp = await fetchRecommendations({
+          settings: {
+            llm: settings.llm,
+            prompts: settings.prompts,
+            style: settings.style,
             capabilities: settings.capabilities,
-          };
-          const resp = await fetchRecommendations({
-            settings: {
-              llm: settings.llm,
-              prompts: settings.prompts,
-              style: settings.style,
-              capabilities: settings.capabilities,
-            },
-            context: ctx,
-          });
-          if (cancelled) return;
-          setRecs(resp.data);
-          setDebug({
-            lastContext: ctx,
-            lastRequest: resp.debug.request,
-            lastResponse: resp.debug.response,
-          });
-        }
-        const remaining = Math.max(0, READING_BEAT_MS - (Date.now() - start));
-        if (remaining > 0) {
-          await new Promise((r) => setTimeout(r, remaining));
-        }
+          },
+          context: ctx,
+        });
         if (cancelled) return;
+        setRecs(resp.data);
+        setDebug({
+          lastContext: ctx,
+          lastRequest: resp.debug.request,
+          lastResponse: resp.debug.response,
+        });
         setJuniState("recommendations_ready");
       } catch (e: any) {
         if (cancelled) return;

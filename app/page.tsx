@@ -6,10 +6,11 @@ import { DeviceFrame } from "@/components/DeviceFrame";
 import { MemoryDetail } from "@/components/MemoryDetail";
 import { JuniSheet } from "@/components/JuniSheet";
 import { GenerationToast } from "@/components/GenerationToast";
-import { DebugFab, DebugPanel } from "@/components/DebugPanel";
+import { DebugPanel } from "@/components/DebugPanel";
 import { ResultDetail } from "@/components/ResultDetail";
 import { Gallery } from "@/components/Gallery";
 import { SetupScreen } from "@/components/SetupScreen";
+import { HamburgerMenu, type NavItemId } from "@/components/HamburgerMenu";
 import { useAppStore } from "@/lib/store";
 import type { CreativeBrief, GenerationJob, ExistingArt } from "@/types";
 import { startGenerationJob } from "@/lib/mockGeneration";
@@ -57,6 +58,7 @@ export default function Page() {
 
   const [showResult, setShowResult] = useState<GenerationJob | null>(null);
   const [showGallery, setShowGallery] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const movedToArtRef = useRef<string | null>(null);
   const prefetchedForRef = useRef<string | null>(null);
 
@@ -244,7 +246,22 @@ export default function Page() {
           onGallery={() => setShowGallery(true)}
           onSettings={() => router.push("/settings")}
           onChangeMemory={() => setOnboarded(false)}
+          onMenu={() => setMenuOpen(true)}
           onResultTap={(job) => setShowResult(job)}
+        />
+
+        <HamburgerMenu
+          open={menuOpen}
+          current={showGallery ? "memory-art" : "memories"}
+          onClose={() => setMenuOpen(false)}
+          onSelect={(id: NavItemId) => {
+            setMenuOpen(false);
+            if (id === "memories") {
+              setShowGallery(false);
+            } else if (id === "memory-art") {
+              setShowGallery(true);
+            }
+          }}
         />
 
         {juniOpen && (
@@ -302,7 +319,7 @@ export default function Page() {
           <SetupScreen onDone={() => setOnboarded(true)} />
         )}
 
-        <DebugFab />
+        {/* Debug FAB removed — debug log is now opened from /settings. */}
         <DebugPanel />
       </DeviceFrame>
     </div>

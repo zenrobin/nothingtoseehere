@@ -423,6 +423,17 @@ export function SettingsPanel() {
             Re-open setup screen
           </button>
 
+          <button
+            onClick={() => {
+              useAppStore.getState().setDebugPanelOpen(true);
+              window.history.back();
+            }}
+            className="w-full rounded-2xl bg-white shadow-card px-4 py-3 text-[13px] font-semibold text-ink-900 active:scale-[0.99] flex items-center justify-between"
+          >
+            <span>Open LLM call log</span>
+            <span className="text-[11px] text-ink-400 font-mono">debug</span>
+          </button>
+
           <div className="text-center text-[10px] text-ink-300 py-4">
             LLM mode: <span className="font-semibold">{settings.llm.provider}</span>
           </div>

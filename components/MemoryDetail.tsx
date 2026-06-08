@@ -16,6 +16,7 @@ interface Props {
   onGallery: () => void;
   onSettings: () => void;
   onChangeMemory: () => void;
+  onMenu: () => void;
   onResultTap: (job: GenerationJob) => void;
 }
 
@@ -32,25 +33,26 @@ export function MemoryDetail(props: Props) {
         <div className="relative w-full aspect-[4/5] bg-paper-warm overflow-hidden select-none">
           <HeroVisual memory={memory} photo={photoAnalyses[0]} />
 
-          {/* Floating Actions Over the Image (42x42 circles with 40% black transparent blur backdrop) */}
-          <div className="absolute top-4 right-4 flex items-center gap-2.5 z-10">
-            {/* Upload Button */}
+          {/* Floating Actions Over the Image */}
+          <div className="absolute top-4 left-4 z-10">
+            {/* Hamburger Menu */}
             <button
-              onClick={props.onChangeMemory}
+              onClick={props.onMenu}
               className="w-[42px] h-[42px] rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white hover:bg-black/50 active:scale-95 transition"
-              aria-label="Change memory or photos"
-              title="Change memory or photos"
+              aria-label="Open menu"
+              title="Menu"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path
-                  d="M12 16V4M12 4l-5 5m5-5l5 5M4 20h16"
+                  d="M4 7h16M4 12h16M4 17h16"
                   stroke="currentColor"
                   strokeWidth="2.2"
                   strokeLinecap="round"
-                  strokeLinejoin="round"
                 />
               </svg>
             </button>
+          </div>
+          <div className="absolute top-4 right-4 flex items-center gap-2.5 z-10">
             {/* Settings Button */}
             <button
               onClick={props.onSettings}

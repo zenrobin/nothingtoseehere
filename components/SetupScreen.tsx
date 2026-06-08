@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useAppStore } from "@/lib/store";
 import { parseMemoryZip } from "@/lib/zipMemoryParser";
 import { loggedFetchRecommendations, trace } from "@/lib/llmCalls";
+import { CHANGELOG, type ChangelogEntry } from "@/data/changelog";
 import type { Memory, PhotoAnalysis } from "@/types";
 
 interface Props {
@@ -225,6 +226,8 @@ export function SetupScreen({ onDone }: Props) {
           {error && (
             <div className="mt-2 text-[12px] text-red-500 px-1">{error}</div>
           )}
+
+          <Changelog />
         </div>
 
         <div className="mt-auto pt-6 space-y-2">
@@ -289,4 +292,55 @@ function UploadLabel({
       <div className="text-[11px] font-semibold text-juni shrink-0">{cta}</div>
     </label>
   );
+}
+
+function Changelog() {
+  if (CHANGELOG.length === 0) return null;
+  return (
+    <div className="mt-6">
+      <div className="text-[10px] uppercase tracking-widest text-ink-500 font-semibold mb-2">
+        Recent updates
+      </div>
+      <ul className="space-y-2.5">
+        {CHANGELOG.slice(0, 6).map((entry, i) => (
+          <ChangelogRow key={i} entry={entry} />
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function ChangelogRow({ entry }: { entry: ChangelogEntry }) {
+  return (
+    <li className="rounded-xl bg-white border border-ink-100 px-3 py-2.5 shadow-sm">
+      <div className="flex items-baseline justify-between gap-2">
+        <span className="text-[11px] font-semibold text-juni-ink">
+          {entry.who}
+        </span>
+        <span className="text-[10px] font-mono text-ink-400 shrink-0">
+          {formatRelative(entry.when)}
+        </span>
+      </div>
+      <div className="text-[12px] leading-snug text-ink-700 mt-1">
+        {entry.what}
+      </div>
+    </li>
+  );
+}
+
+function formatRelative(iso: string): string {
+  const then = new Date(iso).getTime();
+  if (Number.isNaN(then)) return "";
+  const diff = Date.now() - then;
+  const minutes = Math.round(diff / 60_000);
+  if (minutes < 1) return "just now";
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.round(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.round(hours / 24);
+  if (days < 14) return `${days}d ago`;
+  return new Date(iso).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+  });
 }

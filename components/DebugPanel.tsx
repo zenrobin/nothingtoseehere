@@ -120,28 +120,38 @@ function CallRow({ call }: { call: LLMCallLog }) {
     call.durationMs != null
       ? `${(call.durationMs / 1000).toFixed(2)}s`
       : "—";
+  const isTrace = call.source === "trace";
   return (
     <div className="rounded-xl border border-ink-100 bg-paper-cream/40 overflow-hidden">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full px-3 py-2.5 flex items-center gap-2 text-left"
+        className="w-full px-3 py-2 flex items-start gap-2 text-left"
       >
         <span
-          className="w-1.5 h-1.5 rounded-full shrink-0"
+          className="w-1.5 h-1.5 rounded-full shrink-0 mt-1.5"
           style={{ background: SOURCE_COLORS[call.source] }}
         />
-        <span className="text-[11px] font-mono font-semibold text-ink-900 truncate">
-          {call.source}
-        </span>
-        <span
-          className="text-[10px] font-mono px-1.5 py-0.5 rounded-full text-white shrink-0"
-          style={{ background: STATUS_COLORS[call.status] }}
-        >
-          {call.status}
-        </span>
-        <span className="text-[10px] text-ink-500 font-mono ml-auto shrink-0">
-          {duration}
-        </span>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-[11px] font-mono font-semibold text-ink-900">
+              {call.source}
+            </span>
+            <span
+              className="text-[10px] font-mono px-1.5 py-0.5 rounded-full text-white shrink-0"
+              style={{ background: STATUS_COLORS[call.status] }}
+            >
+              {call.status}
+            </span>
+            <span className="text-[10px] text-ink-500 font-mono ml-auto shrink-0">
+              {duration}
+            </span>
+          </div>
+          {isTrace && call.reason && (
+            <div className="mt-0.5 text-[10.5px] font-mono text-ink-700 break-words leading-snug">
+              {call.reason}
+            </div>
+          )}
+        </div>
       </button>
       {expanded && (
         <div className="px-3 pb-3 text-[11px] text-ink-700 font-mono space-y-2 border-t border-ink-100/70 pt-2">
@@ -149,7 +159,7 @@ function CallRow({ call }: { call: LLMCallLog }) {
           {call.endedAt != null && (
             <Row label="ended">{new Date(call.endedAt).toISOString()}</Row>
           )}
-          {call.reason && <Row label="reason">{call.reason}</Row>}
+          {call.reason && !isTrace && <Row label="reason">{call.reason}</Row>}
           {call.promptChars != null && (
             <Row label="prompt chars">
               {call.promptChars.toLocaleString()}{" "}

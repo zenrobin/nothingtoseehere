@@ -78,6 +78,8 @@ interface AppState {
   activeJob: GenerationJob | null;
   jobs: GenerationJob[];
   toast: { title: string; subtitle?: string } | null;
+  llmCalls: import("@/lib/llmCalls").LLMCallLog[];
+  debugPanelOpen: boolean;
 
   setSettings: (updater: (s: AppSettings) => AppSettings) => void;
   resetSettings: () => void;
@@ -98,6 +100,13 @@ interface AppState {
   setActiveJob: (j: GenerationJob | null) => void;
   upsertJob: (j: GenerationJob) => void;
   setToast: (t: { title: string; subtitle?: string } | null) => void;
+  recordLLMCall: (entry: import("@/lib/llmCalls").LLMCallLog) => void;
+  updateLLMCall: (
+    id: string,
+    patch: Partial<import("@/lib/llmCalls").LLMCallLog>
+  ) => void;
+  clearLLMCalls: () => void;
+  setDebugPanelOpen: (open: boolean) => void;
   setDebug: (patch: Partial<AppSettings["debug"]>) => void;
   decrementCreations: () => void;
   setOnboarded: (v: boolean) => void;
@@ -117,6 +126,8 @@ export const useAppStore = create<AppState>()(
       activeJob: null,
       jobs: [],
       toast: null,
+      llmCalls: [],
+      debugPanelOpen: false,
 
       setSettings: (updater) =>
         set((state) => ({ settings: updater(state.settings) })),
@@ -166,6 +177,16 @@ export const useAppStore = create<AppState>()(
           return { jobs: next, activeJob: j };
         }),
       setToast: (t) => set({ toast: t }),
+      recordLLMCall: (entry) =>
+        set((state) => ({ llmCalls: [entry, ...state.llmCalls].slice(0, 25) })),
+      updateLLMCall: (id, patch) =>
+        set((state) => ({
+          llmCalls: state.llmCalls.map((c) =>
+            c.id === id ? { ...c, ...patch } : c
+          ),
+        })),
+      clearLLMCalls: () => set({ llmCalls: [] }),
+      setDebugPanelOpen: (open) => set({ debugPanelOpen: open }),
       setDebug: (patch) =>
         set((state) => ({
           settings: {

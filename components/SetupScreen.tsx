@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useAppStore } from "@/lib/store";
 import { parseMemoryZip } from "@/lib/zipMemoryParser";
-import { fetchRecommendations } from "@/lib/juniClient";
+import { loggedFetchRecommendations } from "@/lib/llmCalls";
 import type { Memory, PhotoAnalysis } from "@/types";
 
 interface Props {
@@ -83,7 +83,7 @@ export function SetupScreen({ onDone }: Props) {
         artForms: settings.artForms,
         capabilities: settings.capabilities,
       };
-      const resp = await fetchRecommendations({
+      const resp = await loggedFetchRecommendations("setup-prefetch", {
         settings: {
           llm: settings.llm,
           prompts: settings.prompts,
@@ -92,6 +92,7 @@ export function SetupScreen({ onDone }: Props) {
         },
         context: ctx,
       });
+      if (!resp) return;
       setRecs(resp.data);
       setDebug({
         lastContext: ctx,

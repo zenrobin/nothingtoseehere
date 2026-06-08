@@ -6,13 +6,14 @@ import { DeviceFrame } from "@/components/DeviceFrame";
 import { MemoryDetail } from "@/components/MemoryDetail";
 import { JuniSheet } from "@/components/JuniSheet";
 import { GenerationToast } from "@/components/GenerationToast";
+import { DebugFab, DebugPanel } from "@/components/DebugPanel";
 import { ResultDetail } from "@/components/ResultDetail";
 import { Gallery } from "@/components/Gallery";
 import { SetupScreen } from "@/components/SetupScreen";
 import { useAppStore } from "@/lib/store";
 import type { CreativeBrief, GenerationJob, ExistingArt } from "@/types";
 import { startGenerationJob } from "@/lib/mockGeneration";
-import { fetchRecommendations } from "@/lib/juniClient";
+import { loggedFetchRecommendations } from "@/lib/llmCalls";
 
 export default function Page() {
   const router = useRouter();
@@ -78,7 +79,7 @@ export default function Page() {
       artForms: settings.artForms,
       capabilities: settings.capabilities,
     };
-    fetchRecommendations({
+    loggedFetchRecommendations("page-prefetch", {
       settings: {
         llm: settings.llm,
         prompts: settings.prompts,
@@ -88,6 +89,7 @@ export default function Page() {
       context: ctx,
     })
       .then((resp) => {
+        if (!resp) return;
         setRecs(resp.data);
         setDebug({
           lastContext: ctx,
@@ -258,6 +260,9 @@ export default function Page() {
         {!hasOnboarded && (
           <SetupScreen onDone={() => setOnboarded(true)} />
         )}
+
+        <DebugFab />
+        <DebugPanel />
       </DeviceFrame>
     </div>
   );

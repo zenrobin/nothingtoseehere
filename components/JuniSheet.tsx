@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useAppStore } from "@/lib/store";
-import { fetchRecommendations } from "@/lib/juniClient";
+import { loggedFetchRecommendations } from "@/lib/llmCalls";
 import type {
   CreativeBrief as CreativeBriefT,
   JuniRecommendation,
@@ -58,6 +58,17 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
   // a real fetch (and a real thinking bubble) when nothing is cached.
   useEffect(() => {
     if (recs) {
+      // Record a "skipped" entry so the debug panel makes it obvious that
+      // opening the sheet did NOT trigger another LLM call.
+      useAppStore.getState().recordLLMCall({
+        id: `llm-${Date.now()}-skip`,
+        source: "sheet-mount-fetch",
+        startedAt: Date.now(),
+        endedAt: Date.now(),
+        durationMs: 0,
+        status: "skipped",
+        reason: "recs already cached on sheet mount",
+      });
       setJuniState("recommendations_ready");
       return;
     }
@@ -72,7 +83,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
           artForms: settings.artForms,
           capabilities: settings.capabilities,
         };
-        const resp = await fetchRecommendations({
+        const resp = await loggedFetchRecommendations("sheet-mount-fetch", {
           settings: {
             llm: settings.llm,
             prompts: settings.prompts,
@@ -81,7 +92,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
           },
           context: ctx,
         });
-        if (cancelled) return;
+        if (cancelled || !resp) return;
         setRecs(resp.data);
         setDebug({
           lastContext: ctx,
@@ -133,7 +144,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
         artForms: settings.artForms,
         capabilities: settings.capabilities,
       };
-      const r = await fetchRecommendations({
+      const r = await loggedFetchRecommendations("more-ideas", {
         settings: {
           llm: settings.llm,
           prompts: settings.prompts,
@@ -146,6 +157,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
           excludeTitles: previousTitles,
         },
       });
+      if (!r) return;
       setRecs(r.data);
       setJuniState("recommendations_ready");
     } catch (e: any) {
@@ -205,7 +217,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
         artForms: settings.artForms,
         capabilities: settings.capabilities,
       };
-      const r = await fetchRecommendations({
+      const r = await loggedFetchRecommendations("freeform", {
         settings: {
           llm: settings.llm,
           prompts: settings.prompts,
@@ -217,6 +229,7 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
           userMessage: text,
         },
       });
+      if (!r) return;
       setRecs(r.data);
       setJuniState("recommendations_ready");
     } catch (e: any) {

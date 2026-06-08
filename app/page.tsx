@@ -114,8 +114,10 @@ export default function Page() {
       setTimeout(() => setToast(null), 2400);
       return;
     }
-    // reset prior creation state
-    setRecs(null);
+    // Reset prior creation-flow state (selected rec / followup / brief) BUT
+    // keep prefetched recommendations so opening Juni is instant. Wiping
+    // recs here is what was causing the second 17-second LLM call on every
+    // Create Artwork tap.
     setSelectedRec(null);
     setFollowupAnswer(null);
     setBrief(null);

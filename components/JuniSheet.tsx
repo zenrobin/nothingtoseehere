@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useAppStore } from "@/lib/store";
-import { loggedFetchRecommendations } from "@/lib/llmCalls";
+import { loggedFetchRecommendations, trace } from "@/lib/llmCalls";
 import type {
   CreativeBrief as CreativeBriefT,
   JuniRecommendation,
@@ -57,6 +57,13 @@ export function JuniSheet({ onConfirmBrief, onClose }: Props) {
   // straight to ready — no fetch, no artificial beat. Only fall back to
   // a real fetch (and a real thinking bubble) when nothing is cached.
   useEffect(() => {
+    // Trace ALL paths so we can see why sheet-mount-fetch ever fires.
+    const fresh = useAppStore.getState().recommendations;
+    trace(
+      `[sheet] useEffect ran — closure-recs=${recs ? "set" : "null"}, store-recs=${
+        fresh ? "set" : "null"
+      }, memory=${memory?.id}, photos=${settings.photoAnalyses.length}`
+    );
     if (recs) {
       // Record a "skipped" entry so the debug panel makes it obvious that
       // opening the sheet did NOT trigger another LLM call.

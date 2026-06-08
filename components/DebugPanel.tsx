@@ -10,6 +10,7 @@ const SOURCE_COLORS: Record<LLMCallLog["source"], string> = {
   "sheet-mount-fetch": "#E48A2A",
   "more-ideas": "#1E40AF",
   "freeform": "#9333EA",
+  "trace": "#94A3B8",
 };
 
 const STATUS_COLORS: Record<LLMCallLog["status"], string> = {

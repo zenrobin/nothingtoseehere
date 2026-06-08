@@ -7,7 +7,8 @@ export type LLMCallSource =
   | "page-prefetch"
   | "sheet-mount-fetch"
   | "more-ideas"
-  | "freeform";
+  | "freeform"
+  | "trace";
 
 export interface LLMCallLog {
   id: string;
@@ -22,6 +23,24 @@ export interface LLMCallLog {
   responseChars?: number;
   responsePreview?: string;
   errorMessage?: string;
+}
+
+/**
+ * Lightweight one-shot trace entry — same shape as an LLM call log so it
+ * shows up in the debug panel interleaved with real calls.
+ */
+export function trace(reason: string): void {
+  if (typeof window === "undefined") return;
+  const now = Date.now();
+  useAppStore.getState().recordLLMCall({
+    id: `trace-${now}-${Math.random().toString(36).slice(2, 6)}`,
+    source: "trace",
+    startedAt: now,
+    endedAt: now,
+    durationMs: 0,
+    status: "skipped",
+    reason,
+  });
 }
 
 function approxPromptChars(payload: JuniRequestPayload): number {

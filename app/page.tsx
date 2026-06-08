@@ -13,7 +13,7 @@ import { SetupScreen } from "@/components/SetupScreen";
 import { useAppStore } from "@/lib/store";
 import type { CreativeBrief, GenerationJob, ExistingArt } from "@/types";
 import { startGenerationJob } from "@/lib/mockGeneration";
-import { loggedFetchRecommendations } from "@/lib/llmCalls";
+import { loggedFetchRecommendations, trace } from "@/lib/llmCalls";
 
 export default function Page() {
   const router = useRouter();
@@ -64,12 +64,26 @@ export default function Page() {
   // Juni sheet feels instant. The same prefetch is invalidated when the
   // memory changes (loadMemoryFromZip nulls recommendations).
   useEffect(() => {
-    if (!hydrated || !hasOnboarded || !settings.memory || juniOpen) return;
+    if (!hydrated || !hasOnboarded || !settings.memory || juniOpen) {
+      trace(
+        `[page-prefetch] skipped early — hydrated=${hydrated}, onboarded=${hasOnboarded}, memory=${!!settings.memory}, juniOpen=${juniOpen}`
+      );
+      return;
+    }
     if (recs) {
+      trace(
+        `[page-prefetch] skipped — recs already cached for memory=${settings.memory.id}`
+      );
       prefetchedForRef.current = settings.memory.id;
       return;
     }
-    if (prefetchedForRef.current === settings.memory.id) return;
+    if (prefetchedForRef.current === settings.memory.id) {
+      trace(
+        `[page-prefetch] skipped — prefetchedForRef already === ${settings.memory.id}`
+      );
+      return;
+    }
+    trace(`[page-prefetch] FIRING — recs is null, memory=${settings.memory.id}`);
     prefetchedForRef.current = settings.memory.id;
 
     const ctx = {

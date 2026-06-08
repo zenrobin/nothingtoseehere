@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useAppStore } from "@/lib/store";
 import { parseMemoryZip } from "@/lib/zipMemoryParser";
-import { loggedFetchRecommendations } from "@/lib/llmCalls";
+import { loggedFetchRecommendations, trace } from "@/lib/llmCalls";
 import type { Memory, PhotoAnalysis } from "@/types";
 
 interface Props {
@@ -99,6 +99,11 @@ export function SetupScreen({ onDone }: Props) {
         lastRequest: resp.debug.request,
         lastResponse: resp.debug.response,
       });
+      trace(
+        `[setup] commit finished — setRecs done, calling onDone(). store-recs=${
+          useAppStore.getState().recommendations ? "set" : "null"
+        }`
+      );
       onDone();
     } catch (e: any) {
       // Don't block — surface the error in the chat as before.

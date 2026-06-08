@@ -132,7 +132,15 @@ export const useAppStore = create<AppState>()(
       setSettings: (updater) =>
         set((state) => ({ settings: updater(state.settings) })),
       resetSettings: () => set({ settings: DEFAULT_SETTINGS }),
-      loadMemoryFromZip: ({ memory, photoAnalyses }) =>
+      loadMemoryFromZip: ({ memory, photoAnalyses }) => {
+        if (typeof window !== "undefined") {
+          // Async-loaded so we don't create an import cycle.
+          import("@/lib/llmCalls").then(({ trace }) =>
+            trace(
+              `[store] loadMemoryFromZip("${memory.snappy_title ?? memory.id}", ${photoAnalyses.length} photos) — clears recs`
+            )
+          );
+        }
         set((state) => ({
           settings: {
             ...state.settings,
@@ -147,7 +155,8 @@ export const useAppStore = create<AppState>()(
           recommendations: null,
           selectedRecId: null,
           brief: null,
-        })),
+        }));
+      },
       setMemoryRaw: (memory, photoAnalyses) =>
         set((state) => ({
           settings: { ...state.settings, memory, photoAnalyses },
@@ -163,7 +172,15 @@ export const useAppStore = create<AppState>()(
       openJuni: () => set({ juniOpen: true, juniState: "juni_open" }),
       closeJuni: () => set({ juniOpen: false }),
       setJuniState: (s) => set({ juniState: s }),
-      setRecommendations: (r) => set({ recommendations: r }),
+      setRecommendations: (r) => {
+        if (typeof window !== "undefined") {
+          const label = r
+            ? `[store] setRecommendations(<${r.recommendations.length} recs>)`
+            : "[store] setRecommendations(null) — clears recs";
+          import("@/lib/llmCalls").then(({ trace }) => trace(label));
+        }
+        set({ recommendations: r });
+      },
       setSelectedRec: (id) => set({ selectedRecId: id }),
       setFollowupAnswer: (a) => set({ followupAnswer: a }),
       setBrief: (b) => set({ brief: b }),

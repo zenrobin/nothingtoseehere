@@ -114,9 +114,32 @@ function trimMemory(memory: any): any {
  * Drops image data URLs, hosted URLs, dimensions, and raw coordinates;
  * keeps the description + key elements that the LLM reads.
  */
+/**
+ * Cap how many photos we send to the LLM. A memory with 167 photos blows
+ * through Anthropic's per-minute rate limit and costs ~20s per call. We
+ * rank by memory_value + emotional and take the top N — Juni doesn't need
+ * to see every selfie to recommend an artwork direction.
+ */
+const MAX_PHOTOS_TO_LLM = 30;
+
 function trimPhotoAnalyses(analyses: any): any {
   if (!Array.isArray(analyses)) return analyses;
-  return analyses.map((p) => {
+
+  const ranked = [...analyses].sort((a, b) => {
+    const aScore =
+      (a?.scores?.memory_value ?? 0) +
+      (a?.scores?.emotional ?? 0) +
+      (a?.scores?.aesthetic ?? 0);
+    const bScore =
+      (b?.scores?.memory_value ?? 0) +
+      (b?.scores?.emotional ?? 0) +
+      (b?.scores?.aesthetic ?? 0);
+    return bScore - aScore;
+  });
+
+  const top = ranked.slice(0, MAX_PHOTOS_TO_LLM);
+
+  return top.map((p) => {
     if (!p || typeof p !== "object") return p;
     const loc = p.parsedLocation
       ? [p.parsedLocation.point_of_interest, p.parsedLocation.city, p.parsedLocation.country]
@@ -125,11 +148,11 @@ function trimPhotoAnalyses(analyses: any): any {
       : undefined;
     return {
       photo_id: p.photo_id,
-      description: typeof p.description === "string" ? p.description.slice(0, 400) : p.description,
-      scores: p.scores,
-      key_elements: p.key_elements,
+      description:
+        typeof p.description === "string"
+          ? p.description.slice(0, 200)
+          : p.description,
       location_context: p.location_context || loc,
-      time_context: p.time_context,
     };
   });
 }

@@ -105,14 +105,34 @@ export async function POST(req: NextRequest) {
 
 function safeParseJson(text: string): unknown {
   if (!text) return null;
+  // Strip markdown code fences (```json ... ```) Claude sometimes wraps in.
+  let cleaned = text.replace(/```\s*json\s*/gi, "").replace(/```/g, "").trim();
+  // Drop any preamble like "Here's the JSON:" before the first brace.
+  const firstBrace = cleaned.indexOf("{");
+  if (firstBrace > 0) cleaned = cleaned.slice(firstBrace);
+
   try {
-    return JSON.parse(text);
+    return JSON.parse(cleaned);
   } catch {}
-  const match = text.match(/\{[\s\S]*\}/);
-  if (match) {
+
+  // Try the largest matching {...} block.
+  const greedy = cleaned.match(/\{[\s\S]*\}/);
+  if (greedy) {
     try {
-      return JSON.parse(match[0]);
+      return JSON.parse(greedy[0]);
     } catch {}
+  }
+
+  // Last resort: the response may be truncated by max_tokens mid-string.
+  // Shrink from the end one closing brace at a time and retry.
+  const start = cleaned.indexOf("{");
+  if (start !== -1) {
+    for (let end = cleaned.length; end > start; end--) {
+      if (cleaned[end - 1] !== "}") continue;
+      try {
+        return JSON.parse(cleaned.slice(start, end));
+      } catch {}
+    }
   }
   return null;
 }
@@ -160,7 +180,9 @@ async function callAnthropic(
   const client = new Anthropic({ apiKey });
   const request = {
     model: settings.llm.model || "claude-haiku-4-5-20251001",
-    max_tokens: settings.llm.maxTokens,
+    // Recommendation payloads can run 700-1500 output tokens; bump the
+    // default so the JSON doesn't get cut mid-string and fail parsing.
+    max_tokens: Math.max(settings.llm.maxTokens || 0, 3000),
     temperature: settings.llm.temperature,
     system: systemPrompt,
     messages: [{ role: "user" as const, content: userMessage }],

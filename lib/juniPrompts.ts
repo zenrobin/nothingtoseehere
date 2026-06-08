@@ -38,7 +38,13 @@ Return JSON with:
       }
     }
   ]
-}`;
+}
+
+CRITICAL OUTPUT RULES:
+- Respond with the JSON object ONLY. No preamble, no commentary, no explanation.
+- Do NOT wrap the output in markdown code fences (no \`\`\`json, no \`\`\`).
+- Start the response with { and end with }. Nothing else before or after.
+- Keep each "description" and "why" under 300 characters so the response fits in the model's output window.`;
 
 export function styleDirectives(style: {
   concise: number;
